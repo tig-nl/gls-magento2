@@ -1,0 +1,211 @@
+
+/* TIG -  Navigation Logo - Left Menu =============================================================================== */
+
+.gls-section .admin__page-nav-link {
+    padding: 2rem 1rem 2rem 1rem;
+}
+
+.gls-section .admin__page-nav-link:after {
+    float:right;
+    width: 30px;
+    height: 30px;
+    margin-top:-7px;
+    margin-right: 3px;
+
+    background-image: url(../images/logo_tig.png) !important;
+    background-size: 30px !important;
+    background-repeat:no-repeat;
+    content: ' ';
+}
+
+.gls-section .admin__page-nav-link:before {
+    float: left;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    content: ' ';
+    background-image: url(../images/gls_logo_50.png) !important;
+    background-position: 0;
+    background-repeat: no-repeat;
+    background-size: auto 35px;
+    margin-top: -12px;
+}
+
+
+/* SupportTab - Default styling ===================================================================================== */
+
+#section { float: left; width: 100%; clear: both; }
+
+#supporttab { margin-left: 4rem;  }
+#supporttab #section { border-bottom: 1px solid #cccccc; }
+#supporttab #section:last-child { border-bottom: none; }
+
+.colset-2 {
+    float:left;
+    width: 100%;
+}
+
+.colset-2 .col-1 {
+    float:left;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+.colset-2 .col-2 {
+    float:left;
+    width: 50%;
+}
+
+/* Default styling collapsible tabs */
+.collapse-title[aria-expanded=true] h3:before {
+    font-family:'Admin Icons';
+    content: '\e615';
+
+}
+.collapse-title h3:before {
+    font-family:'Admin Icons';
+    font-weight: lighter;
+    content: '\e616';
+    padding-right: 10px;
+    -webkit-font-smoothing: antialiased;
+}
+
+.collapse-content {
+    box-sizing: border-box;
+    padding:0 15px 15px 15px;
+    height:auto !important;
+    float:left; width: 100%;
+}
+
+#supporttab h3 {
+    font-size: 1.7rem;
+    margin:0 !important;
+    padding:1.9rem 2.7rem 1.9rem 1rem;
+    color: black;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#supporttab h4 {
+    font-size: 1.1em;
+    margin:20px 0 5px 0;
+    padding:0;
+    color: black;
+}
+
+#supporttab p {
+    line-height: 2em;
+}
+
+#supporttab ol, ul {
+    margin-left: 20px;
+    position :relative;
+}
+
+#supporttab ul li {
+    line-height: 2em;
+    list-style-type: none;
+    margin-bottom: 10px;
+}
+
+/* SupportTab - 3rd Party | Version compatibility =================================================================== */
+
+#supporttab .legend-version {
+    padding-left: 1rem;
+    box-sizing: border-box;
+}
+
+#supporttab .legend-version div {
+    float:left;
+    width: 100%;
+}
+
+#supporttab .legend-version h3 {
+    cursor: default;
+    padding: 20px 0 15px 0 !important;
+}
+
+#supporttab .legend-version ul {
+    float:left;
+    width: 100%;
+    clear:both;
+    margin: 0;
+}
+#supporttab .legend-version li {
+    clear: both;
+    margin-bottom: 15px;
+    float:left;
+    width: 100%;
+}
+#supporttab .legend-version span.text {
+     font-weight: 600;
+     float:left;
+     width: calc(50% - 20px);
+ }
+#supporttab .legend-version span.version {
+    float:left;
+    width: calc(50% - 30px);
+    text-align:right;
+    margin-left: 10px;
+}
+
+#supporttab .legend-version .panda-george {
+    float:right;
+    max-width: 300px;
+    width: 100%;
+}
+
+#supporttab .legend-version .compatible-image {
+    vertical-align: text-bottom;
+}
+
+/* SupportTab - Legend ============================================================================================== */
+
+.legend h3 {
+    cursor: auto !important;
+}
+
+.legend {
+    padding: 10px;
+    float:left;
+    width:100%;
+}
+
+@media screen and (min-width: 1200px){
+    .legend {
+        float:left;
+        width: 50%;
+    }
+}
+
+.disabled span.text,
+.live span.text,
+.test span.text {
+    margin-right: 15px;
+    font-weight: 600;
+}
+
+.disabled{
+    border-left: 5px solid #CCCCCC;
+    padding-left: 10px;
+}
+
+.live {
+    border-left: 5px solid #49AB43;
+    padding-left: 10px;
+}
+
+.test {
+    border-left: 5px solid #FFC107;
+    padding-left: 10px;
+}
+
+.advanced span.img {
+    display:block;
+    float:left;
+    margin-top: 2px; margin-right:10px;
+    border: 6px solid;
+    border-color: transparent transparent transparent #ff2e31;
+    width:0;
+    height:0;
+}
