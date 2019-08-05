@@ -1,0 +1,19 @@
+{
+  "name": "TIG_GLS",
+  "version": "1.0.0",
+  "description": "The official GLS Magento 2 extension build by TIG",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "grunt"
+  },
+  "author": "TIG",
+  "license": "CC-BY-NC-ND-3.0",
+  "homepage": "https://tig.nl/",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-less": "^1.4.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-exec": "^1.0.1"
+  }
+}
