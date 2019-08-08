@@ -32,7 +32,7 @@
 namespace TIG\GLS\Test\Unit\Block\Adminhtml\Config\Support;
 
 use TIG\GLS\Block\Adminhtml\Config\Support\Tab;
-use TIG\Postcode\Test\TestCase;
+use TIG\GLS\Test\TestCase;
 
 class TabTest extends TestCase
 {
