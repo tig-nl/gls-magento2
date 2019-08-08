@@ -30,24 +30,26 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 
-namespace TIG\GLS\Block\Adminhtml\Config\Support;
+namespace TIG\GLS\Model\Config\Source\General;
 
-use Magento\Backend\Block\Template;
-use Magento\Framework\View\Element\BlockInterface;
+use Magento\Framework\Option\ArrayInterface;
 
-class BodyClass extends Template implements BlockInterface
+class Mode implements ArrayInterface
 {
     /**
-     * @return \Magento\Backend\Block\Template
+     * Return option array for the extension mode.
+     * @return array
      */
-    // @codeCoverageIgnoreStart
-    // @codingStandardsIgnoreLine
-    protected function _prepareLayout()
+    public function toOptionArray()
     {
-        if ($this->_request->getParam('section') == 'tig_gls') {
-            $this->pageConfig->addBodyClass('gls-config-page');
-        }
-        return parent::_prepareLayout();
+        // @codingStandardsIgnoreStart
+        $options = [
+            ['value' => '0', 'label' => __('Off')],
+            ['value' => '1', 'label' => __('Live')],
+            ['value' => '2', 'label' => __('Test')]
+        ];
+
+        // @codingStandardsIgnoreEnd
+        return $options;
     }
-    // @codeCoverageIgnoreEnd
 }

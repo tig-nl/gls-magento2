@@ -29,35 +29,38 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
+namespace TIG\GLS\Model\Config\Source\Carrier;
 
-namespace TIG\GLS\Model;
+use Magento\Framework\Option\ArrayInterface;
 
-use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfig;
-use Magento\Store\Model\ScopeInterface;
-
-abstract class AbstractConfigProvider
+class RateType implements ArrayInterface
 {
-    /** @var ScopeConfig ScopeConfig */
-    private $scopeConfig;
+    const CARRIER_RATE_TYPE_FLAT = 'flat';
+    const CARRIER_RATE_TYPE_TABLE = 'table';
+    const CARRIER_RATE_TYPE_MATRIX = 'matrix';
 
     /**
-     * Config constructor.
-     *
-     * @param ScopeConfig $scopeConfig
+     * @return array
      */
-    public function __construct(
-        ScopeConfig $scopeConfig
-    ) {
-        $this->scopeConfig = $scopeConfig;
-    }
-
-    /**
-     * @param $path
-     *
-     * @return mixed
-     */
-    public function getConfigValue($path)
+    public function toOptionArray()
     {
-        return $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE);
+        // @codingStandardsIgnoreStart
+        $options = [
+            [
+                'value' => self::CARRIER_RATE_TYPE_FLAT,
+                'label' => __('Flat'),
+            ],
+            [
+                'value' => self::CARRIER_RATE_TYPE_TABLE,
+                'label' => __('Table'),
+            ],
+            [
+                'value' => self::CARRIER_RATE_TYPE_MATRIX,
+                'label' => __('Matrix'),
+            ],
+        ];
+        // @codingStandardsIgnoreEnd
+
+        return $options;
     }
 }

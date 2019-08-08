@@ -209,3 +209,38 @@
     width:0;
     height:0;
 }
+
+/* Shipment Methods ================================================================================================= */
+
+#carriers_tig_gls-head:after  {
+    background-image: url(../images/gls_logo_50.png) !important;
+    background-repeat: no-repeat;
+    text-indent: 70px;
+    content: ' ';
+    float: left;
+    height: 40px;
+    background-size: auto 35px;
+    width: 50px;
+    margin-top:-5px;
+}
+
+#carriers_tig_gls-head {
+    background-image: url(../images/logo_tig.png);
+    background-repeat: no-repeat;
+    background-size: 35px;
+    background-position: calc(100% - 50px) 15px;
+}
+
+
+h4#carriers_tig_gls_import_export_header {
+    margin-left: 33%;
+    color: #303030;
+    font-size: 12px;
+    width: 40%;
+    font-weight: normal;
+    padding: 1rem 1.5rem 0 0;
+}
+
+#row_carriers_tig_gls_showmethod {
+    display: table-row !important;
+}

@@ -30,21 +30,50 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 
-namespace TIG\GLS\Model\Config\Provider\Support;
+namespace TIG\GLS\Model\Config\Provider;
 
-use TIG\GLS\Model\Config\Provider\AbstractConfigProvider;
+use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfig;
+use Magento\Framework\Module\Manager;
+use Magento\Store\Model\ScopeInterface;
 
-class Tab extends AbstractConfigProvider
+abstract class AbstractConfigProvider
 {
-    const GLS_SUPPORTED_MAGENTO_VERSION = 'tig_gls/supported_magento_version';
+    /** @var ScopeConfig $scopeConfig */
+    private $scopeConfig;
+
+    /** @var Manager $moduleManager */
+    private $moduleManager;
 
     /**
-     * @param null $store
+     * AbstractConfigProvider constructor.
      *
-     * @return string
+     * @param ScopeConfig $scopeConfig
+     * @param Manager     $moduleManager
      */
-    public function getSupportedMagentoVersions()
+    public function __construct(
+        ScopeConfig $scopeConfig,
+        Manager $moduleManager
+    ) {
+        $this->scopeConfig = $scopeConfig;
+        $this->moduleManager = $moduleManager;
+    }
+
+    /**
+     * @param $path
+     *
+     * @return mixed
+     */
+    public function getConfigValue($path)
     {
-        return $this->getConfigValue(static::GLS_SUPPORTED_MAGENTO_VERSION);
+        return $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE);
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isModuleOutputEnabled()
+    {
+        return $this->moduleManager->isOutputEnabled('TIG_GLS');
     }
 }
