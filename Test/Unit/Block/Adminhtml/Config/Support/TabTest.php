@@ -40,7 +40,9 @@ class TabTest extends TestCase
 
     public function testGetVersionNumber()
     {
-        $instance = $this->getInstance();
+        $object = $this->getObject(\TIG\GLS\Service\Software\Data::class);
+
+        $instance = $this->getInstance(['softwareData' => $object]);
         $this->assertSame('1.0.0', $instance->getVersionNumber());
     }
 
