@@ -40,5 +40,32 @@
             <source_model>TIG\GLS\Model\Config\Source\General\Mode</source_model>
             <config_path>tig_gls/general/mode</config_path>
         </field>
+        <field id="username" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Username</label>
+            <config_path>tig_gls/general/username</config_path>
+            <depends>
+                <field id="mode" separator=",">1,2</field>
+            </depends>
+        </field>
+        <field id="password" translate="label" type="obscure" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Password</label>
+            <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+            <config_path>tig_gls/general/password</config_path>
+            <depends>
+                <field id="mode" separator=",">1,2</field>
+            </depends>
+        </field>
+        <field id="subscription_key" translate="label" type="obscure" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Subscription key</label>
+            <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+            <config_path>tig_gls/general/subscription_key</config_path>
+            <depends>
+                <field id="mode">2</field>
+            </depends>
+        </field>
+        <field id="validate_details" translate="label" type="button" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Validate credentials</label>
+            <frontend_model>TIG\GLS\Block\Adminhtml\Config\Form\Field\Validate</frontend_model>
+        </field>
     </group>
 </include>

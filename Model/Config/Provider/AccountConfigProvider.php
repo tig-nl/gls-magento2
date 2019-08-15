@@ -32,9 +32,38 @@
 
 namespace TIG\GLS\Model\Config\Provider;
 
+use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfig;
+use Magento\Framework\Encryption\Encryptor;
+use Magento\Framework\Module\Manager;
+
 class AccountConfigProvider extends AbstractConfigProvider
 {
-    const XPATH_GENERAL_STATUS_MODE = 'tig_gls/general/mode';
+    const XPATH_GENERAL_STATUS_MODE      = 'tig_gls/general/mode';
+    const XPATH_GENERAL_USERNAME         = 'tig_gls/general/username';
+    const XPATH_GENERAL_PASSWORD         = 'tig_gls/general/password';
+    const XPATH_GENERAL_SUBSCRIPTION_KEY = 'tig_gls/general/subscription_key';
+    const XPATH_API_LIVE_BASE_URL        = 'tig_gls/api/live_base_url';
+    const XPATH_API_TEST_BASE_URL        = 'tig_gls/api/test_base_url';
+
+    /** @var Encryptor $encryptor */
+    private $encryptor;
+
+    /**
+     * AccountConfigProvider constructor.
+     *
+     * @param ScopeConfig $scopeConfig
+     * @param Manager     $moduleManager
+     * @param Encryptor   $encryptor
+     */
+    public function __construct(
+        ScopeConfig $scopeConfig,
+        Manager $moduleManager,
+        Encryptor $encryptor
+    ) {
+        parent::__construct($scopeConfig, $moduleManager);
+
+        $this->encryptor = $encryptor;
+    }
 
     /**
      * Checks if the extension is on status off.
@@ -69,12 +98,56 @@ class AccountConfigProvider extends AbstractConfigProvider
     }
 
     /**
-     * @param null $store
+     * @param int|null $store
      *
-     * @return bool
+     * @return string
      */
-    public function isValidatedSuccesfully($store = null)
+    public function getBaseUrl($store = null)
     {
-        return true;
+        if ($this->getMode($store) == 1) {
+            return $this->getConfigValue(self::XPATH_API_LIVE_BASE_URL);
+        }
+
+        return $this->getConfigValue(self::XPATH_API_TEST_BASE_URL);
+    }
+
+    /**
+     * @param int|null $store
+     */
+    public function getUsername($store = null)
+    {
+        return $this->getConfigValue(self::XPATH_GENERAL_USERNAME, $store);
+    }
+
+    /**
+     * @param int|null $store
+     *
+     * @return bool|string
+     */
+    public function getPassword($store = null)
+    {
+        $encryptedPassword = $this->getConfigValue(self::XPATH_GENERAL_PASSWORD, $store);
+
+        try {
+            return $this->encryptor->decrypt($encryptedPassword);
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * @param int|null $store
+     *
+     * @return string
+     */
+    public function getSubscriptionKey($store = null)
+    {
+        $encryptedSubscriptionKey = $this->getConfigValue(self::XPATH_GENERAL_SUBSCRIPTION_KEY, $store);
+
+        try {
+            return $this->encryptor->decrypt($encryptedSubscriptionKey);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

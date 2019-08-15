@@ -46,6 +46,10 @@
         <tig_gls>
             <stability />
             <supported_magento_version>2.2.0 - 2.2.9, 2.3.0 - 2.3.2</supported_magento_version>
+            <api>
+                <live_base_url>https://api.gls.nl/V1/api/</live_base_url>
+                <test_base_url>https://api.gls.nl/Test/V1/api/</test_base_url>
+            </api>
         </tig_gls>
     </default>
 </config>

@@ -68,7 +68,6 @@ abstract class AbstractConfigProvider
         return $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE);
     }
 
-
     /**
      * @return bool
      */

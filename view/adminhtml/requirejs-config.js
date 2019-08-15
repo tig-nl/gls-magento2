@@ -6,7 +6,8 @@
 var config = {
     map: {
         '*': {
-            glsConfig: 'TIG_GLS/js/support'
+            glsConfig: 'TIG_GLS/js/support',
+            glsValidate: 'TIG_GLS/js/validate'
         }
     }
-}
+};
