@@ -32,7 +32,6 @@
 
 namespace TIG\GLS\Controller\Adminhtml\Credentials;
 
-
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use TIG\GLS\Service\Label\Label;
@@ -72,6 +71,7 @@ class Validate extends Action
         return $this->_response->setStatusHeader(200, '1.1', 'Succesfully authorized');
     }
 
+    // @codingStandardsIgnoreStart
     private function getRequestData()
     {
         return [
@@ -115,4 +115,5 @@ class Validate extends Action
             ]
         ];
     }
+    // @codingStandardsIgnoreEnd
 }

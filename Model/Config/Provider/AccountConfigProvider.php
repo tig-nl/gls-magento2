@@ -130,7 +130,7 @@ class AccountConfigProvider extends AbstractConfigProvider
 
         try {
             return $this->encryptor->decrypt($encryptedPassword);
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             return false;
         }
     }
@@ -146,7 +146,7 @@ class AccountConfigProvider extends AbstractConfigProvider
 
         try {
             return $this->encryptor->decrypt($encryptedSubscriptionKey);
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             return false;
         }
     }

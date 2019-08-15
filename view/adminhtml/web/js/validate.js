@@ -38,7 +38,7 @@ define([
         element.on("click", function () {
             $.ajax({
                 type : 'GET',
-                url  : configs['url'],
+                url  : configs.url,
             }).done(function (data) {
                 if (data === 'ok') {
                     $('.validate-image').attr('src', configs['ok-image']);
@@ -49,7 +49,7 @@ define([
                 }
             }).fail(function (data) {
                 $('.validate-image').attr('src', configs['unknown-image']);
-            })
+            });
         });
-    }
+    };
 });

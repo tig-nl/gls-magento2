@@ -85,6 +85,7 @@ class GLS extends AbstractCarrier implements CarrierInterface
      * @return \Magento\Framework\DataObject|bool|null|Result
      * @api
      */
+    // @codingStandardsIgnoreLine
     public function collectRates(RateRequest $request)
     {
         if ($this->accountConfigProvider->isModeOff()) {

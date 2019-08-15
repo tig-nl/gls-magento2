@@ -36,6 +36,8 @@ use TIG\GLS\Webservices\Endpoints\AbstractEndpoint;
 
 class CreateLabel extends AbstractEndpoint
 {
+    // @codingStandardsIgnoreStart
     protected $method = 'POST';
     protected $endpoint = 'Label/Create';
+    // @codingStandardsIgnoreEnd
 }
