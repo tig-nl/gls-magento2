@@ -40,16 +40,16 @@ define([
                 type : 'GET',
                 url  : configs.url,
             }).done(function (data) {
+                $('.validate-image').attr('src', configs['unknown-image']);
                 if (data === 'ok') {
                     $('.validate-image').attr('src', configs['ok-image']);
                 } else if (data === 'nok') {
                     $('.validate-image').attr('src', configs['nok-image']);
-                } else {
-                    $('.validate-image').attr('src', configs['unknown-image']);
                 }
             }).fail(function (data) {
                 $('.validate-image').attr('src', configs['unknown-image']);
             });
         });
+        element.click();
     };
 });

@@ -63,10 +63,11 @@ class Validate extends Action
     {
         // TO DO: Change htis to the authorize call whenever it's available.
         $label = $this->labelService->createLabel($this->getRequestData());
-        if (isset($label[0])) {
+
+        $this->_response->setBody('nok');
+        if (isset($label['status']) && $label['status'] == 200) {
             $this->_response->setBody('ok');
         }
-        $this->_response->setBody('nok');
 
         return $this->_response->setStatusHeader(200, '1.1', 'Succesfully authorized');
     }

@@ -56,6 +56,7 @@ class Label
     public function createLabel($requestData)
     {
         $this->createLabel->setRequestData($requestData);
+
         return $this->createLabel->call();
     }
 }
