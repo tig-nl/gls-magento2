@@ -75,11 +75,14 @@ class Validate extends Action
     // @codingStandardsIgnoreStart
     private function getRequestData()
     {
+        $shippingDate = new \DateTime();
+        $shippingDate->modify('+1 day');
+
         return [
             'ShippingSystemName' => 'Magento',
             'ShippingSystemVersion' => '2.0',
             'ShipType' => 'P',
-            'ShippingDate' => '2019-08-23',
+            'ShippingDate' => $shippingDate->format('Y-m-d'),
             'Reference' => 'ORD0000123',
             'LabelType' => 'pdf',
             'TrackingLinkType' => 'U',

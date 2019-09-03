@@ -79,6 +79,11 @@ class AccountConfigProvider extends AbstractConfigProvider
         return false;
     }
 
+    public function isValidatedSuccesfully($store = null)
+    {
+        return true;
+    }
+
     /**
      * @param null|int $store
      * Should return on of these values
