@@ -74,29 +74,21 @@ define([
         },
 
         /**
-         * Retrieve the Deliverydays from PostNL.
+         * Retrieve the Deliverydays from GLS.
          *
          * @param address
          */
         getDeliveryDays: function (address) {
+            this.deliverydays([{'firstName':'bla'}]);
             $.ajax({
-                method: 'POST',
-                url : '',
-                data : {address: address}
+                method: 'GET',
+                url : '../gls/deliveryoptions/deliverydays',
+                type: 'jsonp'
             }).done(function (data) {
-
-                data = ko.utils.arrayMap(data.timeframes, function (day) {
-                    return ko.utils.arrayMap(day, function (timeFrame) {
-                        timeFrame.address = address;
-                        return new TimeFrame(timeFrame);
-                    });
-                });
-
                 this.deliverydays(data);
-            });
+            }.bind(this));
 
-            this.deliverydays(['test', 'test2']);
-            $('#label_method_tig_gls_tig_gls').closest('.row').after($('.gls-delivery-days'));
+            // $('#label_method_tig_gls_tig_gls').closest('.row').after($('.gls-delivery-days'));
         },
     });
 });
