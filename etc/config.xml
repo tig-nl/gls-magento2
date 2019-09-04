@@ -35,6 +35,7 @@
         <carriers>
             <tig_gls>
                 <active>1</active>
+                <allowed_methods>gls_default,gls_express_t9,gls_express_t12,gls_express_t17,gls_saturday,gls_saturday_express_t9,gls_saturday_express_t12,gls_saturday_express_t17</allowed_methods>
                 <sallowspecific>0</sallowspecific>
                 <model>TIG\GLS\Model\Carrier\GLS</model>
                 <name>GLS</name>
