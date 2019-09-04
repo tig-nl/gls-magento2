@@ -30,69 +30,14 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\GLS\Webservices\Endpoints;
+namespace TIG\GLS\Webservice\Endpoint\DeliveryOptions;
 
-use TIG\GLS\Webservices\Rest;
+use TIG\GLS\Webservice\Endpoint\AbstractEndpoint;
 
-abstract class AbstractEndpoint implements EndpointInterface
+class DeliveryDays extends AbstractEndpoint
 {
-    /** @var Rest $restApi */
-    private $restApi;
-
-    private $requestData = [];
-
     // @codingStandardsIgnoreStart
-    protected $endpoint;
-
     protected $method = 'GET';
+    protected $endpoint = 'ParcelShop/GetParcelShops';
     // @codingStandardsIgnoreEnd
-
-    /**
-     * @param Rest $restApi
-     */
-    public function __construct(Rest $restApi)
-    {
-        $this->restApi = $restApi;
-    }
-
-    /**
-     * @return mixed
-     * @throws \Zend_Http_Client_Exception
-     */
-    public function call()
-    {
-        return $this->restApi->getRequest($this);
-    }
-
-    /**
-     * @return string
-     */
-    public function getEndpointUrl()
-    {
-        return $this->endpoint;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMethod()
-    {
-        return $this->method;
-    }
-
-    /**
-     * @param array $requestData
-     */
-    public function setRequestData(array $requestData)
-    {
-        $this->requestData = $requestData;
-    }
-
-    /**
-     * @return array
-     */
-    public function getRequestData()
-    {
-        return $this->requestData;
-    }
 }

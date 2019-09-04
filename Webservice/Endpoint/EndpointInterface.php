@@ -30,14 +30,32 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\GLS\Webservices\Endpoints\Label;
+namespace TIG\GLS\Webservice\EndPoint;
 
-use TIG\GLS\Webservices\Endpoints\AbstractEndpoint;
-
-class CreateLabel extends AbstractEndpoint
+interface EndpointInterface
 {
-    // @codingStandardsIgnoreStart
-    protected $method = 'POST';
-    protected $endpoint = 'Label/Create';
-    // @codingStandardsIgnoreEnd
+    /**
+     * @return mixed
+     */
+    public function call();
+
+    /**
+     * @return string
+     */
+    public function getEndpointUrl();
+
+    /**
+     * @return string
+     */
+    public function getMethod();
+
+    /**
+     * @param array $requestData
+     */
+    public function setRequestData(array $requestData);
+
+    /**
+     * @return array
+     */
+    public function getRequestData();
 }

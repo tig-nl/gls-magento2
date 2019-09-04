@@ -32,7 +32,7 @@
  */
 namespace TIG\GLS\Service\Label;
 
-use TIG\GLS\Webservices\Endpoints\Label\CreateLabel;
+use TIG\GLS\Webservice\Endpoint\Label\CreateLabel;
 
 class Label
 {

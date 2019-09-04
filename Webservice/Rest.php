@@ -29,12 +29,12 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\GLS\Webservices;
+namespace TIG\GLS\Webservice;
 
 use Magento\Framework\HTTP\ZendClient;
 use TIG\GLS\Model\Config\Provider\AccountConfigProvider;
 use TIG\GLS\Service\Software\Data as SoftwareData;
-use TIG\GLS\Webservices\EndPoints\EndpointInterface;
+use TIG\GLS\Webservice\EndPoint\EndpointInterface;
 
 class Rest
 {
