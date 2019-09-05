@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+ *
+ *
+ *          ..::..
+ *     ..::::::::::::..
+ *   ::'''''':''::'''''::
+ *   ::..  ..:  :  ....::
+ *   ::::  :::  :  :   ::
+ *   ::::  :::  :  ''' ::
+ *   ::::..:::..::.....::
+ *     ''::::::::::::''
+ *          ''::''
+ *
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Creative Commons License.
+ * It is available through the world-wide-web at this URL:
+ * http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ * If you are unable to obtain it through the world-wide-web, please send an email
+ * to servicedesk@tig.nl so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this module to newer
+ * versions in the future. If you wish to customize this module for your
+ * needs please contact servicedesk@tig.nl for more information.
+ *
+ * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
+ * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ *
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <carriers>
+            <tig_gls>
+                <active>1</active>
+                <sallowspecific>0</sallowspecific>
+                <model>TIG\GLS\Model\Carrier\GLS</model>
+                <name>GLS</name>
+                <price>5.00</price>
+                <title>Verzenden via GLS</title>
+                <specificerrmsg>This shipping method is not available. To use this shipping method, please contact us.</specificerrmsg>
+            </tig_gls>
+        </carriers>
+        <tig_gls>
+            <stability />
+            <supported_magento_version>2.2.0 - 2.2.9, 2.3.0 - 2.3.2</supported_magento_version>
+            <api>
+                <live_base_url>https://api.gls.nl/V1/api/</live_base_url>
+                <test_base_url>https://api.gls.nl/Test/V1/api/</test_base_url>
+            </api>
+        </tig_gls>
+    </default>
+</config>

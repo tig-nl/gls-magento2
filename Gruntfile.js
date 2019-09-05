@@ -71,7 +71,13 @@ module.exports = function (grunt) {
                 'vendor/bin/phpunit -c "' + phpunitXmlPath + '" --coverage-html ' + buildPath + '/coverage/unit && ' +
                 'cd dev/tests/integration &&' +
                 '../../../vendor/bin/phpunit --testsuite "TIG GLS Integration Tests"  --coverage-html ' + buildPath + '/coverage/integration'
-        }
+        },
+        jshint: {
+            all: [
+                'view/frontend/web/js/**/*.js',
+                'view/adminhtml/web/js/**/*.js'
+            ]
+        },
     });
 
     grunt.loadNpmTasks('grunt-exec');
@@ -82,16 +88,19 @@ module.exports = function (grunt) {
     /**
      * Register the available tasks
      */
+    grunt.registerTask('lint', 'Lint all PHP al JavaScript files', ['exec:phplint', 'jshint:all']);
     grunt.registerTask('phraseTest', 'Check if phrases are correct implemented.', ['exec:phraseTest']);
     grunt.registerTask('phpcs', 'Run the Code Sniffer: For all production code and for the test code', ['exec:phpcs', 'exec:phpcsTest']);
     grunt.registerTask('codeCoverage', 'Generate the code coverage report in build', ['exec:codeCoverage']);
     grunt.registerTask('runTests', 'Run all available tests: Unit and integration', ['exec:unitTests', 'exec:integrationTests']);
     grunt.registerTask('test', 'Run all code validation check: Unit tests, Code Sniffer, Linting, etc.', [
         'phpcs',
+        'lint',
         'runTests'
     ]);
     grunt.registerTask('ci', 'This task is to be meant for running in CI only', [
         'phpcs',
+        'lint',
         'exec:ciTests'
     ]);
 

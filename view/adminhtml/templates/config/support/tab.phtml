@@ -1,0 +1,73 @@
+<?php
+/** @var \TIG\GLS\Block\Adminhtml\Config\Support\Tab $this */
+?>
+<div id="supporttab" class="tig-gls-supporttab" data-mage-init='{"glsConfig": true}'>
+
+    <div class="colset-2">
+
+        <div class="col-1 legend-version">
+            <div class="version-compatibility">
+                <h3 ><?php echo $block->escapeHtml(__('Magento version compatibility'));?></h3>
+                <ul>
+                    <li>
+                    <span class="text">
+                        <?php echo $block->escapeHtml(__('Supported Magento versions'));?>:
+                    </span>
+                        <span class="version"><?php echo $block->escapeHtml($this->getSupportedMagentoVersions()); ?></span>
+                    </li>
+                    <li>
+                        <span class="text"><?php echo $block->escapeHtml(__('GLS version'));?>:</span>
+                        <span class="version"><?php echo $block->escapeHtml($this->getVersionNumber()); ?></span>
+                    </li>
+                    <span class="text"><?php echo $block->escapeHtml(__('Your PHP version'));?>:</span>
+                    <span class="version">
+                            <a href="http://devdocs.magento.com/guides/v<?php echo $this->getMagentoVersionTidyString() ;?>/install-gde/system-requirements-tech.html"
+                               target="_blank">
+                                <?php echo $block->escapeHtml(implode('.', $this->getPhpVersionArray())); ?>
+                                </a>
+                                &nbsp;
+                        <?php switch ($this->phpVersionCheck()) {
+                            case 1:
+                                echo '<img class="compatible-image" height="16" src="' . $this->getViewFileUrl(
+                                        'TIG_GLS::images/green-ok.png'
+                                    ) . '" alt="">';
+                                break;
+                            case 0:
+                                echo '<img class="compatible-image" height="16" src="' . $this->getViewFileUrl(
+                                        'TIG_GLS::images/red-nok.png'
+                                    ) . '" alt="">';
+                                break;
+                            default:
+                                echo '<img class="compatible-image" height="16" src="' . $this->getViewFileUrl(
+                                        'TIG_GLS::images/orange-unknown.png'
+                                    ) . '" alt="">';
+                                break;
+                        }
+                        ?>
+                        </span>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="section">
+        <div class="collapse-title" data-role="title">
+            <h3 data-role="trigger"><?php echo $block->escapeHtml(__('Support'));?></h3>
+        </div>
+        <div class="collapse-content support-gls-tig" data-role="content" style="display:none;">
+            <?php echo __('This extension is developed by <a href="https://tig.nl" target="_BLANK">TIG</a>');?>
+
+            <div class="colset-2">
+                <div class="col-1">
+                    <h4><?php echo __('Extension basic configuration and account information');?></h4>
+                    <?php echo __('Please contact:'); ?> <a href="mailto:support@tig.nl">support@tig.nl</a>
+                </div>
+                <div class="col-2">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
