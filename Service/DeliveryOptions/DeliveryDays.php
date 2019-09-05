@@ -32,7 +32,7 @@
  */
 namespace TIG\GLS\Service\Label;
 
-use TIG\GLS\Webservices\Endpoints\DeliveryOptions\DeliveryDays as DeliveryEndpoint;
+use TIG\GLS\Webservice\Endpoint\DeliveryOptions\ParcelShops as DeliveryEndpoint;
 
 class DeliveryDays
 {

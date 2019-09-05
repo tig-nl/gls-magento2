@@ -30,32 +30,69 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\GLS\Webservices\EndPoints;
+namespace TIG\GLS\Webservice\Endpoint;
 
-interface EndpointInterface
+use TIG\GLS\Webservice\Rest;
+
+abstract class AbstractEndpoint implements EndpointInterface
 {
+    /** @var Rest $restApi */
+    private $restApi;
+
+    private $requestData = [];
+
+    // @codingStandardsIgnoreStart
+    protected $endpoint;
+
+    protected $method = 'GET';
+    // @codingStandardsIgnoreEnd
+
+    /**
+     * @param Rest $restApi
+     */
+    public function __construct(Rest $restApi)
+    {
+        $this->restApi = $restApi;
+    }
+
     /**
      * @return mixed
+     * @throws \Zend_Http_Client_Exception
      */
-    public function call();
+    public function call()
+    {
+        return $this->restApi->getRequest($this);
+    }
 
     /**
      * @return string
      */
-    public function getEndpointUrl();
+    public function getEndpointUrl()
+    {
+        return $this->endpoint;
+    }
 
     /**
      * @return string
      */
-    public function getMethod();
+    public function getMethod()
+    {
+        return $this->method;
+    }
 
     /**
      * @param array $requestData
      */
-    public function setRequestData(array $requestData);
+    public function setRequestData(array $requestData)
+    {
+        $this->requestData = $requestData;
+    }
 
     /**
      * @return array
      */
-    public function getRequestData();
+    public function getRequestData()
+    {
+        return $this->requestData;
+    }
 }

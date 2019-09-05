@@ -30,14 +30,14 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\GLS\Webservices\Endpoints\Label;
+namespace TIG\GLS\Webservice\Endpoint\DeliveryOptions;
 
-use TIG\GLS\Webservices\Endpoints\AbstractEndpoint;
+use TIG\GLS\Webservice\Endpoint\AbstractEndpoint;
 
-class CreateLabel extends AbstractEndpoint
+class ParcelShops extends AbstractEndpoint
 {
     // @codingStandardsIgnoreStart
     protected $method = 'POST';
-    protected $endpoint = 'Label/Create';
+    protected $endpoint = 'ParcelShop/GetParcelShops';
     // @codingStandardsIgnoreEnd
 }
