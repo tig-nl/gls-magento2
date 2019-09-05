@@ -41,7 +41,7 @@ define([
 ) {
     'use strict';
 
-    return Component.extend ({
+    return Component.extend({
         defaults: {
             template: 'TIG_GLS/DeliveryOptions/Options',
             postcode: null,

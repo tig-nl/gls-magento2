@@ -49,6 +49,9 @@
                 <live_base_url>https://api.gls.nl/V1/api/</live_base_url>
                 <test_base_url>https://api.gls.nl/Test/V1/api/</test_base_url>
             </api>
+            <delivery_options>
+                <parcelshops_amount>6</parcelshops_amount>
+            </delivery_options>
         </tig_gls>
     </default>
 </config>

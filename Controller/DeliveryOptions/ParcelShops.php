@@ -34,41 +34,41 @@ namespace TIG\GLS\Controller\DeliveryOptions;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\Action;
-use TIG\GLS\Webservice\Endpoint\DeliveryOptions\ParcelShops as ParcelShopsEndpoint;
+use TIG\GLS\Service\DeliveryOptions\ParcelShops as ParcelShopsService;
 
 class ParcelShops extends Action
 {
     /** @var Session $checkoutSession */
     private $checkoutSession;
 
-    /** @var ParcelShops $parcelShopsEndpoint */
-    private $parcelShopsEndpoint;
+    /** @var ParcelShopsService $parcelShops*/
+    private $parcelShops;
 
     /**
      * @param Context             $context
      * @param Session             $checkoutSession
-     * @param ParcelShopsEndpoint $parcelShopsEndpoint
+     * @param ParcelShopsService $parcelShopsEndpoint
      */
     public function __construct(
         Context $context,
         Session $checkoutSession,
-        ParcelShopsEndpoint $parcelShopsEndpoint
+        ParcelShopsService $parcelShops
     ) {
         $this->checkoutSession = $checkoutSession;
-        $this->parcelShopsEndpoint = $parcelShopsEndpoint;
+        $this->parcelShops = $parcelShops;
 
         parent::__construct($context);
     }
 
     /**
      * @return \Magento\Framework\Controller\ResultInterface
+     * @throws \Zend_Http_Client_Exception
      */
     public function execute()
     {
         $params = $this->getRequest()->getParams();
 
-        $this->parcelShopsEndpoint->setRequestData(['zipcode' => $params['postcode'], 'amountOfShops' => 5]);
-        $results = $this->parcelShopsEndpoint->call();
+        $results = $this->parcelShops->getParcelShops($params['postcode']);
 
         $responseBody = \Zend_Json::encode($results['parcelShops']);
         $response = $this->getResponse();

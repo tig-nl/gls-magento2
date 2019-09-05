@@ -82,6 +82,23 @@
             <field id="sort_order" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="0">
                 <label>Sort Order</label>
             </field>
+
+            <field id="parcelshops_active" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInStore="1" showInWebsite="1" canRestore="1">
+                <label>Enable or disable parcel shops in the frontend.</label>
+                <comment><![CDATA[Enable or disable parcel shops in the frontend.]]></comment>
+                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                <config_path>tig_gls/delivery_options/parcelshops_active</config_path>
+            </field>
+
+            <field id="parcelshops_amount" translate="label comment" type="text" sortOrder="130" showInDefault="1" showInStore="1" showInWebsite="1" canRestore="1">
+                <label>Maximum parcel shops shown in the frontend.</label>
+                <comment><![CDATA[Defines the maximum amount of parcel shops shown in the frontend.]]></comment>
+                <backend_model>Magento\Framework\App\Config\Value</backend_model>
+                <config_path>tig_gls/delivery_options/parcelshops_amount</config_path>
+                <depends>
+                    <field id="parcelshops_active">1</field>
+                </depends>
+            </field>
         </group>
     </section>
 </include>

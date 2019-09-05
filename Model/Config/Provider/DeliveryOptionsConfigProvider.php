@@ -1,5 +1,4 @@
 <?php
-
 /**
  *
  *          ..::..
@@ -30,37 +29,19 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\GLS\Service\DeliveryOptions;
+namespace TIG\GLS\Model\Config\Provider;
 
-use TIG\GLS\Model\Config\Provider\DeliveryOptionsConfigProvider;
-use TIG\GLS\Webservice\Endpoint\DeliveryOptions\ParcelShops as ParcelShopsEndpoint;
-
-class ParcelShops
+class DeliveryOptionsConfigProvider extends AbstractConfigProvider
 {
-    /** @var ParcelShopsEndpoint $parcelShopsEndpoint */
-    private $parcelShopsEndpoint;
-
-    /** @var DeliveryOptionsConfigProvider $deliveryConfigs */
-    private $deliveryConfigs;
-
-    public function __construct(
-        ParcelShopsEndpoint $parcelShopsEndpoint,
-        DeliveryOptionsConfigProvider $deliveryConfigs
-    ) {
-        $this->parcelShopsEndpoint = $parcelShopsEndpoint;
-        $this->deliveryConfigs = $deliveryConfigs;
-    }
+    const XPATH_DELIVERY_OPTIONS_PARCELSHOPS_AMOUNT = 'tig_gls/delivery_options/parcelshops_amount';
 
     /**
-     * @param $postcode
+     * @param null|int $store
      *
-     * @return mixed
-     * @throws \Zend_Http_Client_Exception
+     * @return int
      */
-    public function getParcelShops($postcode)
+    public function getParcelShopsAmount($store = null)
     {
-        $parcelShopsAmount = $this->deliveryConfigs->getParcelShopsAmount();
-        $this->parcelShopsEndpoint->setRequestData(['zipcode' => $postcode, 'amountOfShops' => $parcelShopsAmount]);
-        return $this->parcelShopsEndpoint->call();
+        return (int) $this->getConfigValue(self::XPATH_DELIVERY_OPTIONS_PARCELSHOPS_AMOUNT, $store);
     }
 }
