@@ -46,16 +46,16 @@ define([
             template: 'TIG_GLS/DeliveryOptions/Options',
             postcode: null,
             country: null,
-            street: null,
             deliverydays: ko.observableArray([]),
+            parcelshops: ko.observableArray([])
         },
 
         initObservable: function () {
             this._super().observe([
                 'postcode',
                 'country',
-                'street',
-                'deliverydays'
+                'deliverydays',
+                'parcelshops'
             ]);
 
             AddressFinder.subscribe(function (address, oldAddress) {
@@ -67,7 +67,8 @@ define([
                     return;
                 }
 
-                this.getDeliveryDays(address);
+                this.getDeliveryDays();
+                this.getParcelShops(address.postcode);
             }.bind(this));
 
             return this;
@@ -78,17 +79,26 @@ define([
          *
          * @param address
          */
-        getDeliveryDays: function (address) {
-            this.deliverydays([{'firstName':'bla'}]);
+        getDeliveryDays: function () {
             $.ajax({
-                method: 'GET',
-                url : '../gls/deliveryoptions/deliverydays',
-                type: 'jsonp'
+                method : 'GET',
+                url    : '/gls/deliveryoptions/deliverydays',
+                type   : 'jsonp'
             }).done(function (data) {
                 this.deliverydays(data);
             }.bind(this));
-
-            // $('#label_method_tig_gls_tig_gls').closest('.row').after($('.gls-delivery-days'));
         },
+
+        getParcelShops: function (postcode) {
+            $.ajax({
+                method : 'GET',
+                url    : '/gls/deliveryoptions/parcelshops',
+                type   : 'jsonp',
+                data   : {postcode: postcode}
+            }).done(function (data) {
+                debugger;
+                this.parcelshops(data);
+            }.bind(this));
+        }
     });
 });

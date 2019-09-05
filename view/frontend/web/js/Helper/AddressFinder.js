@@ -137,7 +137,7 @@ define([
             address.country = $("select[name*='country_id']").val();
         }
 
-        if (!address.country || !address.postcode || !address.street[0]) {
+        if (!address.country || !address.postcode) {
             return false;
         }
 
