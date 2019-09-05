@@ -59,7 +59,7 @@
                 <frontend_model>TIG\GLS\Block\System\Config\Form\Field\FieldArray</frontend_model>
                 <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
             </field>
-            <field id="ship_allow_specific" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
+            <field id="sallowspecific" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
                 <label>Ship to Applicable Countries</label>
                 <frontend_class>shipping-applicable-country</frontend_class>
                 <source_model>Magento\Shipping\Model\Config\Source\Allspecificcountries</source_model>
