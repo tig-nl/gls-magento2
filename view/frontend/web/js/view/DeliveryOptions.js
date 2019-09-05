@@ -67,7 +67,7 @@ define([
                     return;
                 }
 
-                this.getDeliveryDays();
+                this.getDeliveryOptions();
                 this.getParcelShops(address.postcode);
             }.bind(this));
 
@@ -79,7 +79,7 @@ define([
          *
          * @param address
          */
-        getDeliveryDays: function () {
+        getDeliveryOptions: function () {
             $.ajax({
                 method : 'GET',
                 url    : '/gls/deliveryoptions/deliverydays',
