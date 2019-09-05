@@ -30,28 +30,14 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\GLS\Service\Label;
+namespace TIG\GLS\Webservice\Endpoint\DeliveryOptions;
 
-use TIG\GLS\Webservice\Endpoint\DeliveryOptions\DeliveryDays as DeliveryEndpoint;
+use TIG\GLS\Webservice\Endpoint\AbstractEndpoint;
 
-class DeliveryDays
+class ParcelShops extends AbstractEndpoint
 {
-    private $deliveryEndpoint;
-
-    public function __construct(
-        DeliveryEndpoint $deliveryEndpoint
-    ) {
-        $this->deliveryEndpoint = $deliveryEndpoint;
-    }
-
-    /**
-     * @param $requestData
-     *
-     * @return mixed
-     * @throws \Zend_Http_Client_Exception
-     */
-    public function getDeliveryDays($requestData)
-    {
-        $this->deliveryEndpoint->call();
-    }
+    // @codingStandardsIgnoreStart
+    protected $method = 'POST';
+    protected $endpoint = 'ParcelShop/GetParcelShops';
+    // @codingStandardsIgnoreEnd
 }

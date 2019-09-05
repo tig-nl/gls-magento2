@@ -34,20 +34,28 @@ namespace TIG\GLS\Controller\DeliveryOptions;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\Action;
+use TIG\GLS\Webservice\Endpoint\DeliveryOptions\ParcelShops as ParcelShopsEndpoint;
 
-class DeliveryDays extends Action
+class ParcelShops extends Action
 {
+    /** @var Session $checkoutSession */
     private $checkoutSession;
+
+    /** @var ParcelShops $parcelShopsEndpoint */
+    private $parcelShopsEndpoint;
 
     /**
      * @param Context             $context
      * @param Session             $checkoutSession
+     * @param ParcelShopsEndpoint $parcelShopsEndpoint
      */
     public function __construct(
         Context $context,
-        Session $checkoutSession
+        Session $checkoutSession,
+        ParcelShopsEndpoint $parcelShopsEndpoint
     ) {
         $this->checkoutSession = $checkoutSession;
+        $this->parcelShopsEndpoint = $parcelShopsEndpoint;
 
         parent::__construct($context);
     }
@@ -59,29 +67,12 @@ class DeliveryDays extends Action
     {
         $params = $this->getRequest()->getParams();
 
-        $results = [['day' => 'Eerst volgende werkdag']];
+        $this->parcelShopsEndpoint->setRequestData(['zipcode' => $params['postcode'], 'amountOfShops' => 5]);
+        $results = $this->parcelShopsEndpoint->call();
 
-        return $this->jsonResponse($results);
-    }
-
-    /**
-     * Create json response
-     *
-     * @param string $data
-     * @param int    $code
-     *
-     * @return \Magento\Framework\Controller\ResultInterface
-     */
-    private function jsonResponse($data = '', $code = null)
-    {
+        $responseBody = \Zend_Json::encode($results['parcelShops']);
         $response = $this->getResponse();
 
-        if ($code !== null) {
-            $response->setStatusCode($code);
-        }
-
-        return $response->representJson(
-            \Zend_Json::encode($data)
-        );
+        return $response->representJson($responseBody);
     }
 }

@@ -34,7 +34,7 @@ namespace TIG\GLS\Webservice;
 use Magento\Framework\HTTP\ZendClient;
 use TIG\GLS\Model\Config\Provider\AccountConfigProvider;
 use TIG\GLS\Service\Software\Data as SoftwareData;
-use TIG\GLS\Webservice\EndPoint\EndpointInterface;
+use TIG\GLS\Webservice\Endpoint\EndpointInterface;
 
 class Rest
 {
