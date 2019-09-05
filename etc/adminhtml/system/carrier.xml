@@ -45,47 +45,43 @@
             <field id="name" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                 <label>Method Name</label>
             </field>
-            <field id="price" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
-                <label>Price</label>
-                <validate>validate-number validate-zero-or-greater</validate>
+            <field id="allowed_methods" translate="label" type="multiselect" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <label>Allowed Methods</label>
+                <source_model>TIG\GLS\Model\Config\Source\Carrier\AllowedMethods</source_model>
             </field>
-            <field id="handling_type" translate="label" type="select" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="0">
-                <label>Calculate Handling Fee</label>
-                <source_model>Magento\Shipping\Model\Source\HandlingType</source_model>
-            </field>
-            <field id="handling_fee" translate="label" type="text" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="0">
+            <field id="handling_fee" translate="label comment" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                 <label>Handling Fee</label>
-                <validate>validate-number validate-zero-or-greater</validate>
+                <comment><![CDATA[The base handling fee used for all allowed shipping methods.]]></comment>
             </field>
-            <field id="sallowspecific" translate="label" type="select" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="0">
+            <field id="additional_handling_fee" translate="label comment" sortOrder="65" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <label>Additional Handling Fee</label>
+                <comment><![CDATA[Configure an additional handling fee for specific shipping methods.]]></comment>
+                <frontend_model>TIG\GLS\Block\System\Config\Form\Field\FieldArray</frontend_model>
+                <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+            </field>
+            <field id="ship_allow_specific" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
                 <label>Ship to Applicable Countries</label>
                 <frontend_class>shipping-applicable-country</frontend_class>
                 <source_model>Magento\Shipping\Model\Config\Source\Allspecificcountries</source_model>
             </field>
-            <field id="specificcountry" translate="label" type="multiselect" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+            <field id="specific_country" translate="label" type="multiselect" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
                 <label>Ship to Specific Countries</label>
                 <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                 <can_be_empty>1</can_be_empty>
             </field>
-            <field id="allowed_methods" translate="label" type="multiselect" sortOrder="170" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                <label>Allowed Methods</label>
-                <source_model>TIG\GLS\Model\Config\Source\Carrier\AllowedMethods</source_model>
-                <can_be_empty>1</can_be_empty>
-            </field>
-            <field id="showmethod" translate="label" type="select" sortOrder="180" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+            <field id="show_method" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
                 <label>Show Method if Not Applicable</label>
                 <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
             </field>
-            <field id="specificerrmsg" translate="label" type="textarea" sortOrder="190" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+            <field id="specific_err_msg" translate="label" type="textarea" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                 <label>Displayed Error Message</label>
                 <depends>
-                    <field id="showmethod">1</field>
+                    <field id="show_method">1</field>
                 </depends>
             </field>
-            <field id="sort_order" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="0">
+            <field id="sort_order" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="0">
                 <label>Sort Order</label>
             </field>
-
         </group>
     </section>
 </include>

@@ -37,60 +37,59 @@ use Magento\Framework\Option\ArrayInterface;
 // @codingStandardsIgnoreFile
 class AllowedMethods implements ArrayInterface
 {
+    const GLS_CARRIER_LABEL_OPERATOR                    = '_LABEL';
     const GLS_CARRIER_METHOD_DEFAULT                    = 'gls_default';
-
     const GLS_CARRIER_METHOD_DEFAULT_LABEL              = 'Next Business Day';
-
     const GLS_CARRIER_METHOD_EXPRESS_T9                 = 'gls_express_t9';
-
     const GLS_CARRIER_METHOD_EXPRESS_T9_LABEL           = 'Express before 9.00 AM';
-
     const GLS_CARRIER_METHOD_EXPRESS_T12                = 'gls_express_t12';
-
     const GLS_CARRIER_METHOD_EXPRESS_T12_LABEL          = 'Express before 12.00 AM';
-
     const GLS_CARRIER_METHOD_EXPRESS_T17                = 'gls_express_t17';
-
     const GLS_CARRIER_METHOD_EXPRESS_T17_LABEL          = 'Express before 17.00 AM';
-
     const GLS_CARRIER_METHOD_SATURDAY                   = 'gls_saturday';
-
     const GLS_CARRIER_METHOD_SATURDAY_LABEL             = 'Saturday Service';
-
     const GLS_CARRIER_METHOD_SATURDAY_EXPRESS_T9        = 'gls_saturday_express_t9';
-
     const GLS_CARRIER_METHOD_SATURDAY_EXPRESS_T9_LABEL  = 'Saturday Express before 9.00 AM';
-
     const GLS_CARRIER_METHOD_SATURDAY_EXPRESS_T12       = 'gls_saturday_express_t12';
-
     const GLS_CARRIER_METHOD_SATURDAY_EXPRESS_T12_LABEL = 'Saturday Express before 12.00 AM';
-
     const GLS_CARRIER_METHOD_SATURDAY_EXPRESS_T17       = 'gls_saturday_express_t17';
-
     const GLS_CARRIER_METHOD_SATURDAY_EXPRESS_T17_LABEL = 'Saturday Express before 17.00 AM';
 
-    const GLS_CARRIER_LABEL_PLACEHOLDER                 = '_LABEL';
-
     /**
-     * @return array
+     * @return array|mixed
+     * @throws \ReflectionException
      */
     public function toOptionArray()
     {
         $list      = new \ReflectionClass($this);
         $constants = $list->getConstants();
 
-        $methods = array_filter($constants, function ($key, $value) {
-            return strpos($value, self::GLS_CARRIER_LABEL_PLACEHOLDER) === false;
-        }, ARRAY_FILTER_USE_BOTH);
+        $methods = $this->listAvailableMethods();
 
         $i = 0;
 
         foreach ($methods as $name => $method) {
             $options[$i]['value'] = $method;
-            $options[$i]['label'] = $constants[$name . self::GLS_CARRIER_LABEL_PLACEHOLDER];
+            $options[$i]['label'] = $constants[$name . self::GLS_CARRIER_LABEL_OPERATOR];
             $i++;
         }
 
         return $options;
+    }
+
+    /**
+     * @return array
+     * @throws \ReflectionException
+     */
+    public function listAvailableMethods()
+    {
+        $list      = new \ReflectionClass($this);
+        $constants = $list->getConstants();
+
+        $methods = array_filter($constants, function ($key) {
+            return strpos($key, self::GLS_CARRIER_LABEL_OPERATOR) === false;
+        }, ARRAY_FILTER_USE_KEY);
+
+        return $methods;
     }
 }
