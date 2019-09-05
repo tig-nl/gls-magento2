@@ -92,7 +92,7 @@ class FieldArray extends AbstractFieldArray
         $this->addColumn(
             self::GLS_HANDLING_FEE_COLUMN_FEE,
             [
-                'label' => __('Additional Handling Fee')
+                'label' => __('Additional Fee')
             ]
         );
         $this->_addAfter       = false;
@@ -128,7 +128,7 @@ class FieldArray extends AbstractFieldArray
 
         if ($columnName == self::GLS_HANDLING_FEE_COLUMN_FEE) {
             $this->_columns[$columnName]['class'] = 'input-text required-entry';
-            $this->_columns[$columnName]['style'] = 'width: 125px';
+            $this->_columns[$columnName]['style'] = 'width: 50px';
         }
 
         return parent::renderCellTemplate($columnName);

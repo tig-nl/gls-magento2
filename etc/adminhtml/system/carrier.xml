@@ -55,7 +55,7 @@
             </field>
             <field id="additional_handling_fee" translate="label comment" sortOrder="65" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                 <label>Additional Handling Fee</label>
-                <comment><![CDATA[Configure an additional handling fee for specific shipping methods.]]></comment>
+                <comment><![CDATA[Configure an additional handling fee for specific shipping methods. The additional handling fee is added to the base handling fee.]]></comment>
                 <frontend_model>TIG\GLS\Block\System\Config\Form\Field\FieldArray</frontend_model>
                 <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
             </field>
