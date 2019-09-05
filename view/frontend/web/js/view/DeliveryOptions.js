@@ -96,7 +96,6 @@ define([
                 type   : 'jsonp',
                 data   : {postcode: postcode}
             }).done(function (data) {
-                debugger;
                 this.parcelshops(data);
             }.bind(this));
         }
