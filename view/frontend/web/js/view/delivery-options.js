@@ -49,7 +49,7 @@ define([
             postcode: null,
             country: null,
             dates: ko.observableArray([]),
-            parcelshops: ko.observableArray([])
+            parcelShops: ko.observableArray([])
         },
 
         initObservable: function () {
@@ -64,8 +64,10 @@ define([
                 'postcode',
                 'country',
                 'dates',
-                'parcelshops'
+                'parcelShops'
             ]);
+    
+            this.getDeliveryOptions();
 
             AddressFinder.subscribe(function (address, oldAddress) {
                 if (!address || JSON.stringify(address) == JSON.stringify(oldAddress)) {
@@ -75,18 +77,17 @@ define([
                 if (address.country !== 'NL') {
                     return;
                 }
-
-                this.getDeliveryOptions();
                 this.getParcelShops(address.postcode);
             }.bind(this));
 
             return this;
         },
-
+    
         /**
-         * Retrieve the Delivery Dates from GLS.
+         * Retrieve Delivery Options from GLS.
          *
-         * @param address
+         * This is done through a controller, because we will start using an API
+         * in the near future.
          */
         getDeliveryOptions: function () {
             $.ajax({
@@ -97,15 +98,22 @@ define([
                 this.dates(data);
             }.bind(this));
         },
-
+    
+        /**
+         * Retrieve Parcel Shops from GLS.
+         *
+         * @param postcode
+         */
         getParcelShops: function (postcode) {
             $.ajax({
                 method : 'GET',
                 url    : '/gls/deliveryoptions/parcelshops',
                 type   : 'jsonp',
-                data   : {postcode: postcode}
+                data   : {
+                    postcode: postcode
+                }
             }).done(function (data) {
-                this.parcelshops(data);
+                this.parcelShops(data);
             }.bind(this));
         }
     });

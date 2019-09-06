@@ -38,7 +38,7 @@ use Magento\Framework\Module\Manager;
 
 class AccountConfigProvider extends AbstractConfigProvider
 {
-    const XPATH_GENERAL_STATUS_MODE      = 'tig_gls/general/mode';
+    const XPATH_GENERAL_MODE             = 'tig_gls/general/mode';
     const XPATH_GENERAL_USERNAME         = 'tig_gls/general/username';
     const XPATH_GENERAL_PASSWORD         = 'tig_gls/general/password';
     const XPATH_GENERAL_SUBSCRIPTION_KEY = 'tig_gls/general/subscription_key';
@@ -66,19 +66,10 @@ class AccountConfigProvider extends AbstractConfigProvider
     }
 
     /**
-     * Checks if the extension is on status off.
-     * @param null|int $store
+     * @param null $store
+     *
      * @return bool
      */
-    public function isModeOff($store = null)
-    {
-        if ($this->getMode($store) == '0' || false == $this->getMode()) {
-            return true;
-        }
-
-        return false;
-    }
-
     public function isValidatedSuccesfully($store = null)
     {
         return true;
@@ -86,10 +77,9 @@ class AccountConfigProvider extends AbstractConfigProvider
 
     /**
      * @param null|int $store
-     * Should return on of these values
+     * Should return one of these values
      *  '1' => live ||
-     *  '2' => test ||
-     *  '0' => off
+     *  '2' => test
      *
      * @return mixed
      */
@@ -99,7 +89,7 @@ class AccountConfigProvider extends AbstractConfigProvider
             return '0';
         }
 
-        return $this->getConfigValue(self::XPATH_GENERAL_STATUS_MODE, $store);
+        return $this->getConfigValue(self::XPATH_GENERAL_MODE, $store);
     }
 
     /**

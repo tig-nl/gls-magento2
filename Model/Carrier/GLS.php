@@ -41,7 +41,6 @@ use Magento\Shipping\Model\Carrier\AbstractCarrier;
 use Magento\Shipping\Model\Carrier\CarrierInterface;
 use Magento\Shipping\Model\Rate\Result;
 use Magento\Shipping\Model\Rate\ResultFactory;
-
 use Psr\Log\LoggerInterface;
 use TIG\GLS\Model\Config\Provider\AccountConfigProvider;
 
@@ -61,6 +60,17 @@ class GLS extends AbstractCarrier implements CarrierInterface
     /** @var MethodFactory $rateMethodFactory */
     private $rateMethodFactory;
 
+    /**
+     * GLS constructor.
+     *
+     * @param ScopeConfigInterface  $scopeConfig
+     * @param ErrorFactory          $rateErrorFactory
+     * @param LoggerInterface       $logger
+     * @param AccountConfigProvider $accountConfigProvider
+     * @param ResultFactory         $rateResultFactory
+     * @param MethodFactory         $rateMethodFactory
+     * @param array                 $data
+     */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         ErrorFactory $rateErrorFactory,
@@ -88,10 +98,6 @@ class GLS extends AbstractCarrier implements CarrierInterface
     // @codingStandardsIgnoreLine
     public function collectRates(RateRequest $request)
     {
-        if ($this->accountConfigProvider->isModeOff()) {
-            return false;
-        }
-
         if (!$this->accountConfigProvider->isValidatedSuccesfully()) {
             return false;
         }
