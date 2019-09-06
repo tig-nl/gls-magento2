@@ -46,7 +46,7 @@ define([
             template: 'TIG_GLS/DeliveryOptions/Options',
             postcode: null,
             country: null,
-            deliverydays: ko.observableArray([]),
+            dates: ko.observableArray([]),
             parcelshops: ko.observableArray([])
         },
 
@@ -54,7 +54,7 @@ define([
             this._super().observe([
                 'postcode',
                 'country',
-                'deliverydays',
+                'dates',
                 'parcelshops'
             ]);
 
@@ -75,17 +75,17 @@ define([
         },
 
         /**
-         * Retrieve the Deliverydays from GLS.
+         * Retrieve the Delivery Dates from GLS.
          *
          * @param address
          */
         getDeliveryOptions: function () {
             $.ajax({
                 method : 'GET',
-                url    : '/gls/deliveryoptions/deliverydays',
+                url    : '/gls/deliveryoptions/dates',
                 type   : 'jsonp'
             }).done(function (data) {
-                this.deliverydays(data);
+                this.dates(data);
             }.bind(this));
         },
 

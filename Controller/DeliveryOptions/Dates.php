@@ -35,7 +35,7 @@ use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\Action;
 
-class DeliveryDays extends Action
+class Dates extends Action
 {
     private $checkoutSession;
 
