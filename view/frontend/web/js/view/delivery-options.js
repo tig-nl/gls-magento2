@@ -33,11 +33,13 @@ define([
     'uiComponent',
     'ko',
     'TIG_GLS/js/helper/address-finder',
+    'Magento_Checkout/js/model/quote'
 ], function (
     $,
     Component,
     ko,
-    AddressFinder
+    AddressFinder,
+    quote
 ) {
     'use strict';
 
@@ -51,9 +53,11 @@ define([
         },
 
         initObservable: function () {
-            this.selectedMethod = ko.computed(function() {
-                var method = quote.shippingMethod()
-            })
+            this.selectedMethod = ko.computed(function () {
+                var method = quote.shippingMethod();
+                var selectedMethod = method != null ? method.carrier_code + '_' + method.method_code : null;
+                return selectedMethod;
+            }, this);
             
             
             this._super().observe([
