@@ -51,7 +51,7 @@
                                                                 <item name="displayArea" xsi:type="string">shippingAdditional</item>
                                                                 <item name="children" xsi:type="array">
                                                                     <item name="gls-delivery-options" xsi:type="array">
-                                                                        <item name="component" xsi:type="string">TIG_GLS/js/view/DeliveryOptions</item>
+                                                                        <item name="component" xsi:type="string">TIG_GLS/js/view/delivery-options</item>
                                                                     </item>
                                                                 </item>
                                                             </item>

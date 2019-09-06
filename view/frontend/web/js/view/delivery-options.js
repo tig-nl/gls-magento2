@@ -32,7 +32,7 @@ define([
     'jquery',
     'uiComponent',
     'ko',
-    'TIG_GLS/js/Helper/AddressFinder',
+    'TIG_GLS/js/helper/address-finder',
 ], function (
     $,
     Component,
@@ -43,7 +43,7 @@ define([
 
     return Component.extend({
         defaults: {
-            template: 'TIG_GLS/DeliveryOptions/Options',
+            template: 'TIG_GLS/delivery/options',
             postcode: null,
             country: null,
             dates: ko.observableArray([]),
@@ -51,6 +51,11 @@ define([
         },
 
         initObservable: function () {
+            this.selectedMethod = ko.computed(function() {
+                var method = quote.shippingMethod()
+            })
+            
+            
             this._super().observe([
                 'postcode',
                 'country',
