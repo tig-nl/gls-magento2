@@ -30,9 +30,10 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
+
 namespace TIG\GLS\Service\DeliveryOptions;
 
-use TIG\GLS\Model\Config\Provider\DeliveryOptionsConfigProvider;
+use TIG\GLS\Model\Config\Provider\Carrier;
 use TIG\GLS\Webservice\Endpoint\DeliveryOptions\ParcelShops as ParcelShopsEndpoint;
 
 class ParcelShops
@@ -40,15 +41,21 @@ class ParcelShops
     /** @var ParcelShopsEndpoint $parcelShopsEndpoint */
     private $parcelShopsEndpoint;
 
-    /** @var DeliveryOptionsConfigProvider $deliveryConfigs */
-    private $deliveryConfigs;
+    /** @var Carrier $carrierConfig */
+    private $carrierConfig;
 
+    /**
+     * ParcelShops constructor.
+     *
+     * @param ParcelShopsEndpoint $parcelShopsEndpoint
+     * @param Carrier             $carrierConfig
+     */
     public function __construct(
         ParcelShopsEndpoint $parcelShopsEndpoint,
-        DeliveryOptionsConfigProvider $deliveryConfigs
+        Carrier $carrierConfig
     ) {
         $this->parcelShopsEndpoint = $parcelShopsEndpoint;
-        $this->deliveryConfigs = $deliveryConfigs;
+        $this->carrierConfig       = $carrierConfig;
     }
 
     /**
@@ -59,8 +66,14 @@ class ParcelShops
      */
     public function getParcelShops($postcode)
     {
-        $parcelShopsAmount = $this->deliveryConfigs->getParcelShopsAmount();
-        $this->parcelShopsEndpoint->setRequestData(['zipcode' => $postcode, 'amountOfShops' => $parcelShopsAmount]);
+        $parcelShopsAmount = $this->carrierConfig->getShopDeliveryShopAmount();
+        $this->parcelShopsEndpoint->setRequestData(
+            [
+                'zipcode'       => $postcode,
+                'amountOfShops' => $parcelShopsAmount
+            ]
+        );
+
         return $this->parcelShopsEndpoint->call();
     }
 }

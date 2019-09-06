@@ -48,7 +48,7 @@ define([
             template: 'TIG_GLS/delivery/options',
             postcode: null,
             country: null,
-            dates: ko.observableArray([]),
+            availableServices: ko.observableArray([]),
             parcelShops: ko.observableArray([])
         },
 
@@ -63,11 +63,9 @@ define([
             this._super().observe([
                 'postcode',
                 'country',
-                'dates',
+                'availableServices',
                 'parcelShops'
             ]);
-    
-            this.getDeliveryOptions();
 
             AddressFinder.subscribe(function (address, oldAddress) {
                 if (!address || JSON.stringify(address) == JSON.stringify(oldAddress)) {
@@ -77,6 +75,7 @@ define([
                 if (address.country !== 'NL') {
                     return;
                 }
+                this.getAvailableServices();
                 this.getParcelShops(address.postcode);
             }.bind(this));
 
@@ -89,13 +88,13 @@ define([
          * This is done through a controller, because we will start using an API
          * in the near future.
          */
-        getDeliveryOptions: function () {
+        getAvailableServices: function () {
             $.ajax({
                 method : 'GET',
-                url    : '/gls/deliveryoptions/dates',
+                url    : '/gls/deliveryoptions/services',
                 type   : 'jsonp'
             }).done(function (data) {
-                this.dates(data);
+                this.availableServices(data);
             }.bind(this));
         },
     

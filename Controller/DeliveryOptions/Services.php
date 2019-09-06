@@ -34,20 +34,28 @@ namespace TIG\GLS\Controller\DeliveryOptions;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\Action;
+use TIG\GLS\Service\DeliveryOptions\Services as ServicesService;
 
-class Dates extends Action
+class Services extends Action
 {
     private $checkoutSession;
 
+    private $services;
+
     /**
-     * @param Context             $context
-     * @param Session             $checkoutSession
+     * Services constructor.
+     *
+     * @param Context         $context
+     * @param Session         $checkoutSession
+     * @param ServicesService $services
      */
     public function __construct(
         Context $context,
-        Session $checkoutSession
+        Session $checkoutSession,
+        ServicesService $services
     ) {
         $this->checkoutSession = $checkoutSession;
+        $this->services        = $services;
 
         parent::__construct($context);
     }
@@ -58,10 +66,9 @@ class Dates extends Action
     public function execute()
     {
         $params = $this->getRequest()->getParams();
+        $services = $this->services->getAvailableServices();
 
-        $results = [['date' => 'Eerst volgende werkdag']];
-
-        return $this->jsonResponse($results);
+        return $this->jsonResponse($services);
     }
 
     /**

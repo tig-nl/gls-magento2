@@ -36,7 +36,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfig;
 use Magento\Framework\Encryption\Encryptor;
 use Magento\Framework\Module\Manager;
 
-class AccountConfigProvider extends AbstractConfigProvider
+class Account extends AbstractConfigProvider
 {
     const XPATH_GENERAL_MODE             = 'tig_gls/general/mode';
     const XPATH_GENERAL_USERNAME         = 'tig_gls/general/username';
@@ -49,7 +49,7 @@ class AccountConfigProvider extends AbstractConfigProvider
     private $encryptor;
 
     /**
-     * AccountConfigProvider constructor.
+     * Account constructor.
      *
      * @param ScopeConfig $scopeConfig
      * @param Manager     $moduleManager

@@ -32,7 +32,7 @@
 namespace TIG\GLS\Webservice;
 
 use Magento\Framework\HTTP\ZendClient;
-use TIG\GLS\Model\Config\Provider\AccountConfigProvider;
+use TIG\GLS\Model\Config\Provider\Account;
 use TIG\GLS\Service\Software\Data as SoftwareData;
 use TIG\GLS\Webservice\Endpoint\EndpointInterface;
 
@@ -44,18 +44,18 @@ class Rest
     /** @var SoftwareData $softwareData */
     private $softwareData;
 
-    /** @var AccountConfigProvider $accountConfigProvider */
+    /** @var Account $accountConfigProvider */
     private $accountConfigProvider;
 
     /**
-     * @param ZendClient            $zendClient
-     * @param SoftwareData          $softwareData
-     * @param AccountConfigProvider $accountConfigProvider
+     * @param ZendClient   $zendClient
+     * @param SoftwareData $softwareData
+     * @param Account      $accountConfigProvider
      */
     public function __construct(
         ZendClient $zendClient,
         SoftwareData $softwareData,
-        AccountConfigProvider $accountConfigProvider
+        Account $accountConfigProvider
     ) {
         $this->zendClient            = $zendClient;
         $this->softwareData          = $softwareData;

@@ -42,7 +42,7 @@ use Magento\Shipping\Model\Carrier\CarrierInterface;
 use Magento\Shipping\Model\Rate\Result;
 use Magento\Shipping\Model\Rate\ResultFactory;
 use Psr\Log\LoggerInterface;
-use TIG\GLS\Model\Config\Provider\AccountConfigProvider;
+use TIG\GLS\Model\Config\Provider\Account;
 
 class GLS extends AbstractCarrier implements CarrierInterface
 {
@@ -51,7 +51,7 @@ class GLS extends AbstractCarrier implements CarrierInterface
     // @codingStandardsIgnoreLine
     protected $_code = 'tig_gls';
 
-    /** @var AccountConfigProvider $accountConfigProvider */
+    /** @var Account $accountConfigProvider */
     private $accountConfigProvider;
 
     /** @var ResultFactory $rateResultFactory */
@@ -63,19 +63,19 @@ class GLS extends AbstractCarrier implements CarrierInterface
     /**
      * GLS constructor.
      *
-     * @param ScopeConfigInterface  $scopeConfig
-     * @param ErrorFactory          $rateErrorFactory
-     * @param LoggerInterface       $logger
-     * @param AccountConfigProvider $accountConfigProvider
-     * @param ResultFactory         $rateResultFactory
-     * @param MethodFactory         $rateMethodFactory
-     * @param array                 $data
+     * @param ScopeConfigInterface $scopeConfig
+     * @param ErrorFactory         $rateErrorFactory
+     * @param LoggerInterface      $logger
+     * @param Account              $accountConfigProvider
+     * @param ResultFactory        $rateResultFactory
+     * @param MethodFactory        $rateMethodFactory
+     * @param array                $data
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         ErrorFactory $rateErrorFactory,
         LoggerInterface $logger,
-        AccountConfigProvider $accountConfigProvider,
+        Account $accountConfigProvider,
         ResultFactory $rateResultFactory,
         MethodFactory $rateMethodFactory,
         array $data = []

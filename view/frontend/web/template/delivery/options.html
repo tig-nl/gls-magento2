@@ -31,10 +31,13 @@
  */
 -->
 <div class="gls-delivery-options" data-bind="visible: selectedMethod() == 'tig_gls_tig_gls'">
-    <div data-bind="foreach: dates">
-        <div data-bind="text: date"></div>
+    <div data-bind="foreach: availableServices">
+        <label data-bind="i18n: label, for: code">
+            <input type="radio" data-bind="value: code, id: code" />
+        </label>
+        <p data-bind="text: fee"></p>
     </div>
-    <div data-bind="foreach: parcelshops">
+    <div data-bind="foreach: parcelShops">
         <div data-bind="text: name"></div>
     </div>
 </div>
