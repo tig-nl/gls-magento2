@@ -45,16 +45,24 @@ class Services
         ServicesSource::GLS_CARRIER_SERVICE_EXPRESS_TIME_DEFINITE_T12 => 'Before 12.00 AM'
     ];
 
+    /** @var Carrier $carrierConfig */
     private $carrierConfig;
 
+    /** @var array $availableServices */
     private $availableServices = [];
 
+    /** @var array $requiredData */
     private $requiredData = [
         'code',
         'label',
         'fee'
     ];
 
+    /**
+     * Services constructor.
+     *
+     * @param Carrier $carrierConfig
+     */
     public function __construct(
         Carrier $carrierConfig
     ) {
@@ -72,6 +80,9 @@ class Services
         return $this->availableServices;
     }
 
+    /**
+     * @return array|null
+     */
     private function mapBusinessServices()
     {
         if (!$this->carrierConfig->isBusinessParcelActive()) {
@@ -90,6 +101,9 @@ class Services
         return $this->availableServices;
     }
 
+    /**
+     * @return array
+     */
     private function mapExpressServices()
     {
         $services = $this->carrierConfig->getActiveExpressServices();
@@ -109,12 +123,20 @@ class Services
         return $this->availableServices;
     }
 
+    /**
+     * @param $code
+     * @param $serviceFees
+     *
+     * @return mixed
+     */
     private function getCorrespondingServiceFee($code, $serviceFees)
     {
         $fee = array_filter(
-            $serviceFees, function($value, $key) use ($code) {
+            $serviceFees,
+            function ($value) use ($code) {
                 return $code == $value->shipping_method;
-        }, ARRAY_FILTER_USE_BOTH);
+            }
+        );
 
         $fee = reset($fee);
 
