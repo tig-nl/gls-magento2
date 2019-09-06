@@ -34,29 +34,29 @@ namespace TIG\GLS\Block\Adminhtml\Form\Field;
 
 use Magento\Framework\View\Element\Context;
 use Magento\Framework\View\Element\Html\Select;
-use TIG\GLS\Model\Config\Source\Carrier\AllowedMethods;
+use TIG\GLS\Model\Config\Source\Carrier\Services as ServicesSource;
 
-class Configure extends Select
+class Services extends Select
 {
     /** @var $_options */
     protected $_options;
 
-    /** @var AllowedMethods $methods */
-    private $methods;
+    /** @var Services $services */
+    private $services;
 
     /**
-     * Configure constructor.
+     * Services constructor.
      *
-     * @param Context        $context
-     * @param AllowedMethods $methods
-     * @param array          $data
+     * @param Context  $context
+     * @param ServicesSource $services
+     * @param array    $data
      */
     public function __construct(
         Context $context,
-        AllowedMethods $methods,
+        ServicesSource $services,
         array $data = []
     ) {
-        $this->methods = $methods;
+        $this->services = $services;
         parent::__construct($context, $data);
     }
 
@@ -95,13 +95,14 @@ class Configure extends Select
      */
     private function listAvailableOptions()
     {
-        $methods = $this->methods->listAvailableMethods();
+        $methods = $this->services->listAvailableMethods();
 
-        $list   = new \ReflectionClass(AllowedMethods::class);
+        // TODO: Is it possible to load this class through a factory?
+        $list   = new \ReflectionClass(ServicesSource::class);
         $labels = $list->getConstants();
 
         foreach ($methods as $name => $method) {
-            $this->_options[$method] = $labels[$name . AllowedMethods::GLS_CARRIER_LABEL_OPERATOR];
+            $this->_options[$method] = $labels[$name . ServicesSource::GLS_CARRIER_SERVICE_LABEL_OPERATOR];
         }
     }
 }

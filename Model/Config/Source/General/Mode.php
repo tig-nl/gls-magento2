@@ -44,7 +44,6 @@ class Mode implements ArrayInterface
     {
         // @codingStandardsIgnoreStart
         $options = [
-            ['value' => '0', 'label' => __('Off')],
             ['value' => '1', 'label' => __('Live')],
             ['value' => '2', 'label' => __('Test')]
         ];

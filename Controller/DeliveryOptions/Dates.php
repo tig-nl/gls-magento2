@@ -59,7 +59,7 @@ class Dates extends Action
     {
         $params = $this->getRequest()->getParams();
 
-        $results = [['day' => 'Eerst volgende werkdag']];
+        $results = [['date' => 'Eerst volgende werkdag']];
 
         return $this->jsonResponse($results);
     }

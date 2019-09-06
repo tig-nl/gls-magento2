@@ -68,7 +68,7 @@ class FieldArray extends AbstractFieldArray
     {
         if (!$this->methodRenderer) {
             $this->methodRenderer = $this->getLayout()->createBlock(
-                '\TIG\GLS\Block\Adminhtml\Form\Field\Configure',
+                '\TIG\GLS\Block\Adminhtml\Form\Field\Services',
                 '',
                 ['data' => ['is_render_to_js_template' => true]]
             );

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ *
+ *          ..::..
+ *     ..::::::::::::..
+ *   ::'''''':''::'''''::
+ *   ::..  ..:  :  ....::
+ *   ::::  :::  :  :   ::
+ *   ::::  :::  :  ''' ::
+ *   ::::..:::..::.....::
+ *     ''::::::::::::''
+ *          ''::''
+ *
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Creative Commons License.
+ * It is available through the world-wide-web at this URL:
+ * http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ * If you are unable to obtain it through the world-wide-web, please send an email
+ * to servicedesk@totalinternetgroup.nl so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this module to newer
+ * versions in the future. If you wish to customize this module for your
+ * needs please contact servicedesk@tig.nl for more information.
+ *
+ * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
+ * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ */
+-->
+<include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
+    <group id="express_parcel_services" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>Additional ExpressParcel Services</label>
+        <attribute type="expanded">1</attribute>
+        <depends>
+            <field id="express_parcel_active">1</field>
+        </depends>
+        <field id="services_active" translate="label" type="multiselect" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+            <label>Enable Services</label>
+            <source_model>TIG\GLS\Model\Config\Source\Carrier\Services</source_model>
+        </field>
+        <field id="additional_handling_fee" translate="label comment" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+            <label>Additional Handling Fee</label>
+            <comment><![CDATA[Configure an additional handling fee for specific shipping methods. The additional handling fee is added to the base handling fee.]]></comment>
+            <frontend_model>TIG\GLS\Block\System\Config\Form\Field\FieldArray</frontend_model>
+            <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+        </field>
+    </group>
+</include>

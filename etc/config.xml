@@ -34,12 +34,20 @@
     <default>
         <carriers>
             <tig_gls>
+                <active>0</active>
+                <title>Ship with GLS</title>
                 <name>GLS</name>
                 <model>TIG\GLS\Model\Carrier\GLS</model>
-                <title>Ship with GLS</title>
-                <active>1</active>
-                <allowed_methods>gls_default,gls_express_t9,gls_express_t12,gls_express_t17,gls_saturday,gls_saturday_express_t9,gls_saturday_express_t12,gls_saturday_express_t17</allowed_methods>
-                <ship_allow_specific>0</ship_allow_specific>
+                <handling_fee>4.95</handling_fee>
+                <business_parcel_active>1</business_parcel_active>
+                <business_parcel_services>
+                    <flex_delivery_active>1</flex_delivery_active>
+                    <shop_delivery_active>1</shop_delivery_active>
+                    <shop_delivery_shop_amount>5</shop_delivery_shop_amount>
+                    <shop_return_active>1</shop_return_active>
+                </business_parcel_services>
+                <express_parcel_active>1</express_parcel_active>
+                <express_parcel_services>saturday_service,time_definite_t9,time_definite_t12</express_parcel_services>
             </tig_gls>
         </carriers>
         <tig_gls>

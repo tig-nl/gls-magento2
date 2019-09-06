@@ -45,59 +45,46 @@
             <field id="name" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                 <label>Method Name</label>
             </field>
-            <field id="allowed_methods" translate="label" type="multiselect" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                <label>Allowed Methods</label>
-                <source_model>TIG\GLS\Model\Config\Source\Carrier\AllowedMethods</source_model>
-            </field>
-            <field id="handling_fee" translate="label comment" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+            <field id="handling_fee" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                 <label>Handling Fee</label>
                 <comment><![CDATA[The base handling fee used for all allowed shipping methods.]]></comment>
             </field>
-            <field id="additional_handling_fee" translate="label comment" sortOrder="65" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                <label>Additional Handling Fee</label>
-                <comment><![CDATA[Configure an additional handling fee for specific shipping methods. The additional handling fee is added to the base handling fee.]]></comment>
-                <frontend_model>TIG\GLS\Block\System\Config\Form\Field\FieldArray</frontend_model>
-                <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+            <field id="business_parcel_active" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <label>BusinessParcel</label>
+                <comment><![CDATA[Enable this to use GLS BusinessParcel, EuroBusinessParcel and GlobalBusinessParcel.]]></comment>
+                <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
             </field>
-            <field id="sallowspecific" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
+            <field id="express_parcel_active" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <label>ExpressParcel</label>
+                <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+            </field>
+
+            <include path="TIG_GLS::system/services/business_parcel.xml" />
+
+            <include path="TIG_GLS::system/services/express_parcel.xml" />
+
+            <field id="sallowspecific" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0">
                 <label>Ship to Applicable Countries</label>
                 <frontend_class>shipping-applicable-country</frontend_class>
                 <source_model>Magento\Shipping\Model\Config\Source\Allspecificcountries</source_model>
             </field>
-            <field id="specific_country" translate="label" type="multiselect" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+            <field id="specific_country" translate="label" type="multiselect" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
                 <label>Ship to Specific Countries</label>
                 <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                 <can_be_empty>1</can_be_empty>
             </field>
-            <field id="show_method" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+            <field id="showmethod" translate="label" type="select" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
                 <label>Show Method if Not Applicable</label>
                 <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
             </field>
-            <field id="specific_err_msg" translate="label" type="textarea" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+            <field id="specificerrmsg" translate="label" type="textarea" sortOrder="250" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                 <label>Displayed Error Message</label>
                 <depends>
-                    <field id="show_method">1</field>
+                    <field id="showmethod">1</field>
                 </depends>
             </field>
-            <field id="sort_order" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="0">
+            <field id="sort_order" translate="label" type="text" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="0">
                 <label>Sort Order</label>
-            </field>
-
-            <field id="parcelshops_active" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInStore="1" showInWebsite="1" canRestore="1">
-                <label>Enable or disable parcel shops in the frontend.</label>
-                <comment><![CDATA[Enable or disable parcel shops in the frontend.]]></comment>
-                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                <config_path>tig_gls/delivery_options/parcelshops_active</config_path>
-            </field>
-
-            <field id="parcelshops_amount" translate="label comment" type="text" sortOrder="130" showInDefault="1" showInStore="1" showInWebsite="1" canRestore="1">
-                <label>Maximum parcel shops shown in the frontend.</label>
-                <comment><![CDATA[Defines the maximum amount of parcel shops shown in the frontend.]]></comment>
-                <backend_model>Magento\Framework\App\Config\Value</backend_model>
-                <config_path>tig_gls/delivery_options/parcelshops_amount</config_path>
-                <depends>
-                    <field id="parcelshops_active">1</field>
-                </depends>
             </field>
         </group>
     </section>
