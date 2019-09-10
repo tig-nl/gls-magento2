@@ -34,26 +34,26 @@ namespace TIG\GLS\Controller\Adminhtml\Credentials;
 
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
-use TIG\GLS\Service\Label\Label;
+use TIG\GLS\Webservice\Endpoint\Authentication\ValidateLogin;
 
 class Validate extends Action
 {
-    /** @var Label $labelService */
-    private $labelService;
+    /** @var ValidateLogin $validationAPI */
+    private $validationAPI;
 
     /**
      * Validate constructor.
      *
-     * @param Context $context
-     * @param Label   $labelService
+     * @param Context       $context
+     * @param ValidateLogin $validationAPI
      */
     public function __construct(
         Context $context,
-        Label $labelService
+        ValidateLogin $validationAPI
     ) {
         parent::__construct($context);
 
-        $this->labelService = $labelService;
+        $this->validationAPI = $validationAPI;
     }
 
     /**
@@ -62,62 +62,13 @@ class Validate extends Action
     public function execute()
     {
         // TO DO: Change htis to the authorize call whenever it's available.
-        $label = $this->labelService->createLabel($this->getRequestData());
+        $validation = $this->validationAPI->call();
 
         $this->_response->setBody('nok');
-        if (isset($label['status']) && $label['status'] == 200) {
+        if (isset($validation['status']) && $validation['status'] == 200 && !$validation['error']) {
             $this->_response->setBody('ok');
         }
 
-        return $this->_response->setStatusHeader(200, '1.1', 'Succesfully authorized');
+        return $this->_response->setStatusHeader(200, '1.1', 'Validated');
     }
-
-    // @codingStandardsIgnoreStart
-    private function getRequestData()
-    {
-        $shippingDate = new \DateTime();
-        $shippingDate->modify('+1 day');
-
-        return [
-            'ShippingSystemName' => 'Magento',
-            'ShippingSystemVersion' => '2.0',
-            'ShipType' => 'P',
-            'ShippingDate' => $shippingDate->format('Y-m-d'),
-            'Reference' => 'ORD0000123',
-            'LabelType' => 'pdf',
-            'TrackingLinkType' => 'U',
-            'Addresses' => [
-                'DeliveryAddress' => [
-                    'Name1' => 'My-Customer',
-                    'Street' => 'Kalverstraat',
-                    'HouseNo' => '17',
-                    'CountryCode' => 'NL',
-                    'ZipCode' => '1042AB',
-                    'City' => 'Amsterdam',
-                    'Contact' => 'Joe Black',
-                    'Phone' => '030-2417800',
-                    'Email' => 'dennis+customer@tig.nl',
-                    'AddresseeType' => 'P'
-                ]
-            ],
-            'Units' => [
-                [
-                    'UnitID' => 'A',
-                    'Weight' => 2.5,
-                    'AdditionalInfo1' => 'InvoiceNo: P10050432',
-                    'AdditionalInfo2' => 'Additional info2',
-                ]
-            ],
-            'NotificationEmail' => [
-                'SendMail' => true,
-                'SenderName' => 'Top Products BV',
-                'SenderReplyAddress' => 'dennis@tig.nl',
-                'SenderContactName' => 'Customer Service',
-                'SenderPhoneNo' => '+31885503000',
-                'EmailSubject' => 'Your order has been shipped!',
-                'EmailCc' => 'dennis.van.der.hammen@tig.nl'
-            ]
-        ];
-    }
-    // @codingStandardsIgnoreEnd
 }

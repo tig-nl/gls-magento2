@@ -244,3 +244,54 @@ h4#carriers_tig_gls_import_export_header {
 #row_carriers_tig_gls_showmethod {
     display: table-row !important;
 }
+
+/* GLS Configuration - API validator messages =================================================================== */
+
+.gls-config-page #message_span {
+    display: block;
+    position: relative;
+}
+
+.gls-config-page #message_span .validation-message {
+    display: block;
+    margin-top: 10px;
+    padding: 10px;
+}
+
+.gls-config-page #message_span .validation-message.unknown {
+    background:#ffeeb2;
+    border-left: 3px solid #ff7700;
+}
+
+.gls-config-page #message_span .validation-message.error {
+    background: #ffd0d0;
+    border-left: 3px solid red;
+}
+
+.gls-config-page #message_span .validation-message.unable-to-retrieve {
+    background: #ffd0d0;
+    border-left: 3px solid red;
+}
+
+.gls-config-page #message_span .validation-message.success {
+    background: #c6ffc8;
+    border-left: 3px solid #4CAF50;
+}
+
+.gls-config-page .loader {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    border: 4px solid #ffb241;
+    webkit-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+    border-top: 4px solid #f70;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

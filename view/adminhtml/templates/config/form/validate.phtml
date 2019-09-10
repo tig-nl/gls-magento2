@@ -29,11 +29,12 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license       http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
+?>
 
-/** @var $block TIG\GLS\Block\Adminhtml\Config\Form\Field\Validate */
-
-echo $block->getButtonHtml();
-
-echo '<img class="validate-image" height="16" src="' . $this->getViewFileUrl(
-    'TIG_GLS::images/orange-unknown.png'
-) . '" alt="">';
+<span id="message_span" data-mage-init='{"glsValidate": {"url": "<?php echo $this->getValidateUrl(); ?>"}}'>
+    <div class="loader"></div>
+    <span class="validation-message unknown"><?php echo __('Validating API credentials'); ?></span>
+    <span class="validation-message error" style="display: none;"><?php echo __('API credentials are incorrect'); ?></span>
+    <span class="validation-message unable-to-retrieve" style="display: none;"><?php echo __('Unable to validate API credentials'); ?></span>
+    <span class="validation-message success" style="display: none;"><?php echo __('API credentials are correct'); ?></span>
+</span>
