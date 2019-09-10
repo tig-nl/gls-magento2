@@ -39,6 +39,7 @@ class FieldArray extends AbstractFieldArray
     const GLS_HANDLING_FEE_COLUMN_METHOD = 'shipping_method';
     const GLS_HANDLING_FEE_COLUMN_FEE    = 'additional_handling_fee';
 
+    // @codingStandardsIgnoreStart
     /** @var array $_columns */
     protected $_columns = [];
 
@@ -50,13 +51,16 @@ class FieldArray extends AbstractFieldArray
 
     /** @var $_addButtonLabel */
     protected $_addButtonLabel;
+    // @codingStandardsIgnoreEnd
 
     /**
      * FieldArray Constructor
      */
+    // @codingStandardsIgnoreLine
     protected function _construct()
     {
         parent::_construct();
+        // @codingStandardsIgnoreLine
         $this->_addButtonLabel = __('Add Additional Handling Fee');
     }
 
@@ -80,8 +84,10 @@ class FieldArray extends AbstractFieldArray
     /**
      * @throws \Magento\Framework\Exception\LocalizedException
      */
+    // @codingStandardsIgnoreLine
     protected function _prepareToRender()
     {
+        // @codingStandardsIgnoreStart
         $this->addColumn(
             self::GLS_HANDLING_FEE_COLUMN_METHOD,
             [
@@ -96,6 +102,7 @@ class FieldArray extends AbstractFieldArray
             ]
         );
         $this->_addAfter       = false;
+        // @codingStandardsIgnoreEnd
     }
 
     /**
@@ -103,6 +110,7 @@ class FieldArray extends AbstractFieldArray
      *
      * @throws \Magento\Framework\Exception\LocalizedException
      */
+    // @codingStandardsIgnoreLine
     protected function _prepareArrayRow(\Magento\Framework\DataObject $row)
     {
         $type    = $row->getShippingMethod();

@@ -1,4 +1,6 @@
-/**
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+**
  *
  *          ..::..
  *     ..::::::::::::..
@@ -27,30 +29,12 @@
  *
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
- */
-
-define([
-    'jquery'
-], function ($) {
-    "use strict";
-
-    return function (configs, element) {
-        $.ajax({
-            type : 'GET',
-            url  : configs.url
-        }).done(function (data) {
-            setTimeout(function () {
-                if (data === 'ok') {
-                    $('#message_span .success').fadeIn(200);
-                } else if (data === 'nok') {
-                    $('#message_span .error').fadeIn(200);
-                }
-            }, 200);
-        }).fail(function (data) {
-            $('#message_span .unable-to-retrieve').fadeIn(200);
-        }).always(function () {
-            $('#message_span .unknown').fadeOut(200);
-            $('#message_span .loader').fadeOut(200);
-        });
-    };
-});
+ *
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="TIG\GLS\Service\ServicesReflectionClass">
+        <arguments>
+            <argument name="argument" xsi:type="string">TIG\GLS\Model\Config\Source\Carrier\Services</argument>
+        </arguments>
+    </type>
+</config>
