@@ -127,7 +127,7 @@ class Services
      * @param $code
      * @param $serviceFees
      *
-     * @return mixed
+     * @return string
      */
     private function getCorrespondingServiceFee($code, $serviceFees)
     {
@@ -139,7 +139,8 @@ class Services
         );
 
         $fee = reset($fee);
+        $fee = $fee->additional_handling_fee;
 
-        return $fee->additional_handling_fee;
+        return (string) $fee;
     }
 }

@@ -33,7 +33,7 @@
 <div class="gls-delivery-options" data-bind="visible: selectedMethod() == 'tig_gls_tig_gls'">
     <div data-bind="foreach: availableServices">
         <div class="gls-service">
-            <input type="radio" name="gls_delivery_services" class="radio" data-bind="value: code, attr: { id: code }">
+            <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: code, click: $parent.setDeliveryService, attr: { id: code }">
             <label data-bind="i18n: label, attr: { for: code }"></label>
             <p>
                 <span data-bind="text: fee"></span>
@@ -41,7 +41,7 @@
         </div>
     </div>
     <div data-bind="foreach: parcelShops">
-        <input type="radio" name="gls_delivery_parcel_shops" class="radio" data-bind="value: parcelShopId, attr: { id: 'shop_' + parcelShopId }">
+        <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: parcelShopId, click: $parent.setParcelShopAddress, attr: { id: 'shop_' + parcelShopId }">
         <label data-bind="text: name, attr: { for: 'shop_' + parcelShopId }"></label>
         <div class="gls-parcel-shop">
             <p>

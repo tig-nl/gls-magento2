@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ *
+ *          ..::..
+ *     ..::::::::::::..
+ *   ::'''''':''::'''''::
+ *   ::..  ..:  :  ....::
+ *   ::::  :::  :  :   ::
+ *   ::::  :::  :  ''' ::
+ *   ::::..:::..::.....::
+ *     ''::::::::::::''
+ *          ''::''
+ *
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Creative Commons License.
+ * It is available through the world-wide-web at this URL:
+ * http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ * If you are unable to obtain it through the world-wide-web, please send an email
+ * to servicedesk@totalinternetgroup.nl so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this module to newer
+ * versions in the future. If you wish to customize this module for your
+ * needs please contact servicedesk@tig.nl for more information.
+ *
+ * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
+ * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Quote\Model\ShippingAddressManagement">
+        <plugin name="tig_gls_shipping_address_management_before_assign" type="TIG\GLS\Plugin\Quote\Model\ShippingAddressManagement" sortOrder="100" />
+    </type>
+    <type name="Magento\Quote\Model\Quote\Address\Total\Shipping">
+        <plugin name="tig_gls_shipping_after_collect" type="TIG\GLS\Plugin\Quote\Model\Quote\Address\Total\Shipping" sortOrder="100" />
+    </type>
+    <type name="Magento\Quote\Model\QuoteManagement">
+        <plugin name="tig_gls_quote_management_before_place_order" type="TIG\GLS\Plugin\Quote\Model\QuoteManagement" sortOrder="100" />
+    </type>
+    <type name="Magento\Quote\Model\QuoteManagement">
+        <plugin name="tig_gls_quote_management_after_place_order" type="TIG\GLS\Plugin\Quote\Model\QuoteManagement" sortOrder="100" />
+    </type>
+</config>
