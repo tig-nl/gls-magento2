@@ -56,7 +56,7 @@ class LayoutProcessor
                 'template'    => 'ui/form/field',
                 'elementTmpl' => 'ui/form/element/input',
             ],
-            'dataScope'   => 'shippingAddress.custom_attributes' . '.' . self::GLS_PARCEL_SHOP_ADDRESS_FIELD,
+            'dataScope'   => 'shippingAddress.custom_attributes.' . self::GLS_PARCEL_SHOP_ADDRESS_FIELD,
             'label'       => 'GLS Delivery Option',
             'provider'    => 'checkoutProvider',
             'sortOrder'   => 0,
