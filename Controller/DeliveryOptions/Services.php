@@ -38,8 +38,10 @@ use TIG\GLS\Service\DeliveryOptions\Services as ServicesService;
 
 class Services extends Action
 {
+    /** @var Session $checkoutSession */
     private $checkoutSession;
 
+    /** @var ServicesService $services */
     private $services;
 
     /**
