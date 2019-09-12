@@ -63,9 +63,8 @@
                 <field id="mode">2</field>
             </depends>
         </field>
-        <field id="validate_details" translate="label" type="button" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
-            <label>Validate credentials</label>
+        <group id="validate_details" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
             <frontend_model>TIG\GLS\Block\Adminhtml\Config\Form\Field\Validate</frontend_model>
-        </field>
+        </group>
     </group>
 </include>

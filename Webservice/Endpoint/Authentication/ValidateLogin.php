@@ -1,3 +1,5 @@
+<?php
+
 /**
  *
  *          ..::..
@@ -28,29 +30,14 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
+namespace TIG\GLS\Webservice\Endpoint\Authentication;
 
-define([
-    'jquery'
-], function ($) {
-    "use strict";
+use TIG\GLS\Webservice\Endpoint\AbstractEndpoint;
 
-    return function (configs, element) {
-        $.ajax({
-            type : 'GET',
-            url  : configs.url
-        }).done(function (data) {
-            setTimeout(function () {
-                if (data === 'ok') {
-                    $('#message_span .success').fadeIn(200);
-                } else if (data === 'nok') {
-                    $('#message_span .error').fadeIn(200);
-                }
-            }, 200);
-        }).fail(function (data) {
-            $('#message_span .unable-to-retrieve').fadeIn(200);
-        }).always(function () {
-            $('#message_span .unknown').fadeOut(200);
-            $('#message_span .loader').fadeOut(200);
-        });
-    };
-});
+class ValidateLogin extends AbstractEndpoint
+{
+    // @codingStandardsIgnoreStart
+    protected $method = 'POST';
+    protected $endpoint = 'Authentication/ValidateLogin';
+    // @codingStandardsIgnoreEnd
+}

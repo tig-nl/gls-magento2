@@ -65,33 +65,6 @@ class Validate extends Field
     }
 
     /**
-     * @return mixed
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    public function getButtonHtml()
-    {
-        $layout = $this->getLayout();
-
-        /** @var \Magento\Backend\Block\Widget\Button $button */
-        $button = $layout->createBlock('Magento\Backend\Block\Widget\Button');
-        $button->setData([
-                'id'    => static::BUTTON_ID,
-                'label' => __('Validate your GLS account')
-        ]);
-
-        $mageInit = ['glsValidate' => [
-            'url' => $this->getValidateUrl(),
-            'ok-image' => $this->getViewFileUrl('TIG_GLS::images/green-ok.png'),
-            'nok-image' => $nokImage = $this->getViewFileUrl('TIG_GLS::images/red-nok.png'),
-            'unknown-image' => $nokImage = $this->getViewFileUrl('TIG_GLS::images/orange-unknown.png')
-        ]];
-
-        $button->setDataAttribute(['mage-init' => json_encode($mageInit)]);
-
-        return $button->toHtml();
-    }
-
-    /**
      * @param AbstractElement $element
      *
      * @return string

@@ -33,6 +33,7 @@
 namespace TIG\GLS\Model\Config\Source\Carrier;
 
 use Magento\Framework\Option\ArrayInterface;
+use TIG\GLS\Service\ServicesReflectionClass;
 
 // @codingStandardsIgnoreFile
 class Services implements ArrayInterface
@@ -45,14 +46,21 @@ class Services implements ArrayInterface
     const GLS_CARRIER_SERVICE_EXPRESS_TIME_DEFINITE_T12       = 'time_definite_t12';
     const GLS_CARRIER_SERVICE_EXPRESS_TIME_DEFINITE_T12_LABEL = 'TimeDefiniteService (Before 12.00 AM)';
 
+    /** @var ServicesReflectionClass $servicesReflection */
+    private $servicesReflection;
+
+    public function __construct(ServicesReflectionClass $servicesReflection)
+    {
+        $this->servicesReflection = $servicesReflection;
+    }
+
     /**
      * @return array|mixed
      * @throws \ReflectionException
      */
     public function toOptionArray()
     {
-        $list      = new \ReflectionClass($this);
-        $constants = $list->getConstants();
+        $constants = $this->servicesReflection->getConstants();
 
         $methods = $this->listAvailableMethods();
 
@@ -73,8 +81,7 @@ class Services implements ArrayInterface
      */
     public function listAvailableMethods()
     {
-        $list      = new \ReflectionClass($this);
-        $constants = $list->getConstants();
+        $constants = $this->servicesReflection->getConstants();
 
         $methods = array_filter($constants, function ($key) {
             return strpos($key, self::GLS_CARRIER_SERVICE_LABEL_OPERATOR) === false;

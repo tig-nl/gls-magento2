@@ -35,28 +35,37 @@ namespace TIG\GLS\Block\Adminhtml\Form\Field;
 use Magento\Framework\View\Element\Context;
 use Magento\Framework\View\Element\Html\Select;
 use TIG\GLS\Model\Config\Source\Carrier\Services as ServicesSource;
+use TIG\GLS\Service\ServicesReflectionClass;
 
 class Services extends Select
 {
     /** @var $_options */
+    // @codingStandardsIgnoreLine
     protected $_options;
 
     /** @var Services $services */
     private $services;
 
+    /** @var ServicesReflectionClass $servicesReflection */
+    private $servicesReflection;
+
     /**
      * Services constructor.
      *
-     * @param Context  $context
-     * @param ServicesSource $services
-     * @param array    $data
+     * @param Context                 $context
+     * @param ServicesSource          $services
+     * @param ServicesReflectionClass $servicesReflection
+     * @param array                   $data
      */
     public function __construct(
         Context $context,
         ServicesSource $services,
+        ServicesReflectionClass $servicesReflection,
         array $data = []
     ) {
         $this->services = $services;
+        $this->servicesReflection = $servicesReflection;
+
         parent::__construct($context, $data);
     }
 
@@ -69,15 +78,20 @@ class Services extends Select
         $this->listAvailableOptions();
 
         if (!$this->getOptions()) {
-            foreach ($this->_options as $value => $label) {
-                $this->addOption($value, $label);
-            }
+            $this->addOptions();
         }
 
         $this->setClass('input-select required-entry');
         $this->setExtraParams('style="width: 275px;"');
 
         return parent::_toHtml();
+    }
+
+    private function addOptions()
+    {
+        foreach ($this->_options as $value => $label) {
+            $this->addOption($value, $label);
+        }
     }
 
     /**
@@ -97,9 +111,7 @@ class Services extends Select
     {
         $methods = $this->services->listAvailableMethods();
 
-        // TODO: Is it possible to load this class through a factory?
-        $list   = new \ReflectionClass(ServicesSource::class);
-        $labels = $list->getConstants();
+        $labels = $this->servicesReflection->getConstants();
 
         foreach ($methods as $name => $method) {
             $this->_options[$method] = $labels[$name . ServicesSource::GLS_CARRIER_SERVICE_LABEL_OPERATOR];
