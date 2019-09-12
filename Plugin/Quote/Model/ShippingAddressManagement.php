@@ -39,10 +39,18 @@ use TIG\GLS\Model\Config\Provider\Carrier;
 
 class ShippingAddressManagement
 {
+    /** @var CartRepositoryInterface $quoteRepository */
     private $quoteRepository;
 
+    /** @var Carrier $carrierConfig */
     private $carrierConfig;
 
+    /**
+     * ShippingAddressManagement constructor.
+     *
+     * @param CartRepositoryInterface $quoteRepository
+     * @param Carrier                 $carrierConfig
+     */
     public function __construct(
         CartRepositoryInterface $quoteRepository,
         Carrier $carrierConfig
@@ -58,6 +66,7 @@ class ShippingAddressManagement
      *
      * @return \Exception|QuoteShippingAddressManagement|void
      */
+    // @codingStandardsIgnoreLine
     public function beforeAssign(QuoteShippingAddressManagement $subject, $cartId, AddressInterface $address = null)
     {
         $extensionAttributes = $address->getExtensionAttributes();

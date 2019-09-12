@@ -37,8 +37,10 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 
 class QuoteManagement
 {
+    /** @var CartRepositoryInterface $cartRepository */
     private $cartRepository;
 
+    /** @var OrderRepositoryInterface $orderRepository */
     private $orderRepository;
 
     /**
