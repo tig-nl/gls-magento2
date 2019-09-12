@@ -32,19 +32,50 @@
 
 namespace TIG\GLS\Plugin\Checkout;
 
+use TIG\GLS\Model\Config\Provider\Carrier as CarrierConfig;
+
 class LayoutProcessor
 {
     const GLS_PARCEL_SHOP_ADDRESS_FIELD = 'gls_delivery_option';
 
+    /** @var CarrierConfig $carrierConfig */
+    private $carrierConfig;
+
+    /**
+     * LayoutProcessor constructor.
+     *
+     * @param CarrierConfig $carrierConfig
+     */
+    public function __construct(
+        CarrierConfig $carrierConfig
+    ) {
+        $this->carrierConfig = $carrierConfig;
+    }
+
+    /**
+     * @param       $subject
+     * @param array $jsLayout
+     *
+     * @return array
+     */
+    // @codingStandardsIgnoreLine
     public function afterProcess($subject, array $jsLayout)
     {
+        if (!$this->carrierConfig->isCarrierActive()) {
+            return $jsLayout;
+        }
+
         $customField = $this->createDeliveryOptionField();
 
+        // @codingStandardsIgnoreLine
         $jsLayout['components']['checkout']['children']['steps']['children']['shipping-step']['children']['shippingAddress']['children']['shipping-address-fieldset']['children'][self::GLS_PARCEL_SHOP_ADDRESS_FIELD] = $customField;
 
         return $jsLayout;
     }
 
+    /**
+     * @return array
+     */
     // @codingStandardsIgnoreLine
     private function createDeliveryOptionField()
     {
