@@ -32,17 +32,17 @@ define([
     'jquery',
     'uiComponent',
     'ko',
-    'TIG_GLS/js/helper/address-finder',
-    'Magento_Checkout/js/model/quote'
+    'Magento_Checkout/js/model/quote',
+    'TIG_GLS/js/helper/address-finder'
 ], function (
     $,
     Component,
     ko,
-    AddressFinder,
-    quote
+    quote,
+    AddressFinder
 ) {
     'use strict';
-
+    
     return Component.extend({
         defaults: {
             template: 'TIG_GLS/delivery/options',
@@ -58,7 +58,6 @@ define([
                 var selectedMethod = method != null ? method.carrier_code + '_' + method.method_code : null;
                 return selectedMethod;
             }, this);
-            
             
             this._super().observe([
                 'postcode',
@@ -114,6 +113,46 @@ define([
             }).done(function (data) {
                 this.parcelShops(data);
             }.bind(this));
+        },
+    
+        /**
+         * Sets the Delivery Option in gls_delivery_option
+         *
+         * @param type
+         * @param details
+         */
+        setGlsDeliveryOption: function (type, details) {
+            var deliveryOption = {
+                type: type,
+                details: details
+            };
+            
+            // TODO: This should be done the Magento-way: shippingAddress.customAttributes.etc.
+            jQuery('input[name="custom_attributes[gls_delivery_option]"]').val(JSON.stringify(deliveryOption));
+        },
+    
+        /**
+         * Needs to return true, otherwise KnockoutJS prevents default event.
+         *
+         * @param address
+         * @returns {boolean}
+         */
+        setParcelShopAddress: function (address) {
+            this.setGlsDeliveryOption('parcel_shop', address);
+    
+            return true;
+        },
+    
+        /**
+         * Needs to return true, otherwise KnockoutJS prevents default event.
+         *
+         * @param service
+         * @returns {boolean}
+         */
+        setDeliveryService: function (service) {
+            this.setGlsDeliveryOption('delivery_service', service);
+            
+            return true;
         }
     });
 });

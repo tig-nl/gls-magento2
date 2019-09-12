@@ -49,6 +49,14 @@ class Carrier extends AbstractConfigProvider
     /**
      * @return bool
      */
+    public function isCarrierActive()
+    {
+        return $this->getConfigValue(self::XPATH_CARRIER_ACTIVE);
+    }
+
+    /**
+     * @return bool
+     */
     public function getBaseHandlingFee()
     {
         return $this->getConfigValue(self::XPATH_CARRIER_HANDLING_FEE);

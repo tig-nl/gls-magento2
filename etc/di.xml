@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-**
+/**
  *
- *          ..::..
- *     ..::::::::::::..
- *   ::'''''':''::'''''::
- *   ::..  ..:  :  ....::
- *   ::::  :::  :  :   ::
- *   ::::  :::  :  ''' ::
- *   ::::..:::..::.....::
- *     ''::::::::::::''
- *          ''::''
+ *          ..::..
+ *     ..::::::::::::..
+ *   ::'''''':''::'''''::
+ *   ::..  ..:  :  ....::
+ *   ::::  :::  :  :   ::
+ *   ::::  :::  :  ''' ::
+ *   ::::..:::..::.....::
+ *     ''::::::::::::''
+ *          ''::''
  *
  *
  * NOTICE OF LICENSE
@@ -36,5 +36,17 @@
         <arguments>
             <argument name="argument" xsi:type="string">TIG\GLS\Model\Config\Source\Carrier\Services</argument>
         </arguments>
+    </type>
+    <type name="Magento\Quote\Model\ShippingAddressManagement">
+        <plugin name="tig_gls_shipping_address_management_before_assign" type="TIG\GLS\Plugin\Quote\Model\ShippingAddressManagement" sortOrder="100" />
+    </type>
+    <type name="Magento\Quote\Model\Quote\Address\Total\Shipping">
+        <plugin name="tig_gls_shipping_after_collect" type="TIG\GLS\Plugin\Quote\Model\Quote\Address\Total\Shipping" sortOrder="100" />
+    </type>
+    <type name="Magento\Quote\Model\QuoteManagement">
+        <plugin name="tig_gls_quote_management_before_place_order" type="TIG\GLS\Plugin\Quote\Model\QuoteManagement" sortOrder="100" />
+    </type>
+    <type name="Magento\Quote\Model\QuoteManagement">
+        <plugin name="tig_gls_quote_management_after_place_order" type="TIG\GLS\Plugin\Quote\Model\QuoteManagement" sortOrder="100" />
     </type>
 </config>
