@@ -32,8 +32,8 @@
 -->
 <div class="gls-delivery-options" data-bind="visible: selectedMethod() == 'tig_gls_tig_gls'">
     <div data-bind="foreach: availableServices">
-        <div class="gls-service">
-            <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: code, click: $parent.setDeliveryService, attr: { id: code }">
+        <div class="gls-delivery-service">
+            <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: code, click: $parent.setDeliveryService.bind($parent), attr: { id: code }">
             <label data-bind="i18n: label, attr: { for: code }"></label>
             <p>
                 <span data-bind="text: fee"></span>

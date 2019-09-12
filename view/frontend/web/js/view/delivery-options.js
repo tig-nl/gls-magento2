@@ -42,8 +42,8 @@ define([
     AddressFinder
 ) {
     'use strict';
-
-    var deliveryOptions = {
+    
+    return Component.extend({
         defaults: {
             template: 'TIG_GLS/delivery/options',
             postcode: null,
@@ -138,7 +138,7 @@ define([
          * @returns {boolean}
          */
         setParcelShopAddress: function (address) {
-            deliveryOptions.setGlsDeliveryOption('parcel_shop', address);
+            this.setGlsDeliveryOption('parcel_shop', address);
     
             return true;
         },
@@ -150,11 +150,9 @@ define([
          * @returns {boolean}
          */
         setDeliveryService: function (service) {
-            deliveryOptions.setGlsDeliveryOption('delivery_service', service);
+            this.setGlsDeliveryOption('delivery_service', service);
             
             return true;
         }
-    };
-    
-    return Component.extend(deliveryOptions);
+    });
 });
