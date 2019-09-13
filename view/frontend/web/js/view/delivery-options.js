@@ -42,14 +42,14 @@ define([
     AddressFinder
 ) {
     'use strict';
-    
+
     return Component.extend({
         defaults: {
             template: 'TIG_GLS/delivery/options',
             postcode: null,
             country: null,
             availableServices: ko.observableArray([]),
-            parcelShops: ko.observableArray([])
+            parcelShops: ko.observableArray([]),
         },
 
         initObservable: function () {
@@ -58,7 +58,7 @@ define([
                 var selectedMethod = method != null ? method.carrier_code + '_' + method.method_code : null;
                 return selectedMethod;
             }, this);
-            
+
             this._super().observe([
                 'postcode',
                 'country',
@@ -80,7 +80,7 @@ define([
 
             return this;
         },
-    
+
         /**
          * Retrieve Delivery Options from GLS.
          *
@@ -96,7 +96,7 @@ define([
                 this.availableServices(data);
             }.bind(this));
         },
-    
+
         /**
          * Retrieve Parcel Shops from GLS.
          *
@@ -114,7 +114,7 @@ define([
                 this.parcelShops(data);
             }.bind(this));
         },
-    
+
         /**
          * Sets the Delivery Option in gls_delivery_option
          *
@@ -126,11 +126,11 @@ define([
                 type: type,
                 details: details
             };
-            
+
             // TODO: This should be done the Magento-way: shippingAddress.customAttributes.etc.
             jQuery('input[name="custom_attributes[gls_delivery_option]"]').val(JSON.stringify(deliveryOption));
         },
-    
+
         /**
          * Needs to return true, otherwise KnockoutJS prevents default event.
          *
@@ -139,10 +139,10 @@ define([
          */
         setParcelShopAddress: function (address) {
             this.setGlsDeliveryOption('parcel_shop', address);
-    
+
             return true;
         },
-    
+
         /**
          * Needs to return true, otherwise KnockoutJS prevents default event.
          *
@@ -151,8 +151,32 @@ define([
          */
         setDeliveryService: function (service) {
             this.setGlsDeliveryOption('delivery_service', service);
-            
+
             return true;
+        },
+
+        showDelivery: function () {
+            $('.gls-tab-pickup').removeClass('active');
+            $('.gls-tab-delivery').addClass('active');
+
+            $('.gls-parcel-shop').fadeOut('fast');
+            $('.gls-delivery-service').fadeIn('slow');
+        },
+
+        showPickup: function () {
+            $('.gls-tab-delivery').removeClass('active');
+            $('.gls-tab-pickup').addClass('active');
+
+            $('.gls-delivery-service').fadeOut('fast');
+            $('.gls-parcel-shop').fadeIn('slow');
         }
+
+        // ,
+        // showBusinessHours: function(event) {
+        //     console.log($(event.currentTarget));
+        //     console.log('test');
+        // }
+
     });
+
 });

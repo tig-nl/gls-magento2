@@ -31,8 +31,12 @@
  */
 -->
 <div class="gls-delivery-options" data-bind="visible: selectedMethod() == 'tig_gls_tig_gls'">
+
+    <div class="gls-tab gls-tab-delivery active"><span data-bind="i18n: 'Delivery', click: showDelivery"></span></div>
+    <div class="gls-tab gls-tab-pickup"><span data-bind="i18n: 'Pick up', click: showPickup"></span></div>
+
     <div data-bind="foreach: availableServices">
-        <div class="gls-delivery-service">
+        <div class="container gls-delivery-service">
             <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: code, click: $parent.setDeliveryService.bind($parent), attr: { id: code }">
             <label data-bind="i18n: label, attr: { for: code }"></label>
             <p>
@@ -40,15 +44,33 @@
             </p>
         </div>
     </div>
+
     <div data-bind="foreach: parcelShops">
-        <div class="gls-parcel-shop">
+        <div class="container gls-parcel-shop" style="display: none;">
             <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: parcelShopId, click: $parent.setParcelShopAddress.bind($parent), attr: { id: 'shop_' + parcelShopId }">
-            <label data-bind="text: name, attr: { for: 'shop_' + parcelShopId }"></label>
-            <p>
-                <span class="street" data-bind="text: street + ' ' + houseNo"></span>
-                <span class="city" data-bind="text: zipcode + ' ' + city"></span>
-                <span class="distance-meters" data-bind="text: distanceMeters + 'm'"></span>
-            </p>
+            <label data-bind="text: name, attr: { for: 'shop_' + parcelShopId }"></label><br/>
+            <span class="street" data-bind="text: street + ' ' + houseNo"></span>
+            <span class="city" data-bind="text: zipcode + ' ' + city"></span>
+            <span class="distance-meters" data-bind="text: distanceMeters + 'm'"></span>
+
+
+
+            <!-- TODO: binding of showBusinessHours does not work - would like to receive className in DOM -->
+                <a class="open-business-hours" data-bind="click: $parent.showBusinessHours.bind(this), i18n: 'Show business hours'">
+                </a>
+
+                <div class="table-container">
+                    <div class="table" data-bind="foreach: businessHours"> <!-- style="display: none;"> -->
+                        <div class="row">
+                            <div class="cell" data-bind="i18n: dayOfWeek"></div>
+                            <div class="cell" data-bind="i18n: openTime + ' - ' + closedTime + ' hour'"></div>
+                        </div>
+                    </div>
+                    <a class="close" data-bind="i18n: 'Close'"></a>
+                </div>
+
+
+
         </div>
     </div>
 </div>
