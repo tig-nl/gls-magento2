@@ -1,0 +1,308 @@
+/*
+
+light-blue:     #F0F3FF;
+dark-blue:      #27324C;
+yellow:         #FBC000;
+
+link-blue:      #003BFB;
+border-blue:    #D4D9E3;
+
+*/
+
+.checkout-index-index .methods-shipping .actions-toolbar {
+    clear: both;
+}
+
+/* Shipping method table ============================================================================================ */
+
+#label_method_tig_gls_tig_gls:before {
+    float: left;
+    width: 90px;
+    height: 25px;
+    content: ' ';
+    background-image: url(../images/gls_logo.png) !important;
+    background-position: 0 2px;
+    background-repeat: no-repeat;
+    background-size: auto 20px;
+    margin-top: -4px;
+}
+
+/* Shipping method GLS ============================================================================================== */
+
+.gls-delivery-options {
+    max-width: 500px;
+}
+
+.gls-delivery-options * {
+    box-sizing: border-box;
+}
+
+.gls-delivery-options .container {
+    padding: 10px 15px;
+    border: 1px solid #D4D9E3;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background: white;
+    position: relative;
+    display: block;
+    color: #27324C;
+    float :left;
+    width: 100%;
+    clear:both;
+}
+
+.gls-delivery-options .container.active {
+    background: #F0F3FF;
+}
+
+/* Tabs */
+
+.gls-delivery-options .gls-tab {
+    float:left;
+    width: 50%;
+    cursor: pointer;
+    padding: 20px;
+    color: #27324C;
+    border: 1px solid #D4D9E3;
+    margin-bottom: 10px;
+    background: white;
+    text-align: center;
+}
+
+.gls-delivery-options .gls-tab:nth-child(1) {
+    border-radius: 5px 0 0 5px;
+}
+
+.gls-delivery-options .gls-tab:nth-child(2) {
+    border-radius: 0 5px 5px 0;
+}
+
+.gls-delivery-options .gls-tab:not(.active):hover {
+    background: #F0F3FF;
+}
+
+.gls-delivery-options .gls-tab.active {
+    font-weight: 700;
+    color: #fff;
+    background: #27324C;
+    border: 1px solid #27324C;
+}
+
+.gls-delivery-options .gls-tab strong {
+    display: none;
+}
+
+.gls-delivery-options .gls-tab.active strong {
+    color: #FBC000;
+    display : inline-block;
+}
+
+@media screen and (max-width: 380px){
+    .gls-delivery-options .gls-tab {
+        width: 100%;
+    }
+
+    .gls-delivery-options .gls-tab:nth-child(1) {
+        border-radius: 5px 5px 0 0;
+        margin-bottom: 0;
+    }
+
+    .gls-delivery-options .gls-tab:nth-child(2) {
+        border-radius: 0 0 5px 5px;
+    }
+}
+
+/* Label */
+
+.gls-delivery-options label {
+    font-weight: 700;
+    cursor: pointer;
+    line-height: 30px;
+    position: relative;
+}
+
+.gls-delivery-options label:hover {
+    text-decoration: underline;
+}
+
+/* Delivery services ================================================================================================ */
+
+.gls-delivery-service .delivery-fee {
+    float :right;
+    padding-top: 5px;
+}
+
+/* Pick up points =================================================================================================== */
+
+.gls-delivery-options .container.gls-parcel-shop {
+    display: none;
+}
+
+/* Information */
+
+.gls-parcel-shop .address-information {
+    padding-left: 30px;
+}
+
+.gls-parcel-shop .city {
+    padding-left: 10px;
+}
+
+.gls-parcel-shop .distance-meters {
+    font-size: 12px;
+    padding-left: 20px;
+
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+.gls-parcel-shop .distance-meters:before {
+    content: '';
+    background-image: url(../images/pin.svg);
+    padding: 10px;
+    background-repeat: no-repeat;
+    background-position : center;
+}
+
+@media screen and (max-width: 440px){
+    .gls-parcel-shop .city {
+        float: left;
+        width: 100%;
+        margin: 5px 0;
+        padding: 0;
+    }
+
+    .gls-parcel-shop .distance-meters {
+        position: relative;
+        float: left;
+        width: 100%;
+        margin: 5px -5px 15px;
+        padding: 0;
+        right: unset;
+        top: unset;
+    }
+}
+
+/* Business hours */
+
+.gls-parcel-shop .table-container {
+    float: left;
+    width: 100%;
+    display :none;
+    background: #fff;
+    position :relative;
+    border: 1px solid #d4d9e3;
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.gls-parcel-shop .table-container .table {
+    display :table;
+    width: 100%;
+}
+
+.gls-parcel-shop .table-container .table .row {
+    display :table-row;
+    line-height: 23px;
+}
+
+.gls-parcel-shop .table-container .table .row .cell {
+    display :table-cell;
+}
+
+.gls-parcel-shop .open-business-hours {
+    padding-left: 30px;
+    margin-top: 15px;
+    cursor: pointer;
+    color: #003BFB;
+    float: left;
+    width: 100%;
+}
+
+.gls-parcel-shop .open-business-hours:hover {
+    color: #003BFB;
+}
+
+.gls-parcel-shop .close {
+    color: #003BFB;
+    position :absolute;
+    top: 15px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.gls-parcel-shop .close:after {
+    content: '';
+    background: url(../images/close.svg);
+    padding: 4px 15px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.gls-parcel-shop .close:hover {
+    color: #FB003B;
+    text-decoration: none;
+}
+
+.gls-parcel-shop .close:hover:after {
+    background: url(../images/close_hover.svg);
+    padding: 4px 15px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+
+@media screen and (max-width: 440px){
+    .gls-parcel-shop .close {
+        position: relative;
+        float: right;
+        margin-bottom: 10px;
+        right: unset;
+        top: unset;
+        margin-right: -5px;
+    }
+}
+
+@media screen and (max-width: 360px){
+    .gls-parcel-shop .table-container .table .row .cell:nth-child(2) {
+        text-align: right;
+    }
+}
+
+/* Radio buttons ==================================================================================================== */
+
+.gls-delivery-options input[type=radio] {
+    display :none;
+}
+
+.gls-delivery-options input[type=radio] + label:before {
+    content: "";
+    border: 1px solid #cccccc;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+    transition: .2s;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+
+.gls-delivery-options input[type=radio]:checked + label:after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 1px;
+    background: #FBC000;
+    border: 3px solid #fff;
+    vertical-align: middle;
+    width: 18px;
+    height: 18px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    border-radius: 50%;
+    box-sizing: border-box;
+}

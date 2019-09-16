@@ -33,23 +33,26 @@ define([
     'uiComponent',
     'ko',
     'Magento_Checkout/js/model/quote',
-    'TIG_GLS/js/helper/address-finder'
+    'TIG_GLS/js/helper/address-finder',
+    'Magento_Catalog/js/price-utils'
 ], function (
     $,
     Component,
     ko,
     quote,
-    AddressFinder
+    AddressFinder,
+    priceUtils
 ) {
     'use strict';
-    
+
     return Component.extend({
         defaults: {
             template: 'TIG_GLS/delivery/options',
             postcode: null,
             country: null,
             availableServices: ko.observableArray([]),
-            parcelShops: ko.observableArray([])
+            parcelShops: ko.observableArray([]),
+            deliveryFee: ko.observable()
         },
 
         initObservable: function () {
@@ -58,7 +61,7 @@ define([
                 var selectedMethod = method != null ? method.carrier_code + '_' + method.method_code : null;
                 return selectedMethod;
             }, this);
-            
+
             this._super().observe([
                 'postcode',
                 'country',
@@ -80,7 +83,7 @@ define([
 
             return this;
         },
-    
+
         /**
          * Retrieve Delivery Options from GLS.
          *
@@ -96,7 +99,12 @@ define([
                 this.availableServices(data);
             }.bind(this));
         },
-    
+
+        formatAdditionalFee: function(fee){
+            var formattedFee = '+ ' + priceUtils.formatPrice(fee, quote.getPriceFormat());
+            return formattedFee;
+        },
+
         /**
          * Retrieve Parcel Shops from GLS.
          *
@@ -114,7 +122,7 @@ define([
                 this.parcelShops(data);
             }.bind(this));
         },
-    
+
         /**
          * Sets the Delivery Option in gls_delivery_option
          *
@@ -126,11 +134,16 @@ define([
                 type: type,
                 details: details
             };
-            
+
             // TODO: This should be done the Magento-way: shippingAddress.customAttributes.etc.
-            jQuery('input[name="custom_attributes[gls_delivery_option]"]').val(JSON.stringify(deliveryOption));
+            $('input[name="custom_attributes[gls_delivery_option]"]').val(JSON.stringify(deliveryOption));
+
+            $('.gls-delivery-options input[name="gls_delivery_option"]').parent().removeClass('active');
+            $('.gls-delivery-options input[name="gls_delivery_option"]:checked').parent().addClass('active');
+
+            this.deliveryFee(this.formatAdditionalFee(details.fee));
         },
-    
+
         /**
          * Needs to return true, otherwise KnockoutJS prevents default event.
          *
@@ -139,10 +152,10 @@ define([
          */
         setParcelShopAddress: function (address) {
             this.setGlsDeliveryOption('parcel_shop', address);
-    
+
             return true;
         },
-    
+
         /**
          * Needs to return true, otherwise KnockoutJS prevents default event.
          *
@@ -151,8 +164,33 @@ define([
          */
         setDeliveryService: function (service) {
             this.setGlsDeliveryOption('delivery_service', service);
-            
+
             return true;
+        },
+
+        showDelivery: function () {
+            $('.gls-tab-pickup').removeClass('active');
+            $('.gls-tab-delivery').addClass('active');
+
+            $('.gls-parcel-shop').hide();
+            $('.gls-delivery-service').fadeIn('slow');
+        },
+        showPickup: function () {
+            $('.gls-tab-delivery').removeClass('active');
+            $('.gls-tab-pickup').addClass('active');
+
+            $('.gls-delivery-service').hide();
+            $('.gls-parcel-shop').fadeIn('slow');
+        },
+        showBusinessHours: function() {
+            $(this).hide();
+            $(this).next('.table-container').fadeIn('slow');
+        },
+        closeBusinessHours: function() {
+            $(this).parent('.table-container').hide();
+            $(this).parent('.table-container').prev('.open-business-hours').fadeIn('slow');
         }
+
     });
+
 });
