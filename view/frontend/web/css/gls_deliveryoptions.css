@@ -88,8 +88,13 @@ border-blue:    #D4D9E3;
     border: 1px solid #27324C;
 }
 
+.gls-delivery-options .gls-tab strong {
+    display: none;
+}
+
 .gls-delivery-options .gls-tab.active strong {
     color: #FBC000;
+    display : inline-block;
 }
 
 @media screen and (max-width: 380px){
