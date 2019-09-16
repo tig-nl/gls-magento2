@@ -8,21 +8,29 @@
 
 */
 
+.checkout-index-index .methods-shipping .actions-toolbar {
+    clear: both;
+}
+
 /* Shipping method table ============================================================================================ */
 
 #label_method_tig_gls_tig_gls:before {
-    float               :left;
-    width               :90px;
-    height              :37px;
-    content             :' ';
-    background-image    :url(../images/gls_logo.jpg) !important;
-    background-position :0 2px;
-    background-repeat   :no-repeat;
-    background-size     :auto 33px;
-    margin-top          :-10px;
+    float: left;
+    width: 90px;
+    height: 25px;
+    content: ' ';
+    background-image: url(../images/gls_logo.png) !important;
+    background-position: 0 2px;
+    background-repeat: no-repeat;
+    background-size: auto 20px;
+    margin-top: -4px;
 }
 
 /* Shipping method GLS ============================================================================================== */
+
+.gls-delivery-options {
+    max-width: 500px;
+}
 
 .gls-delivery-options * {
     box-sizing: border-box;
@@ -84,19 +92,29 @@
 
 /* Delivery services ================================================================================================ */
 
-
-
+.gls-delivery-service .delivery-fee {
+    float :right;
+}
 
 /* Pick up points =================================================================================================== */
 
 /* Information */
 
-.gls-parcel-shop .street {
+.gls-parcel-shop .test {
     padding-left: 30px;
 }
 
 .gls-parcel-shop .city {
     padding-left: 10px;
+}
+
+@media screen and (max-width: 440px){
+    .gls-parcel-shop .city {
+        float: left;
+        width: 100%;
+        margin: 5px 0;
+        padding: 0;
+    }
 }
 
 .gls-parcel-shop .distance-meters {
@@ -116,9 +134,24 @@
     background-position : center;
 }
 
+@media screen and (max-width: 440px){
+    .gls-parcel-shop .distance-meters {
+        position: relative;
+        float: left;
+        width: 100%;
+        margin: 5px -5px 15px;
+        padding: 0;
+        right: unset;
+        top: unset;
+    }
+}
+
 /* Business hours */
 
 .gls-parcel-shop .table-container {
+    float: left;
+    width: 100%;
+
     position :relative;
     border: 1px solid #d4d9e3;
     border-radius: 5px;
@@ -137,16 +170,23 @@
     line-height: 23px;
 }
 
-.gls-parcel-shop .table-container .table .row .cell{
+.gls-parcel-shop .table-container .table .row .cell {
     display :table-cell;
 }
 
+@media screen and (max-width: 360px){
+    .gls-parcel-shop .table-container .table .row .cell:nth-child(2) {
+        text-align: right;
+    }
+}
+
 .gls-parcel-shop .open-business-hours {
-    display: block;
     padding-left: 30px;
     margin-top: 15px;
     cursor: pointer;
     color: #003BFB;
+    float: left;
+    width: 100%;
 }
 
 .gls-parcel-shop .open-business-hours:hover {
@@ -159,6 +199,16 @@
     top: 15px;
     right: 10px;
     cursor: pointer;
+}
+
+@media screen and (max-width: 440px){
+    .gls-parcel-shop .close {
+        position: relative;
+        float: right;
+        margin-bottom: 10px;
+        right: unset;
+        top: unset;
+    }
 }
 
 .gls-parcel-shop .close:after {

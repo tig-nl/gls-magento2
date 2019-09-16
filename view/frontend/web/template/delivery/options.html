@@ -39,9 +39,7 @@
         <div class="container gls-delivery-service">
             <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: code, click: $parent.setDeliveryService.bind($parent), attr: { id: code }">
             <label data-bind="i18n: label, attr: { for: code }"></label>
-            <p>
-                <span data-bind="text: fee"></span>
-            </p>
+            <span class="delivery-fee" data-bind="text: fee"></span>
         </div>
     </div>
 
@@ -49,27 +47,25 @@
         <div class="container gls-parcel-shop" style="display: none;">
             <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: parcelShopId, click: $parent.setParcelShopAddress.bind($parent), attr: { id: 'shop_' + parcelShopId }">
             <label data-bind="text: name, attr: { for: 'shop_' + parcelShopId }"></label><br/>
-            <span class="street" data-bind="text: street + ' ' + houseNo"></span>
-            <span class="city" data-bind="text: zipcode + ' ' + city"></span>
-            <span class="distance-meters" data-bind="text: distanceMeters + 'm'"></span>
-
-
+            <div class="test">
+                <span class="street" data-bind="text: street + ' ' + houseNo"></span>
+                <span class="city" data-bind="text: zipcode + ' ' + city"></span>
+                <span class="distance-meters" data-bind="text: distanceMeters + 'm'"></span>
+            </div>
 
             <!-- TODO: binding of showBusinessHours does not work - would like to receive className in DOM -->
-                <a class="open-business-hours" data-bind="click: $parent.showBusinessHours.bind(this), i18n: 'Show business hours'">
+                <a class="open-business-hours" data-bind="click: $parent.showBusinessHours, i18n: 'Show business hours'">
                 </a>
 
                 <div class="table-container">
+                    <a class="close" data-bind="i18n: 'Close'"></a>
                     <div class="table" data-bind="foreach: businessHours"> <!-- style="display: none;"> -->
                         <div class="row">
                             <div class="cell" data-bind="i18n: dayOfWeek"></div>
                             <div class="cell" data-bind="i18n: openTime + ' - ' + closedTime + ' hour'"></div>
                         </div>
                     </div>
-                    <a class="close" data-bind="i18n: 'Close'"></a>
                 </div>
-
-
 
         </div>
     </div>
