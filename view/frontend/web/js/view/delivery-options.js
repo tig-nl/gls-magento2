@@ -33,13 +33,15 @@ define([
     'uiComponent',
     'ko',
     'Magento_Checkout/js/model/quote',
-    'TIG_GLS/js/helper/address-finder'
+    'TIG_GLS/js/helper/address-finder',
+    'Magento_Catalog/js/price-utils'
 ], function (
     $,
     Component,
     ko,
     quote,
-    AddressFinder
+    AddressFinder,
+    priceUtils
 ) {
     'use strict';
 
@@ -50,6 +52,7 @@ define([
             country: null,
             availableServices: ko.observableArray([]),
             parcelShops: ko.observableArray([]),
+            deliveryFee: ko.observable()
         },
 
         initObservable: function () {
@@ -97,6 +100,11 @@ define([
             }.bind(this));
         },
 
+        formatAdditionalFee: function(fee){
+            var formattedFee = '+ ' + priceUtils.formatPrice(fee, quote.getPriceFormat());
+            return formattedFee;
+        },
+
         /**
          * Retrieve Parcel Shops from GLS.
          *
@@ -128,7 +136,12 @@ define([
             };
 
             // TODO: This should be done the Magento-way: shippingAddress.customAttributes.etc.
-            jQuery('input[name="custom_attributes[gls_delivery_option]"]').val(JSON.stringify(deliveryOption));
+            $('input[name="custom_attributes[gls_delivery_option]"]').val(JSON.stringify(deliveryOption));
+
+            $('.gls-delivery-options input[name="gls_delivery_option"]').parent().removeClass('active');
+            $('.gls-delivery-options input[name="gls_delivery_option"]:checked').parent().addClass('active');
+
+            this.deliveryFee(this.formatAdditionalFee(details.fee));
         },
 
         /**
@@ -159,23 +172,24 @@ define([
             $('.gls-tab-pickup').removeClass('active');
             $('.gls-tab-delivery').addClass('active');
 
-            $('.gls-parcel-shop').fadeOut('fast');
+            $('.gls-parcel-shop').hide();
             $('.gls-delivery-service').fadeIn('slow');
         },
-
         showPickup: function () {
             $('.gls-tab-delivery').removeClass('active');
             $('.gls-tab-pickup').addClass('active');
 
-            $('.gls-delivery-service').fadeOut('fast');
+            $('.gls-delivery-service').hide();
             $('.gls-parcel-shop').fadeIn('slow');
+        },
+        showBusinessHours: function() {
+            $(this).hide();
+            $(this).next('.table-container').fadeIn('slow');
+        },
+        closeBusinessHours: function() {
+            $(this).parent('.table-container').hide();
+            $(this).parent('.table-container').prev('.open-business-hours').fadeIn('slow');
         }
-
-        // ,
-        // showBusinessHours: function(event) {
-        //     console.log($(event.currentTarget));
-        //     console.log('test');
-        // }
 
     });
 
