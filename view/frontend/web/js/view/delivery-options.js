@@ -176,19 +176,33 @@ define([
 
             return true;
         },
-        
+    
+        /**
+         * Toggles between Parcel Shops and Delivery Services
+         *
+         * @param previousTab
+         * @param currentTab
+         * @param previousContent
+         * @param currentContent
+         */
         toggleTab: function (previousTab, currentTab, previousContent, currentContent) {
             $(previousTab).removeClass('active');
             $(currentTab).addClass('active');
             $(previousContent).hide();
             $(currentContent).fadeIn('slow');
         },
-        
+    
+        /**
+         * Show Business Hours when link is clicked.
+         */
         showBusinessHours: function () {
             $(this).hide();
             $(this).next('.table-container').fadeIn('slow');
         },
-        
+    
+        /**
+         * Close Business Hours when link is clicked.
+         */
         closeBusinessHours: function () {
             $(this).parent('.table-container').hide();
             $(this).parent('.table-container').prev('.open-business-hours').fadeIn('slow');
