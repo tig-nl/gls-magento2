@@ -94,7 +94,7 @@ class Services
             [
                 self::GLS_CARRIER_SERVICE_BUSINESS_PARCEL,
                 self::GLS_CARRIER_SERVICE_BUSINESS_PARCEL_LABEL,
-                $this->carrierConfig->getBaseHandlingFee()
+                ''
             ]
         );
 

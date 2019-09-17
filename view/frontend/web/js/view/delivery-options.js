@@ -99,9 +99,18 @@ define([
                 this.availableServices(data);
             }.bind(this));
         },
-
-        formatAdditionalFee: function(fee){
-            var formattedFee = '+ ' + priceUtils.formatPrice(fee, quote.getPriceFormat());
+    
+        /**
+         * Format fee if fee is higher than zero.
+         *
+         * @param fee
+         * @returns {string}
+         */
+        formatAdditionalFee: function (fee) {
+            var formattedFee = '';
+            if (fee > 0) {
+                formattedFee = '+ ' + priceUtils.formatPrice(fee, quote.getPriceFormat());
+            }
             return formattedFee;
         },
 
@@ -167,26 +176,20 @@ define([
 
             return true;
         },
-
-        showDelivery: function () {
-            $('.gls-tab-pickup').removeClass('active');
-            $('.gls-tab-delivery').addClass('active');
-
-            $('.gls-parcel-shop').hide();
-            $('.gls-delivery-service').fadeIn('slow');
+        
+        toggleTab: function (previousTab, currentTab, previousContent, currentContent) {
+            $(previousTab).removeClass('active');
+            $(currentTab).addClass('active');
+            $(previousContent).hide();
+            $(currentContent).fadeIn('slow');
         },
-        showPickup: function () {
-            $('.gls-tab-delivery').removeClass('active');
-            $('.gls-tab-pickup').addClass('active');
-
-            $('.gls-delivery-service').hide();
-            $('.gls-parcel-shop').fadeIn('slow');
-        },
-        showBusinessHours: function() {
+        
+        showBusinessHours: function () {
             $(this).hide();
             $(this).next('.table-container').fadeIn('slow');
         },
-        closeBusinessHours: function() {
+        
+        closeBusinessHours: function () {
             $(this).parent('.table-container').hide();
             $(this).parent('.table-container').prev('.open-business-hours').fadeIn('slow');
         }
