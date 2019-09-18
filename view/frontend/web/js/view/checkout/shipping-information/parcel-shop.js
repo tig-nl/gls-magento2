@@ -54,20 +54,9 @@ define([
                 return isSelected;
             }, this);
     
-            this._super().observe([
-                'parcelShopAddress'
-            ]);
+            this._super();
             
             return this;
-        },
-    
-        /**
-         * When parcelShopAddress is set, the template is visible.
-         *
-         * @param address
-         */
-        toggleParcelShopAddress: function (address) {
-            this.parcelShopAddress(address);
         }
     });
 });

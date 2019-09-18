@@ -164,7 +164,7 @@ define([
          */
         setParcelShopAddress: function (address) {
             this.setGlsDeliveryOption('parcel_shop', address);
-            parcelShop().toggleParcelShopAddress(address);
+            parcelShop().parcelShopAddress(address);
 
             return true;
         },
@@ -177,7 +177,7 @@ define([
          */
         setDeliveryService: function (service) {
             this.setGlsDeliveryOption('delivery_service', service);
-            parcelShop().toggleParcelShopAddress(null);
+            parcelShop().parcelShopAddress(null);
     
             return true;
         },
