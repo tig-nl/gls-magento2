@@ -39,12 +39,12 @@ use Magento\Framework\App\Request\Http as Request;
 
 class Context
 {
-    const GLS_BACKEND_SHIPMENT_CREATE        = 'gls_create_label';
-    const GLS_BACKEND_SHIPMENT_CREATE_LABEL  = 'GLS - Create Label';
-    const GLS_BACKEND_SHIPMENT_CONFIRM       = 'gls_confirm_label';
-    const GLS_BACKEND_SHIPMENT_CONFIRM_LABEL = 'GLS - Confirm Label';
-    const GLS_BACKEND_SHIPMENT_DELETE        = 'gls_delete_label';
-    const GLS_BACKEND_SHIPMENT_DELETE_LABEL  = 'GLS - Delete Label';
+    const GLS_ADMINHTML_SHIPMENT_CREATE_BUTTON  = 'gls_create_label';
+    const GLS_ADMINHTML_SHIPMENT_CREATE_LABEL   = 'GLS - Create Label';
+    const GLS_ADMINHTML_SHIPMENT_CONFIRM_BUTTON = 'gls_confirm_label';
+    const GLS_ADMINHTML_SHIPMENT_CONFIRM_LABEL  = 'GLS - Confirm Label';
+    const GLS_ADMINHTML_SHIPMENT_DELETE_BUTTON  = 'gls_delete_label';
+    const GLS_ADMINHTML_SHIPMENT_DELETE_LABEL   = 'GLS - Delete Label';
 
     /** @var ButtonListFactory $buttonList */
     private $buttonList;
@@ -80,8 +80,8 @@ class Context
         // If no label has been created yet.
         $this->addButton(
             $buttonList,
-            self::GLS_BACKEND_SHIPMENT_CREATE,
-            self::GLS_BACKEND_SHIPMENT_CREATE_LABEL,
+            self::GLS_ADMINHTML_SHIPMENT_CREATE_BUTTON,
+            self::GLS_ADMINHTML_SHIPMENT_CREATE_LABEL,
             '',
             'gls-create save primary',
             -1,
