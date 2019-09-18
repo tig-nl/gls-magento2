@@ -34,14 +34,16 @@ define([
     'ko',
     'Magento_Checkout/js/model/quote',
     'TIG_GLS/js/helper/address-finder',
-    'Magento_Catalog/js/price-utils'
+    'Magento_Catalog/js/price-utils',
+    'TIG_GLS/js/view/checkout/shipping-information/parcel-shop'
 ], function (
     $,
     Component,
     ko,
     quote,
     AddressFinder,
-    priceUtils
+    priceUtils,
+    parcelShop
 ) {
     'use strict';
 
@@ -155,12 +157,14 @@ define([
 
         /**
          * Needs to return true, otherwise KnockoutJS prevents default event.
+         * The toggleParcelShopAddress is triggered to control display of the ship-to block.
          *
          * @param address
          * @returns {boolean}
          */
         setParcelShopAddress: function (address) {
             this.setGlsDeliveryOption('parcel_shop', address);
+            parcelShop().parcelShopAddress(address);
 
             return true;
         },
@@ -173,22 +177,37 @@ define([
          */
         setDeliveryService: function (service) {
             this.setGlsDeliveryOption('delivery_service', service);
-
+            parcelShop().parcelShopAddress(null);
+    
             return true;
         },
-        
+    
+        /**
+         * Toggles between Parcel Shops and Delivery Services
+         *
+         * @param previousTab
+         * @param currentTab
+         * @param previousContent
+         * @param currentContent
+         */
         toggleTab: function (previousTab, currentTab, previousContent, currentContent) {
             $(previousTab).removeClass('active');
             $(currentTab).addClass('active');
             $(previousContent).hide();
             $(currentContent).fadeIn('slow');
         },
-        
+    
+        /**
+         * Show Business Hours when link is clicked.
+         */
         showBusinessHours: function () {
             $(this).hide();
             $(this).next('.table-container').fadeIn('slow');
         },
-        
+    
+        /**
+         * Close Business Hours when link is clicked.
+         */
         closeBusinessHours: function () {
             $(this).parent('.table-container').hide();
             $(this).parent('.table-container').prev('.open-business-hours').fadeIn('slow');
