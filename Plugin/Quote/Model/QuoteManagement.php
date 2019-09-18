@@ -62,6 +62,7 @@ class QuoteManagement
      *
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
+    // @codingStandardsIgnoreLine
     public function beforePlaceOrder($subject, $cartId)
     {
         $quote          = $this->cartRepository->getActive($cartId);
@@ -88,6 +89,7 @@ class QuoteManagement
      * @return string
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
+    // @codingStandardsIgnoreLine
     public function afterPlaceOrder($subject, $orderId, $quoteId)
     {
         $order = $this->orderRepository->get($orderId);

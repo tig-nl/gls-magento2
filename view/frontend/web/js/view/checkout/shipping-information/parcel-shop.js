@@ -44,7 +44,7 @@ define([
         initObservable: function () {
             var self = this;
             
-            this.isSelected = ko.computed(function() {
+            this.isSelected = ko.computed(function () {
                 var isSelected = false;
                 
                 if (self.parcelShopAddress() !== null) {

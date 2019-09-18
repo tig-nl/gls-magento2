@@ -39,6 +39,7 @@ define(
         'Magento_Checkout/js/model/step-navigator',
         'Magento_Checkout/js/model/sidebar',
         'TIG_GLS/js/view/checkout/shipping-information/parcel-shop'
+    // @codingStandardsIgnoreLine
     ], function (
         uiComponent,
         $,

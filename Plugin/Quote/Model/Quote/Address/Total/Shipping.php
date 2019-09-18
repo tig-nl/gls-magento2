@@ -47,6 +47,7 @@ class Shipping
      *
      * @return void|mixed
      */
+    // @codingStandardsIgnoreLine
     public function afterCollect($subject, $result, Quote $quote, ShippingAssignmentApi $shippingAssignment, QuoteAddressTotal $total)
     {
         $shipping = $shippingAssignment->getShipping();
@@ -75,7 +76,8 @@ class Shipping
      *
      * @return mixed|null
      */
-    private function getDeliveryOption($address) {
+    private function getDeliveryOption($address)
+    {
         $option = $address->getGlsDeliveryOption();
 
         if (!$option) {
@@ -139,7 +141,8 @@ class Shipping
      * @param $fee
      * @param $description
      */
-    private function adjustTotals($name, $code, $address, $total, $fee, $description) {
+    private function adjustTotals($name, $code, $address, $total, $fee, $description)
+    {
         $total->setTotalAmount($code, $fee);
         $total->setBaseTotalAmount($code, $fee);
         $total->setBaseShippingAmount($fee);
