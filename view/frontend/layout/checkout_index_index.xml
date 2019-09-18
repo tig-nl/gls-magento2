@@ -65,6 +65,17 @@
                                             </item>
                                         </item>
                                     </item>
+                                    <item name="sidebar" xsi:type="array">
+                                        <item name="children" xsi:type="array">
+                                            <item name="tig-gls-parcel-shop-address" xsi:type="array">
+                                                <item name="component" xsi:type="string">TIG_GLS/js/view/checkout/shipping-information/parcel-shop</item>
+                                                <item name="config" xsi:type="array">
+                                                    <item name="deps" xsi:type="string">checkout.steps.shipping-step.shippingAddress</item>
+                                                </item>
+                                                <item name="displayArea" xsi:type="string">shipping-information</item>
+                                            </item>
+                                        </item>
+                                    </item>
                                 </item>
                             </item>
                         </item>

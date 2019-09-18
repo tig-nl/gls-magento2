@@ -1,0 +1,73 @@
+/**
+ *
+ *          ..::..
+ *     ..::::::::::::..
+ *   ::'''''':''::'''''::
+ *   ::..  ..:  :  ....::
+ *   ::::  :::  :  :   ::
+ *   ::::  :::  :  ''' ::
+ *   ::::..:::..::.....::
+ *     ''::::::::::::''
+ *          ''::''
+ *
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Creative Commons License.
+ * It is available through the world-wide-web at this URL:
+ * http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ * If you are unable to obtain it through the world-wide-web, please send an email
+ * to servicedesk@tig.nl so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this module to newer
+ * versions in the future. If you wish to customize this module for your
+ * needs please contact servicedesk@tig.nl for more information.
+ *
+ * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
+ * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ */
+define([
+    'uiComponent',
+    'ko'
+], function (
+    Component,
+    ko
+) {
+    return Component.extend({
+        defaults: {
+            template: 'TIG_GLS/shipping-information/parcel-shop',
+            parcelShopAddress: ko.observable()
+        },
+        
+        initObservable: function () {
+            var self = this;
+            
+            this.isSelected = ko.computed(function() {
+                var isSelected = false;
+                
+                if (self.parcelShopAddress() !== null) {
+                    isSelected = true;
+                }
+                
+                return isSelected;
+            }, this);
+    
+            this._super().observe([
+                'parcelShopAddress'
+            ]);
+            
+            return this;
+        },
+    
+        /**
+         * When parcelShopAddress is set, the template is visible.
+         *
+         * @param address
+         */
+        toggleParcelShopAddress: function (address) {
+            this.parcelShopAddress(address);
+        }
+    });
+});

@@ -34,14 +34,16 @@ define([
     'ko',
     'Magento_Checkout/js/model/quote',
     'TIG_GLS/js/helper/address-finder',
-    'Magento_Catalog/js/price-utils'
+    'Magento_Catalog/js/price-utils',
+    'TIG_GLS/js/view/checkout/shipping-information/parcel-shop'
 ], function (
     $,
     Component,
     ko,
     quote,
     AddressFinder,
-    priceUtils
+    priceUtils,
+    parcelShop
 ) {
     'use strict';
 
@@ -155,12 +157,14 @@ define([
 
         /**
          * Needs to return true, otherwise KnockoutJS prevents default event.
+         * The toggleParcelShopAddress is triggered to control display of the ship-to block.
          *
          * @param address
          * @returns {boolean}
          */
         setParcelShopAddress: function (address) {
             this.setGlsDeliveryOption('parcel_shop', address);
+            parcelShop().toggleParcelShopAddress(address);
 
             return true;
         },
@@ -173,7 +177,8 @@ define([
          */
         setDeliveryService: function (service) {
             this.setGlsDeliveryOption('delivery_service', service);
-
+            parcelShop().toggleParcelShopAddress(null);
+    
             return true;
         },
     
