@@ -77,8 +77,29 @@ class QuoteManagement
         $type           = $deliveryOption->type;
 
         if ($type == 'parcel_shop') {
+            $deliveryOption->deliveryAddress = $this->mapDeliveryAddress($address);
+            $address->setGlsDeliveryOption(json_encode($deliveryOption));
             $this->changeShippingAddress($deliveryOption->details, $address);
         }
+    }
+
+    /**
+     * @param $address
+     *
+     * @return object
+     */
+    private function mapDeliveryAddress($address)
+    {
+        return (object) [
+            'name1'         => $address->getName(),
+            'street'        => $address->getStreetLine(1),
+            'houseNo'       => $address->getStreetLine(2),
+            'countryCode'   => $address->getCountryId(),
+            'zipCode'       => $address->getPostcode(),
+            'city'          => $address->getCity(),
+            'email'         => $address->getEmail(),
+            'addresseeType' => $address->getCompany() ? 'b' : 'p'
+        ];
     }
 
     /**
