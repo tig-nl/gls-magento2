@@ -118,11 +118,9 @@ class Create extends Action
      *
      * @return array
      */
-    // @codingStandardsIgnoreLine
     private function mapLabelData($shipment, $order)
     {
         $deliveryOption = json_decode($order->getGlsDeliveryOption());
-
         return [
             "services"              => $this->mapServices($deliveryOption->details, $deliveryOption->type),
             "trackingLinkType"      => "u",
@@ -244,7 +242,8 @@ class Create extends Action
         return [
             "unitId"   => $shipment->getIncrementId(),
             "unitType" => "cO",
-            "weight"   => $order->getWeight() <= self::GLS_PARCEL_MAX_WEIGHT ? $order->getWeight() : self::GLS_PARCEL_MAX_WEIGHT
+            "weight"   => $order->getWeight() <= self::GLS_PARCEL_MAX_WEIGHT
+                ? $order->getWeight() : self::GLS_PARCEL_MAX_WEIGHT
         ];
     }
 }
