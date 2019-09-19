@@ -34,7 +34,7 @@ namespace TIG\GLS\Webservice\Endpoint\Label;
 
 use TIG\GLS\Webservice\Endpoint\AbstractEndpoint;
 
-class CreateLabel extends AbstractEndpoint
+class Create extends AbstractEndpoint
 {
     // @codingStandardsIgnoreStart
     protected $method = 'POST';

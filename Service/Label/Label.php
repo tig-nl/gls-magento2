@@ -32,17 +32,17 @@
  */
 namespace TIG\GLS\Service\Label;
 
-use TIG\GLS\Webservice\Endpoint\Label\CreateLabel;
+use TIG\GLS\Webservice\Endpoint\Label\Create;
 
 class Label
 {
-    /** @var CreateLabel $createLabel */
+    /** @var Create $createLabel */
     private $createLabel;
 
     /**
-     * @param CreateLabel $createLabel
+     * @param Create $createLabel
      */
-    public function __construct(CreateLabel $createLabel)
+    public function __construct(Create $createLabel)
     {
         $this->createLabel = $createLabel;
     }
