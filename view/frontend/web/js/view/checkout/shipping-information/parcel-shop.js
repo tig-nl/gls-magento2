@@ -28,15 +28,35 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-var config = {
-    config: {
-        mixins: {
-            'Magento_Checkout/js/action/set-shipping-information': {
-                'TIG_GLS/js/action/set-shipping-information-mixin': true
-            },
-            'Magento_Checkout/js/view/shipping-information': {
-                'TIG_GLS/js/view/shipping-information-mixin': true
-            }
+define([
+    'uiComponent',
+    'ko'
+], function (
+    Component,
+    ko
+) {
+    return Component.extend({
+        defaults: {
+            template: 'TIG_GLS/shipping-information/parcel-shop',
+            parcelShopAddress: ko.observable()
+        },
+        
+        initObservable: function () {
+            var self = this;
+            
+            this.isSelected = ko.computed(function () {
+                var isSelected = false;
+                
+                if (self.parcelShopAddress() !== null) {
+                    isSelected = true;
+                }
+                
+                return isSelected;
+            }, this);
+    
+            this._super();
+            
+            return this;
         }
-    }
-};
+    });
+});

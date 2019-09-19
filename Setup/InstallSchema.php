@@ -42,6 +42,7 @@ class InstallSchema implements InstallSchemaInterface
     const GLS_DELIVERY_OPTION                = 'gls_delivery_option';
     const GLS_DELIVERY_OPTION_LABEL          = 'GLS Delivery Option';
     const GLS_DELIVERY_OPTION_COLUMN         = [
+        // @codingStandardsIgnoreLine
         'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
         'nullable' => true,
         'default'  => null,
@@ -57,10 +58,9 @@ class InstallSchema implements InstallSchemaInterface
      * @param SchemaSetupInterface   $setup
      * @param ModuleContextInterface $context
      */
-    public function install(
-        SchemaSetupInterface $setup,
-        ModuleContextInterface $context
-    ) {
+    // @codingStandardsIgnoreLine
+    public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
+    {
         $installer = $setup;
         $installer->startSetup();
 
