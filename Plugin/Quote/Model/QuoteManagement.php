@@ -76,14 +76,20 @@ class QuoteManagement
         $deliveryOption = json_decode($deliveryOption);
         $type           = $deliveryOption->type;
 
-        if ($type == 'parcel_shop') {
+        if (!isset($deliveryOption->deliveryAddress)) {
             $deliveryOption->deliveryAddress = $this->mapDeliveryAddress($address);
             $address->setGlsDeliveryOption(json_encode($deliveryOption));
+        }
+
+        if ($type == 'parcel_shop') {
             $this->changeShippingAddress($deliveryOption->details, $address);
         }
     }
 
     /**
+     * We're saving the DeliveryAddress in the format required by GLS API, so we
+     * can always provide it in the same way for either parcel_shop or delivery_service.
+     *
      * @param $address
      *
      * @return object
