@@ -61,7 +61,6 @@ class Validate extends Action
      */
     public function execute()
     {
-        // TO DO: Change htis to the authorize call whenever it's available.
         $validation = $this->validationAPI->call();
 
         $this->_response->setBody('nok');
