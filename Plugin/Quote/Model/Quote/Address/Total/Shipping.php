@@ -86,7 +86,7 @@ class Shipping
 
         $option = json_decode($option);
 
-        if ($option->type != 'delivery_service') {
+        if ($option->type != 'deliveryService') {
             return null;
         }
 

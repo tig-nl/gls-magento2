@@ -32,22 +32,36 @@
 
 namespace TIG\GLS\Plugin\Backend\Block\Widget;
 
+use Magento\Backend\Block\Template as BackendTemplate;
 use Magento\Backend\Block\Widget\Context as BackendContext;
 use Magento\Backend\Block\Widget\Button\ButtonList;
 use Magento\Backend\Block\Widget\Button\ButtonListFactory;
 use Magento\Framework\App\Request\Http as Request;
+use Magento\Sales\Api\ShipmentRepositoryInterface;
 
 class Context
 {
-    const GLS_ADMINHTML_SHIPMENT_CREATE_BUTTON  = 'gls_create_label';
-    const GLS_ADMINHTML_SHIPMENT_CREATE_LABEL   = 'GLS - Create Label';
-    const GLS_ADMINHTML_SHIPMENT_CONFIRM_BUTTON = 'gls_confirm_label';
-    const GLS_ADMINHTML_SHIPMENT_CONFIRM_LABEL  = 'GLS - Confirm Label';
-    const GLS_ADMINHTML_SHIPMENT_DELETE_BUTTON  = 'gls_delete_label';
-    const GLS_ADMINHTML_SHIPMENT_DELETE_LABEL   = 'GLS - Delete Label';
+    const GLS_ADMIN_LABEL_CREATE_BUTTON  = 'gls_label_create';
+    const GLS_ADMIN_LABEL_CREATE_LABEL   = 'GLS - Create Label';
+    const GLS_ADMIN_LABEL_CREATE_URI     = 'gls/label/create';
+    const GLS_ADMIN_LABEL_PRINT_BUTTON   = 'gls_label_print';
+    const GLS_ADMIN_LABEL_PRINT_LABEL    = 'GLS - Print Label';
+    const GLS_ADMIN_LABEL_PRINT_URI      = 'gls/label/print';
+    const GLS_ADMIN_LABEL_CONFIRM_BUTTON = 'gls_label_confirm';
+    const GLS_ADMIN_LABEL_CONFIRM_LABEL  = 'GLS - Confirm Label';
+    const GLS_ADMIN_LABEL_CONFIRM_URI    = 'gls/label/confirm';
+    const GLS_ADMIN_LABEL_DELETE_BUTTON  = 'gls_label_delete';
+    const GLS_ADMIN_LABEL_DELETE_LABEL   = 'GLS - Delete Label';
+    const GLS_ADMIN_LABEL_DELETE_URI     = 'gls/label/delete';
+
+    /** @var BackendTemplate $template */
+    private $template;
 
     /** @var ButtonListFactory $buttonList */
     private $buttonList;
+
+    /** @var ShipmentRepositoryInterface $shipments */
+    private $shipments;
 
     /**
      * Context constructor.
@@ -55,47 +69,60 @@ class Context
      * @param ButtonListFactory $buttonList
      */
     public function __construct(
-        ButtonListFactory $buttonList
+        BackendTemplate $template,
+        ButtonListFactory $buttonList,
+        ShipmentRepositoryInterface $shipments
     ) {
+        $this->template   = $template;
         $this->buttonList = $buttonList;
+        $this->shipments  = $shipments;
     }
 
     /**
      * @param BackendContext $subject
+     * @param                $buttonList
      *
-     * @return void|ButtonList
+     * @return ButtonList
      */
-    // @codingStandardsIgnoreLine
-    public function afterGetButtonList(BackendContext $subject)
+    public function afterGetButtonList(BackendContext $subject, $buttonList)
     {
         /** @var Request $request */
         $request = $subject->getRequest();
 
         if ($request->getFullActionName() !== 'adminhtml_order_shipment_view') {
-            return;
+            return $buttonList;
+        }
+
+        $shipmentId = $request->getParam('shipment_id');
+        $shipment   = $this->shipments->get($shipmentId);
+        $order      = $shipment->getOrder();
+
+        if ($order->getShippingMethod() !== 'tig_gls_tig_gls') {
+            return $buttonList;
         }
 
         $buttonList = $this->buttonList->create();
 
-        // If no label has been created yet.
+        // If no label has been created yet, only show create label.
         $this->addButton(
             $buttonList,
-            self::GLS_ADMINHTML_SHIPMENT_CREATE_BUTTON,
-            self::GLS_ADMINHTML_SHIPMENT_CREATE_LABEL,
-            '',
+            self::GLS_ADMIN_LABEL_CREATE_BUTTON,
+            self::GLS_ADMIN_LABEL_CREATE_LABEL,
+            self::GLS_ADMIN_LABEL_CREATE_URI,
             'gls-create save primary',
             -1,
-            0
+            0,
+            $shipmentId
         );
-        // If a label is created, show confirm and delete button.
+        // If a label is created, show print, confirm and delete button.
 
-        // If label is confirmed, only show delete button.
+        // If label is confirmed, only show print and delete button.
 
         return $buttonList;
     }
 
     /**
-     * Add a button
+     * Add button pointing to controller URL with shipment_id embedded as param.
      *
      * @param ButtonList $list
      * @param            $code
@@ -104,14 +131,17 @@ class Context
      * @param            $class
      * @param            $position
      * @param            $sortOrder
+     * @param            $shipmentId
      */
-    private function addButton(ButtonList $list, $code, $label, $controller, $class, $position, $sortOrder)
+    private function addButton(ButtonList $list, $code, $label, $controller, $class, $position, $sortOrder, $shipmentId)
     {
+        $url        = $this->template->getUrl($controller, ['shipment_id' => $shipmentId]);
+
         $list->add(
             $code,
             [
                 'label'   => __($label),
-                'onclick' => $controller,
+                'onclick' => 'setLocation(\'' . $url . '\')',
                 'class'   => $class
             ],
             $position,

@@ -65,9 +65,10 @@ class QuoteManagement
     // @codingStandardsIgnoreLine
     public function beforePlaceOrder($subject, $cartId)
     {
-        $quote          = $this->cartRepository->getActive($cartId);
-        $address        = $quote->getShippingAddress();
-        $deliveryOption = $address->getGlsDeliveryOption();
+        $quote           = $this->cartRepository->getActive($cartId);
+        $shippingAddress = $quote->getShippingAddress();
+        $billingAddress  = $quote->getBillingAddress();
+        $deliveryOption  = $shippingAddress->getGlsDeliveryOption();
 
         if (!$deliveryOption) {
             return;
@@ -77,34 +78,35 @@ class QuoteManagement
         $type           = $deliveryOption->type;
 
         if (!isset($deliveryOption->deliveryAddress)) {
-            $deliveryOption->deliveryAddress = $this->mapDeliveryAddress($address);
-            $address->setGlsDeliveryOption(json_encode($deliveryOption));
+            $deliveryOption->deliveryAddress = $this->mapDeliveryAddress($shippingAddress, $billingAddress);
+            $shippingAddress->setGlsDeliveryOption(json_encode($deliveryOption));
         }
 
-        if ($type == 'parcel_shop') {
-            $this->changeShippingAddress($deliveryOption->details, $address);
+        if ($type == 'parcelShop') {
+            $this->changeShippingAddress($deliveryOption->details, $shippingAddress);
         }
     }
 
     /**
      * We're saving the DeliveryAddress in the format required by GLS API, so we
-     * can always provide it in the same way for either parcel_shop or delivery_service.
+     * can always provide it in the same way for either service type.
      *
-     * @param $address
+     * @param $shipping
      *
      * @return object
      */
-    private function mapDeliveryAddress($address)
+    private function mapDeliveryAddress($shipping, $billing)
     {
         return (object) [
-            'name1'         => $address->getName(),
-            'street'        => $address->getStreetLine(1),
-            'houseNo'       => $address->getStreetLine(2),
-            'countryCode'   => $address->getCountryId(),
-            'zipCode'       => $address->getPostcode(),
-            'city'          => $address->getCity(),
-            'email'         => $address->getEmail(),
-            'addresseeType' => $address->getCompany() ? 'b' : 'p'
+            'name1'         => $shipping->getName(),
+            'street'        => $shipping->getStreetLine(1),
+            'houseNo'       => $shipping->getStreetLine(2),
+            'countryCode'   => $shipping->getCountryId(),
+            'zipCode'       => $shipping->getPostcode(),
+            'city'          => $shipping->getCity(),
+            // If Shipping Address is same as Billing Address, Email is only saved in Billing.
+            'email'         => $shipping->getEmail() ?: $billing->getEmail(),
+            'addresseeType' => $shipping->getCompany() ? 'b' : 'p'
         ];
     }
 
