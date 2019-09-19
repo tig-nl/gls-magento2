@@ -107,8 +107,8 @@ class InstallSchema implements InstallSchemaInterface
     {
         $table = $connection->newTable(self::GLS_TABLE_SHIPMENT_LABEL);
 
-        $this->addInteger($table, 'entity_id', 10, true, true);
-        $this->addInteger($table, 'shipment_id', 10);
+        $this->addInteger($table, 'entity_id', 10, true, true, 'GLS Entity ID');
+        $this->addInteger($table, 'shipment_id', 10, false, false, 'Magento Shipment ID');
 
         $foreignKey = $installer->getFkName(
             self::GLS_TABLE_SHIPMENT_LABEL,
