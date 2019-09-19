@@ -30,11 +30,11 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\GLS\Webservice\Endpoint\DeliveryOptions;
+namespace TIG\GLS\Webservice\Endpoint\ParcelShop;
 
 use TIG\GLS\Webservice\Endpoint\AbstractEndpoint;
 
-class ParcelShops extends AbstractEndpoint
+class GetParcelShops extends AbstractEndpoint
 {
     // @codingStandardsIgnoreStart
     protected $method = 'POST';
