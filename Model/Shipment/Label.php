@@ -35,10 +35,10 @@ namespace TIG\GLS\Model\Shipment;
 use Magento\Framework\Model\AbstractModel;
 use TIG\GLS\Api\Shipment\Data\LabelInterface;
 
+// @codingStandardsIgnoreFile
 class Label extends AbstractModel implements LabelInterface
 {
     /** @var string */
-    // @codingStandardsIgnoreLine
     protected $_idFieldName = 'entity_id';
 
     const GLS_SHIPMENT_LABEL_SHIPMENT_ID        = 'shipment_id';
