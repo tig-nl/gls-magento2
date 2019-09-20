@@ -44,9 +44,6 @@ class Confirm extends AbstractLabel
     /** @var ConfirmLabelEndpoint $confirm */
     private $confirm;
 
-    /** @var LabelRepositoryInterface $label */
-    private $label;
-
     /**
      * Confirm constructor.
      *
@@ -61,10 +58,9 @@ class Confirm extends AbstractLabel
         ConfirmLabelEndpoint $confirm,
         LabelRepositoryInterface $labelRepository
     ) {
-        parent::__construct($context, $label);
+        parent::__construct($context, $label, $labelRepository);
 
         $this->confirm = $confirm;
-        $this->label   = $labelRepository;
     }
 
     /**
@@ -73,8 +69,7 @@ class Confirm extends AbstractLabel
      */
     public function execute()
     {
-        $shipmentId     = $this->getShipmentId();
-        $label          = $this->label->getByShipmentId($shipmentId);
+        $label          = $this->getLabelByShipmentId();
         $data           = $this->addShippingInformation();
         $data['unitNo'] = $label->getUnitNo();
 
@@ -88,6 +83,6 @@ class Confirm extends AbstractLabel
             $label->save();
         }
 
-        return $this->redirectToShipmentView($shipmentId);
+        return $this->redirectToShipmentView($this->getShipmentId());
     }
 }

@@ -40,8 +40,6 @@ use TIG\GLS\Webservice\Endpoint\Label\Delete as DeleteLabelEndpoint;
 
 class Delete extends AbstractLabel
 {
-    private $labelRepository;
-
     private $delete;
 
     public function __construct(
@@ -50,17 +48,15 @@ class Delete extends AbstractLabel
         LabelRepositoryInterface $labelRepository,
         DeleteLabelEndpoint $delete
     ) {
-        parent::__construct($context, $label);
+        parent::__construct($context, $label, $labelRepository);
 
-        $this->labelRepository = $labelRepository;
         $this->delete = $delete;
     }
 
     public function execute()
     {
-        $shipmentId = $this->getShipmentId();
-        $label = $this->labelRepository->getByShipmentId($shipmentId);
-        $data = $this->addShippingInformation();
+        $label          = $this->getLabelByShipmentId();
+        $data           = $this->addShippingInformation();
         $data['unitNo'] = $label->getUnitNo();
 
         $this->delete->setRequestData($data);
@@ -72,6 +68,6 @@ class Delete extends AbstractLabel
             $label->delete();
         }
 
-        return $this->redirectToShipmentView($shipmentId);
+        return $this->redirectToShipmentView($this->getShipmentId());
     }
 }

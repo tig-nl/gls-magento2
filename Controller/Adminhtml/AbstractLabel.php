@@ -35,6 +35,7 @@ namespace TIG\GLS\Controller\Adminhtml;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Request\Http as Request;
+use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 use TIG\GLS\Model\Shipment\Label;
 use TIG\GLS\Model\Shipment\LabelFactory;
 
@@ -45,6 +46,9 @@ abstract class AbstractLabel extends Action
     /** @var Label $label */
     private $label;
 
+    /** @var LabelRepositoryInterface $labelRepository */
+    private $labelRepository;
+
     /** @var $errorMessage */
     private $errorMessage;
 
@@ -54,16 +58,19 @@ abstract class AbstractLabel extends Action
     /**
      * AbstractLabel constructor.
      *
-     * @param Context      $context
-     * @param LabelFactory $label
+     * @param Context                  $context
+     * @param LabelFactory             $label
+     * @param LabelRepositoryInterface $labelRepository
      */
     public function __construct(
         Context $context,
-        LabelFactory $label
+        LabelFactory $label,
+        LabelRepositoryInterface $labelRepository
     ) {
         parent::__construct($context);
 
         $this->label = $label;
+        $this->labelRepository = $labelRepository;
     }
 
     /**
@@ -72,6 +79,16 @@ abstract class AbstractLabel extends Action
     public function createLabelFactory()
     {
         return $this->label->create();
+    }
+
+    /**
+     * @return \TIG\Gls\Api\Shipment\Data\LabelInterface
+     */
+    public function getLabelByShipmentId()
+    {
+        $shipmentId = $this->getShipmentId();
+
+        return $this->labelRepository->getByShipmentId($shipmentId);
     }
 
     /**

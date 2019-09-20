@@ -47,7 +47,7 @@ class Context
     const GLS_ADMIN_LABEL_CREATE_URI     = 'gls/label/create';
     const GLS_ADMIN_LABEL_PRINT_BUTTON   = 'gls_label_print';
     const GLS_ADMIN_LABEL_PRINT_LABEL    = 'GLS - Print Label';
-    const GLS_ADMIN_LABEL_PRINT_URI      = 'gls/label/print';
+    const GLS_ADMIN_LABEL_PRINT_URI      = 'gls/label/printPdf';
     const GLS_ADMIN_LABEL_CONFIRM_BUTTON = 'gls_label_confirm';
     const GLS_ADMIN_LABEL_CONFIRM_LABEL  = 'GLS - Confirm Label';
     const GLS_ADMIN_LABEL_CONFIRM_URI    = 'gls/label/confirm';
@@ -185,7 +185,8 @@ class Context
             0,
             [
                 'shipment_id' => $shipmentId
-            ]
+            ],
+            '_blank'
         );
     }
 
@@ -220,15 +221,16 @@ class Context
      * @param array      $params
      */
     // @codingStandardsIgnoreLine
-    private function addButton(ButtonList $list, $code, $label, $controller, $class, $position, $sortOrder, $params = [])
+    private function addButton(ButtonList $list, $code, $label, $controller, $class, $position, $sortOrder, $params = [], $target = '_self')
     {
-        $url = $this->template->getUrl($controller, $params);
+        $url     = $this->template->getUrl($controller, $params);
+        $onClick = "window.open('$url', '$target')";
 
         $list->add(
             $code,
             [
                 'label'   => __($label),
-                'onclick' => 'setLocation(\'' . $url . '\')',
+                'onclick' => $onClick,
                 'class'   => $class
             ],
             $position,

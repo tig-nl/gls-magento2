@@ -36,6 +36,7 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Sales\Api\ShipmentRepositoryInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 use TIG\GLS\Controller\Adminhtml\AbstractLabel;
 use TIG\GLS\Model\Shipment\Label;
 use TIG\GLS\Model\Shipment\LabelFactory;
@@ -73,6 +74,7 @@ class Create extends AbstractLabel
      * @param ScopeConfigInterface        $scopeConfig
      * @param ShipmentRepositoryInterface $shipments
      * @param OrderRepositoryInterface    $orders
+     * @param LabelRepositoryInterface    $labelRepository
      * @param LabelFactory                $label
      * @param CreateLabelEndpoint         $createLabel
      */
@@ -81,12 +83,14 @@ class Create extends AbstractLabel
         ScopeConfigInterface $scopeConfig,
         ShipmentRepositoryInterface $shipments,
         OrderRepositoryInterface $orders,
+        LabelRepositoryInterface $labelRepository,
         LabelFactory $label,
         CreateLabelEndpoint $createLabel
     ) {
         parent::__construct(
             $context,
-            $label
+            $label,
+            $labelRepository
         );
 
         $this->scopeConfig = $scopeConfig;
