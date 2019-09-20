@@ -33,8 +33,9 @@
 namespace TIG\GLS\Model\Shipment;
 
 use Magento\Framework\Model\AbstractModel;
+use TIG\GLS\Api\Shipment\Data\LabelInterface;
 
-class Label extends AbstractModel
+class Label extends AbstractModel implements LabelInterface
 {
     /** @var string */
     // @codingStandardsIgnoreLine
@@ -51,5 +52,75 @@ class Label extends AbstractModel
     public function _construct()
     {
         $this->_init("\TIG\GLS\Model\ResourceModel\Shipment\Label");
+    }
+
+    public function getShipmentId()
+    {
+        return $this->_getData(self::GLS_SHIPMENT_LABEL_SHIPMENT_ID);
+    }
+
+    public function setShipmentId($shipmentId)
+    {
+        return $this->setData(self::GLS_SHIPMENT_LABEL_SHIPMENT_ID, $shipmentId);
+    }
+
+    public function getUnitId()
+    {
+        return $this->_getData(self::GLS_SHIPMENT_LABEL_UNIT_ID);
+    }
+
+    public function setUnitId($unitId)
+    {
+        return $this->setData(self::GLS_SHIPMENT_LABEL_UNIT_ID, $unitId);
+    }
+
+    public function getUnitNo()
+    {
+        return $this->_getData(self::GLS_SHIPMENT_LABEL_UNIT_NO);
+    }
+
+    public function setUnitNo($unitNo)
+    {
+        return $this->setData(self::GLS_SHIPMENT_LABEL_UNIT_NO, $unitNo);
+    }
+
+    public function getUniqueNo()
+    {
+        return $this->_getData(self::GLS_SHIPMENT_LABEL_UNIQUE_NO);
+    }
+
+    public function setUniqueNo($uniqueNo)
+    {
+        return $this->setData(self::GLS_SHIPMENT_LABEL_UNIQUE_NO, $uniqueNo);
+    }
+
+    public function getIsConfirmed()
+    {
+        return $this->_getData(self::GLS_SHIPMENT_LABEL_CONFIRMED);
+    }
+
+    public function isConfirmed($confirmed)
+    {
+        return $this->setData(self::GLS_SHIPMENT_LABEL_CONFIRMED, $confirmed);
+    }
+
+    public function getLabel()
+    {
+        return $this->_getData(self::GLS_SHIPMENT_LABEL_LABEL);
+    }
+
+    public function setLabel($label)
+    {
+        return $this->setData(self::GLS_SHIPMENT_LABEL_LABEL, $label);
+    }
+
+    public function getUnitTrackingLink()
+    {
+        return $this->_getData(self::GLS_SHIPMENT_LABEL_UNIT_TRACKING_LINK);
+    }
+
+    public function setUnitTrackingLink($url)
+    {
+        return $this->setData(self::GLS_SHIPMENT_LABEL_UNIT_TRACKING_LINK, $url);
     }
 }

@@ -38,6 +38,7 @@ use Magento\Backend\Block\Widget\Button\ButtonList;
 use Magento\Backend\Block\Widget\Button\ButtonListFactory;
 use Magento\Framework\App\Request\Http as Request;
 use Magento\Sales\Api\ShipmentRepositoryInterface;
+use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 
 class Context
 {
@@ -63,6 +64,9 @@ class Context
     /** @var ShipmentRepositoryInterface $shipments */
     private $shipments;
 
+    /** @var LabelRepositoryInterface $labelRepository */
+    private $labelRepository;
+
     /**
      * Context constructor.
      *
@@ -71,11 +75,13 @@ class Context
     public function __construct(
         BackendTemplate $template,
         ButtonListFactory $buttonList,
-        ShipmentRepositoryInterface $shipments
+        ShipmentRepositoryInterface $shipments,
+        LabelRepositoryInterface $labelRepository
     ) {
-        $this->template   = $template;
-        $this->buttonList = $buttonList;
-        $this->shipments  = $shipments;
+        $this->template        = $template;
+        $this->buttonList      = $buttonList;
+        $this->shipments       = $shipments;
+        $this->labelRepository = $labelRepository;
     }
 
     /**
@@ -102,16 +108,20 @@ class Context
         }
 
         $buttonList = $this->buttonList->create();
+        $label      = $this->labelRepository->getByShipmentId($shipmentId);
 
-        // If no label has been created yet, only show create label.
-        $this->addCreateButton($buttonList, $shipmentId);
+        if (!$label) {
+            $this->addCreateButton($buttonList, $shipmentId);
 
-        // If a label is created, show print, confirm and delete button.
+            return $buttonList;
+        }
+
+        if (!$label->getIsConfirmed()) {
+            $this->addConfirmButton($buttonList, $shipmentId);
+        }
+
         $this->addPrintButton($buttonList, $shipmentId);
-        $this->addConfirmButton($buttonList, $shipmentId);
         $this->addDeleteButton($buttonList, $shipmentId);
-
-        // If label is confirmed, only show print and delete button.
 
         return $buttonList;
     }
@@ -128,7 +138,7 @@ class Context
             self::GLS_ADMIN_LABEL_CREATE_LABEL,
             self::GLS_ADMIN_LABEL_CREATE_URI,
             'gls-create save primary',
-            -1,
+            0,
             0,
             [
                 'shipment_id' => $shipmentId
@@ -168,7 +178,7 @@ class Context
             self::GLS_ADMIN_LABEL_CONFIRM_LABEL,
             self::GLS_ADMIN_LABEL_CONFIRM_URI,
             'gls-confirm save primary',
-            -2,
+            0,
             0,
             [
                 'shipment_id' => $shipmentId
@@ -188,7 +198,7 @@ class Context
             self::GLS_ADMIN_LABEL_DELETE_LABEL,
             self::GLS_ADMIN_LABEL_DELETE_URI,
             'gls-delete save primary',
-            -3,
+            1,
             0,
             [
                 'shipment_id' => $shipmentId

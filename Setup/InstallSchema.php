@@ -37,6 +37,7 @@ use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
+use TIG\GLS\Model\Shipment\Label;
 
 // @codingStandardsIgnoreFile
 class InstallSchema implements InstallSchemaInterface
@@ -107,14 +108,14 @@ class InstallSchema implements InstallSchemaInterface
         $table = $connection->newTable(self::GLS_TABLE_SHIPMENT_LABEL);
 
         $this->addInteger($table, 'entity_id', 10, true, true, 'GLS Entity ID');
-        $this->addInteger($table, 'shipment_id', 10, false, false, 'Magento Shipment ID');
-        $this->addForeignKey($installer, $table, self::GLS_TABLE_SHIPMENT_LABEL, 'shipment_id', 'sales_shipment', 'entity_id', Table::ACTION_CASCADE);
-        $this->addText($table, 'unit_id', 50, 'Unit ID');
-        $this->addText($table, 'unit_no', 50, 'Unit Number');
-        $this->addText($table, 'unique_no', 50, 'Unique Number');
-        $this->addBool($table, 'confirmed', 'Is Confirmed?');
-        $this->addBlob($table, 'label', 'GLS Label (Base64 encoded)');
-        $this->addText($table, 'unit_tracking_link', 256, 'GLS Tracking Link');
+        $this->addInteger($table, Label::GLS_SHIPMENT_LABEL_SHIPMENT_ID, 10, false, false, 'Magento Shipment ID');
+        $this->addForeignKey($installer, $table, self::GLS_TABLE_SHIPMENT_LABEL, Label::GLS_SHIPMENT_LABEL_SHIPMENT_ID, 'sales_shipment', 'entity_id', Table::ACTION_CASCADE);
+        $this->addText($table, Label::GLS_SHIPMENT_LABEL_UNIT_ID, 50, 'Unit ID');
+        $this->addText($table, Label::GLS_SHIPMENT_LABEL_UNIT_NO, 50, 'Unit Number');
+        $this->addText($table, Label::GLS_SHIPMENT_LABEL_UNIQUE_NO, 50, 'Unique Number');
+        $this->addBool($table, Label::GLS_SHIPMENT_LABEL_CONFIRMED, 'Is Confirmed?');
+        $this->addBlob($table, Label::GLS_SHIPMENT_LABEL_LABEL, 'GLS Label (Base64 encoded)');
+        $this->addText($table, Label::GLS_SHIPMENT_LABEL_UNIT_TRACKING_LINK, 256, 'GLS Tracking Link');
 
         $connection->createTable($table);
     }
