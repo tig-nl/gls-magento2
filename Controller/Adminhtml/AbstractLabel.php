@@ -58,7 +58,7 @@ abstract class AbstractLabel extends Action
     }
 
     /**
-     * @return mixed
+     * @return Label
      */
     public function createLabelFactory()
     {
