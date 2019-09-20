@@ -63,7 +63,6 @@ class InstallSchema implements InstallSchemaInterface
      *
      * @throws \Zend_Db_Exception
      */
-    // @codingStandardsIgnoreLine
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
         $installer = $setup;
@@ -109,43 +108,44 @@ class InstallSchema implements InstallSchemaInterface
 
         $this->addInteger($table, 'entity_id', 10, true, true, 'GLS Entity ID');
         $this->addInteger($table, 'shipment_id', 10, false, false, 'Magento Shipment ID');
+        $this->addForeignKey($installer, $table, self::GLS_TABLE_SHIPMENT_LABEL, 'shipment_id', 'sales_shipment', 'entity_id', Table::ACTION_CASCADE);
+        $this->addText($table, 'unit_id', 50, 'Unit ID');
+        $this->addText($table, 'unit_no', 50, 'Unit Number');
+        $this->addText($table, 'unique_no', 50, 'Unique Number');
+        $this->addBool($table, 'confirmed', 'Is Confirmed?');
+        $this->addBlob($table, 'label', 'GLS Label (Base64 encoded)');
+        $this->addText($table, 'unit_tracking_link', 256, 'GLS Tracking Link');
 
+        $connection->createTable($table);
+    }
+
+    /**
+     * @param SchemaSetupInterface $installer
+     * @param Table                $table
+     * @param                      $primaryTable
+     * @param                      $primaryColumn
+     * @param                      $referenceTable
+     * @param                      $referenceColumn
+     * @param                      $onDeleteAction
+     *
+     * @throws \Zend_Db_Exception
+     */
+    private function addForeignKey(SchemaSetupInterface $installer, Table $table, $primaryTable, $primaryColumn, $referenceTable, $referenceColumn, $onDeleteAction)
+    {
         $foreignKey = $installer->getFkName(
-            self::GLS_TABLE_SHIPMENT_LABEL,
-            'shipment_id',
-            'sales_shipment',
-            'entity_id'
+            $primaryTable,
+            $primaryColumn,
+            $referenceTable,
+            $referenceColumn
         );
 
         $table->addForeignKey(
             $foreignKey,
-            'shipment_id',
-            self::GLS_TABLE_SHIPMENT_LABEL,
-            'entity_id',
-            Table::ACTION_CASCADE
+            $primaryColumn,
+            $primaryTable,
+            $referenceColumn,
+            $onDeleteAction
         );
-
-        $this->addText($table, 'unit_id', 50, 'Unit ID');
-        $this->addText($table, 'unit_no', 50, 'Unit Number');
-        $this->addText($table, 'unique_no', 50, 'Unique Number');
-
-        $table->addColumn(
-            'label',
-            Table::TYPE_BLOB,
-            null,
-            [
-                'identity' => false,
-                'unsigned' => false,
-                'nullable' => true,
-                'primary'  => false,
-                'default'  => null,
-            ],
-            'GLS Label (Base64)'
-        );
-
-        $this->addText($table, 'unit_tracking_link', 256, 'GLS Tracking Link');
-
-        $connection->createTable($table);
     }
 
     /**
@@ -189,6 +189,51 @@ class InstallSchema implements InstallSchemaInterface
             $size,
             [
                 'nullable' => true,
+                'default'  => null
+            ],
+            $comment
+        );
+    }
+
+    /**
+     * @param Table $table
+     * @param       $name
+     *
+     * @throws \Zend_Db_Exception
+     */
+    private function addBool(Table $table, $name, $comment)
+    {
+        $table->addColumn(
+            $name,
+            Table::TYPE_BOOLEAN,
+            null,
+            [
+                'nullable' => false,
+                'default'  => false,
+                'unsigned' => true
+            ],
+            $comment
+        );
+    }
+
+    /**
+     * @param Table $table
+     * @param       $name
+     * @param       $comment
+     *
+     * @throws \Zend_Db_Exception
+     */
+    private function addBlob(Table $table, $name, $comment)
+    {
+        $table->addColumn(
+            $name,
+            Table::TYPE_BLOB,
+            null,
+            [
+                'identity' => false,
+                'unsigned' => false,
+                'nullable' => true,
+                'primary'  => false,
                 'default'  => null
             ],
             $comment
