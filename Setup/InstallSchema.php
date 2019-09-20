@@ -142,7 +142,7 @@ class InstallSchema implements InstallSchemaInterface
         $table->addForeignKey(
             $foreignKey,
             $primaryColumn,
-            $primaryTable,
+            $referenceTable,
             $referenceColumn,
             $onDeleteAction
         );
