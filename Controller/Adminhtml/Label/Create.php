@@ -32,14 +32,17 @@
 
 namespace TIG\GLS\Controller\Adminhtml\Label;
 
-use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\Request\Http as Request;
 use Magento\Sales\Api\ShipmentRepositoryInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use TIG\GLS\Controller\Adminhtml\AbstractLabel;
+use TIG\GLS\Model\Shipment\Label;
+use TIG\GLS\Model\Shipment\LabelFactory;
 use TIG\GLS\Webservice\Endpoint\Label\Create as CreateLabelEndpoint;
 
-class Create extends Action
+class Create extends AbstractLabel
 {
     const ADMIN_ORDER_SHIPMENT_VIEW_URI                   = 'adminhtml/order_shipment/view';
     const XPATH_CONFIG_TRANS_IDENT_SUPPORT_NAME           = 'trans_email/ident_support/name';
@@ -68,17 +71,25 @@ class Create extends Action
     /**
      * Create constructor.
      *
-     * @param Context             $context
-     * @param CreateLabelEndpoint $createLabel
+     * @param Context                     $context
+     * @param ScopeConfigInterface        $scopeConfig
+     * @param ShipmentRepositoryInterface $shipments
+     * @param OrderRepositoryInterface    $orders
+     * @param LabelFactory                $label
+     * @param CreateLabelEndpoint         $createLabel
      */
     public function __construct(
         Context $context,
         ScopeConfigInterface $scopeConfig,
         ShipmentRepositoryInterface $shipments,
         OrderRepositoryInterface $orders,
+        LabelFactory $label,
         CreateLabelEndpoint $createLabel
     ) {
-        parent::__construct($context);
+        parent::__construct(
+            $context,
+            $label
+        );
 
         $this->scopeConfig = $scopeConfig;
         $this->shipments   = $shipments;
@@ -87,7 +98,8 @@ class Create extends Action
     }
 
     /**
-     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|void
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Redirect|\Magento\Framework\Controller\ResultInterface|void
+     * @throws \Zend_Http_Client_Exception
      */
     public function execute()
     {
@@ -109,7 +121,12 @@ class Create extends Action
         $this->createLabel->setRequestData($data);
         $label = $this->createLabel->call();
 
-        return $this->validateStatus($label, $shipmentId);
+        if ($this->callIsSuccess($label)) {
+            $this->saveLabelData($shipmentId, $label['units'][0]);
+        }
+
+        $result = $this->resultRedirectFactory->create();
+        return $result->setPath(self::ADMIN_ORDER_SHIPMENT_VIEW_URI, ['shipment_id' => $shipmentId]);
     }
 
     /**
@@ -121,6 +138,9 @@ class Create extends Action
     private function mapLabelData($shipment, $order)
     {
         $deliveryOption = json_decode($order->getGlsDeliveryOption());
+        /** @var Request $request */
+        $request        = $this->getRequest();
+
         return [
             "services"              => $this->mapServices($deliveryOption->details, $deliveryOption->type),
             "trackingLinkType"      => "u",
@@ -135,37 +155,54 @@ class Create extends Action
             "units"                 => [
                 $this->prepareShippingUnit($shipment, $order)
             ],
-            "shippingSystemName"    => $this->getRequest()->getControllerModule(),
-            "shippingSystemVersion" => $this->getRequest()->getVersion(),
+            "shippingSystemName"    => $request->getControllerModule(),
+            "shippingSystemVersion" => $request->getVersion(),
             "shiptype"              => "p"
         ];
     }
 
     /**
-     * @param $label
      * @param $shipmentId
-     *
-     * @return \Magento\Framework\Controller\Result\Redirect
+     * @param $labelData
      */
-    private function validateStatus($label, $shipmentId)
+    private function saveLabelData($shipmentId, array $labelData)
     {
-        $result = $this->resultRedirectFactory->create();
+        $labelFactory = $this->createLabelFactory();
+        $labelFactory->setData(
+            [
+                Label::GLS_SHIPMENT_LABEL_SHIPMENT_ID        => $shipmentId,
+                Label::GLS_SHIPMENT_LABEL_UNIT_ID            => $labelData['unitId'],
+                Label::GLS_SHIPMENT_LABEL_UNIT_NO            => $labelData['unitNo'],
+                Label::GLS_SHIPMENT_LABEL_UNIQUE_NO          => $labelData['uniqueNo'],
+                Label::GLS_SHIPMENT_LABEL_LABEL              => $labelData['label'],
+                Label::GLS_SHIPMENT_LABEL_UNIT_TRACKING_LINK => $labelData['unitTrackingLink']
+            ]
+        );
+        $labelFactory->save();
+    }
 
+    /**
+     * @param $label
+     *
+     * @return bool
+     */
+    private function callIsSuccess($label)
+    {
         if ($label['error']) {
-            $status = $label['status'];
+            $status  = $label['status'];
             $message = $label['message'];
             $this->messageManager->addErrorMessage(
                 __('An error occurred while creating the label. ') . "$message [Status: $status]"
             );
 
-            return $result->setPath(self::ADMIN_ORDER_SHIPMENT_VIEW_URI, ['shipment_id' => $shipmentId]);
+            return false;
         }
 
         $this->messageManager->addSuccessMessage(
             __('Label created successfully.')
         );
 
-        return $result->setPath(self::ADMIN_ORDER_SHIPMENT_VIEW_URI, ['shipment_id' => $shipmentId]);
+        return true;
     }
 
     /**

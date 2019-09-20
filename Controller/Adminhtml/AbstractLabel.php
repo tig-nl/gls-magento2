@@ -30,26 +30,38 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 
-namespace TIG\GLS\Model\Shipment;
+namespace TIG\GLS\Controller\Adminhtml;
 
-use Magento\Framework\Model\AbstractModel;
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
+use TIG\GLS\Model\Shipment\Label;
+use TIG\GLS\Model\Shipment\LabelFactory;
 
-class Label extends AbstractModel
+abstract class AbstractLabel extends Action
 {
-    /** @var string */
-    // @codingStandardsIgnoreLine
-    protected $_idFieldName = 'entity_id';
+    /** @var Label $label */
+    private $label;
 
-    const GLS_SHIPMENT_LABEL_SHIPMENT_ID        = 'shipment_id';
-    const GLS_SHIPMENT_LABEL_UNIT_ID            = 'unit_id';
-    const GLS_SHIPMENT_LABEL_UNIT_NO            = 'unit_no';
-    const GLS_SHIPMENT_LABEL_UNIQUE_NO          = 'unique_no';
-    const GLS_SHIPMENT_LABEL_CONFIRMED          = 'confirmed';
-    const GLS_SHIPMENT_LABEL_LABEL              = 'label';
-    const GLS_SHIPMENT_LABEL_UNIT_TRACKING_LINK = 'unit_tracking_link';
+    /**
+     * AbstractLabel constructor.
+     *
+     * @param Context      $context
+     * @param LabelFactory $label
+     */
+    public function __construct(
+        Context $context,
+        LabelFactory $label
+    ) {
+        parent::__construct($context);
 
-    public function _construct()
+        $this->label = $label;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function createLabelFactory()
     {
-        $this->_init("\TIG\GLS\Model\ResourceModel\Shipment\Label");
+        return $this->label->create();
     }
 }
