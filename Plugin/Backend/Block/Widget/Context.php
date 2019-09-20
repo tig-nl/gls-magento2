@@ -104,6 +104,24 @@ class Context
         $buttonList = $this->buttonList->create();
 
         // If no label has been created yet, only show create label.
+        $this->addCreateButton($buttonList, $shipmentId);
+
+        // If a label is created, show print, confirm and delete button.
+        $this->addPrintButton($buttonList, $shipmentId);
+        $this->addConfirmButton($buttonList, $shipmentId);
+        $this->addDeleteButton($buttonList, $shipmentId);
+
+        // If label is confirmed, only show print and delete button.
+
+        return $buttonList;
+    }
+
+    /**
+     * @param $buttonList
+     * @param $shipmentId
+     */
+    private function addCreateButton($buttonList, $shipmentId)
+    {
         $this->addButton(
             $buttonList,
             self::GLS_ADMIN_LABEL_CREATE_BUTTON,
@@ -112,18 +130,73 @@ class Context
             'gls-create save primary',
             -1,
             0,
-            $shipmentId
+            [
+                'shipment_id' => $shipmentId
+            ]
         );
-        // If a label is created, show print, confirm and delete button.
-
-        // If label is confirmed, only show print and delete button.
-
-        return $buttonList;
     }
 
     /**
-     * Add button pointing to controller URL with shipment_id embedded as param.
-     *
+     * @param $buttonList
+     * @param $shipmentId
+     */
+    private function addPrintButton($buttonList, $shipmentId)
+    {
+        $this->addButton(
+            $buttonList,
+            self::GLS_ADMIN_LABEL_PRINT_BUTTON,
+            self::GLS_ADMIN_LABEL_PRINT_LABEL,
+            self::GLS_ADMIN_LABEL_PRINT_URI,
+            'gls-print save primary',
+            -1,
+            0,
+            [
+                'shipment_id' => $shipmentId
+            ]
+        );
+    }
+
+    /**
+     * @param $buttonList
+     * @param $shipmentId
+     */
+    private function addConfirmButton($buttonList, $shipmentId)
+    {
+        $this->addButton(
+            $buttonList,
+            self::GLS_ADMIN_LABEL_CONFIRM_BUTTON,
+            self::GLS_ADMIN_LABEL_CONFIRM_LABEL,
+            self::GLS_ADMIN_LABEL_CONFIRM_URI,
+            'gls-confirm save primary',
+            -2,
+            0,
+            [
+                'shipment_id' => $shipmentId
+            ]
+        );
+    }
+
+    /**
+     * @param $buttonList
+     * @param $shipmentId
+     */
+    private function addDeleteButton($buttonList, $shipmentId)
+    {
+        $this->addButton(
+            $buttonList,
+            self::GLS_ADMIN_LABEL_DELETE_BUTTON,
+            self::GLS_ADMIN_LABEL_DELETE_LABEL,
+            self::GLS_ADMIN_LABEL_DELETE_URI,
+            'gls-delete save primary',
+            -3,
+            0,
+            [
+                'shipment_id' => $shipmentId
+            ]
+        );
+    }
+
+    /**
      * @param ButtonList $list
      * @param            $code
      * @param            $label
@@ -131,11 +204,12 @@ class Context
      * @param            $class
      * @param            $position
      * @param            $sortOrder
-     * @param            $shipmentId
+     * @param array      $params
      */
-    private function addButton(ButtonList $list, $code, $label, $controller, $class, $position, $sortOrder, $shipmentId)
+    // @codingStandardsIgnoreLine
+    private function addButton(ButtonList $list, $code, $label, $controller, $class, $position, $sortOrder, $params = [])
     {
-        $url        = $this->template->getUrl($controller, ['shipment_id' => $shipmentId]);
+        $url = $this->template->getUrl($controller, $params);
 
         $list->add(
             $code,
