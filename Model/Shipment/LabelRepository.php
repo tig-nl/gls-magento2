@@ -88,6 +88,11 @@ class LabelRepository implements LabelRepositoryInterface
         return $label;
     }
 
+    /**
+     * @param int $shipmentId
+     *
+     * @return LabelInterface|null
+     */
     public function getByShipmentId($shipmentId)
     {
         $label = $this->labelFactory->create();

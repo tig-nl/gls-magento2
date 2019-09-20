@@ -116,12 +116,15 @@ class Context
             return $buttonList;
         }
 
+        /**
+         * Confirmed Labels cannot be deleted through the API.
+         */
         if (!$label->getIsConfirmed()) {
             $this->addConfirmButton($buttonList, $shipmentId);
+            $this->addDeleteButton($buttonList, $shipmentId);
         }
 
         $this->addPrintButton($buttonList, $shipmentId);
-        $this->addDeleteButton($buttonList, $shipmentId);
 
         return $buttonList;
     }
