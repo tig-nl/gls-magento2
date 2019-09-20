@@ -30,33 +30,14 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\GLS\Service\Label;
+namespace TIG\GLS\Webservice\Endpoint\ParcelShop;
 
-use TIG\GLS\Webservice\Endpoint\Label\Create;
+use TIG\GLS\Webservice\Endpoint\AbstractEndpoint;
 
-class Label
+class GetParcelShops extends AbstractEndpoint
 {
-    /** @var Create $createLabel */
-    private $createLabel;
-
-    /**
-     * @param Create $createLabel
-     */
-    public function __construct(Create $createLabel)
-    {
-        $this->createLabel = $createLabel;
-    }
-
-    /**
-     * @param $requestData
-     *
-     * @return mixed
-     * @throws \Zend_Http_Client_Exception
-     */
-    public function createLabel($requestData)
-    {
-        $this->createLabel->setRequestData($requestData);
-
-        return $this->createLabel->call();
-    }
+    // @codingStandardsIgnoreStart
+    protected $method = 'POST';
+    protected $endpoint = 'ParcelShop/GetParcelShops';
+    // @codingStandardsIgnoreEnd
 }

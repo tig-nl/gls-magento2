@@ -1,0 +1,264 @@
+<?php
+/**
+ *
+ *          ..::..
+ *     ..::::::::::::..
+ *   ::'''''':''::'''''::
+ *   ::..  ..:  :  ....::
+ *   ::::  :::  :  :   ::
+ *   ::::  :::  :  ''' ::
+ *   ::::..:::..::.....::
+ *     ''::::::::::::''
+ *          ''::''
+ *
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Creative Commons License.
+ * It is available through the world-wide-web at this URL:
+ * http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ * If you are unable to obtain it through the world-wide-web, please send an email
+ * to servicedesk@tig.nl so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this module to newer
+ * versions in the future. If you wish to customize this module for your
+ * needs please contact servicedesk@tig.nl for more information.
+ *
+ * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
+ * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ */
+
+namespace TIG\GLS\Controller\Adminhtml\Label;
+
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Sales\Api\ShipmentRepositoryInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
+use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
+use TIG\GLS\Controller\Adminhtml\AbstractLabel;
+use TIG\GLS\Model\Shipment\Label;
+use TIG\GLS\Model\Shipment\LabelFactory;
+use TIG\GLS\Webservice\Endpoint\Label\Create as CreateLabelEndpoint;
+
+class Create extends AbstractLabel
+{
+    const XPATH_CONFIG_TRANS_IDENT_SUPPORT_NAME           = 'trans_email/ident_support/name';
+    const XPATH_CONFIG_TRANS_IDENT_SUPPORT_EMAIL          = 'trans_email/ident_support/email';
+    const XPATH_CONFIG_TRANS_IDENT_GENERAL_NAME           = 'trans_email/ident_support/name';
+    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_NAME     = 'general/store_information/name';
+    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_STREET   = 'general/store_information/street_line1';
+    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_HOUSE_NO = 'general/store_information/street_line2';
+    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_POSTCODE = 'general/store_information/postcode';
+    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_CITY     = 'general/store_information/city';
+    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_COUNTRY  = 'general/store_information/country_id';
+    const GLS_PARCEL_MAX_WEIGHT                           = 31.9;
+
+    /** @var ScopeConfigInterface $scopeConfig */
+    private $scopeConfig;
+
+    /** @var ShipmentRepositoryInterface $shipments */
+    private $shipments;
+
+    /** @var OrderRepositoryInterface $orders */
+    private $orders;
+
+    /** @var CreateLabelEndpoint $createLabel */
+    private $createLabel;
+
+    /**
+     * Create constructor.
+     *
+     * @param Context                     $context
+     * @param ScopeConfigInterface        $scopeConfig
+     * @param ShipmentRepositoryInterface $shipments
+     * @param OrderRepositoryInterface    $orders
+     * @param LabelRepositoryInterface    $labelRepository
+     * @param LabelFactory                $label
+     * @param CreateLabelEndpoint         $createLabel
+     */
+    public function __construct(
+        Context $context,
+        ScopeConfigInterface $scopeConfig,
+        ShipmentRepositoryInterface $shipments,
+        OrderRepositoryInterface $orders,
+        LabelRepositoryInterface $labelRepository,
+        LabelFactory $label,
+        CreateLabelEndpoint $createLabel
+    ) {
+        parent::__construct(
+            $context,
+            $label,
+            $labelRepository
+        );
+
+        $this->scopeConfig = $scopeConfig;
+        $this->shipments   = $shipments;
+        $this->orders      = $orders;
+        $this->createLabel = $createLabel;
+    }
+
+    /**
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|Create|void
+     * @throws \Zend_Http_Client_Exception
+     */
+    public function execute()
+    {
+        $shipmentId = $this->getShipmentId();
+        $shipment   = $this->shipments->get($shipmentId);
+
+        if (!$shipment) {
+            return;
+        }
+
+        $orderId = $shipment->getOrderId();
+        $order   = $this->orders->get($orderId);
+
+        if (!$order) {
+            return;
+        }
+
+        $data = $this->mapLabelData($shipment, $order);
+        $this->createLabel->setRequestData($data);
+        $this->setErrorMessage('An error occurred while creating the label.');
+        $this->setSuccessMessage('Label created successfully.');
+        $label = $this->createLabel->call();
+
+        if ($this->callIsSuccess($label)) {
+            $this->saveLabelData($shipmentId, $label['units'][0]);
+        }
+
+        return $this->redirectToShipmentView($shipmentId);
+    }
+
+    /**
+     * @param $shipment
+     * @param $order
+     *
+     * @return array
+     */
+    private function mapLabelData($shipment, $order)
+    {
+        $deliveryOption = json_decode($order->getGlsDeliveryOption());
+
+        $data                      = $this->addShippingInformation();
+        $data["services"]          = $this->mapServices($deliveryOption->details, $deliveryOption->type);
+        $data["trackingLinkType"]  = 'u';
+        $data['labelType']         = 'pdf';
+        $data['notificationEmail'] = $this->prepareNotificationEmail();
+        $data['returnRoutingData'] = false;
+        $data['addresses']         = [
+            'deliveryAddress' => $deliveryOption->deliveryAddress,
+            'pickupAddress'   => $this->preparePickupAddress()
+        ];
+        $data['shippingData']      = date("Y-m-d");
+        $data['units']             = [
+            $this->prepareShippingUnit($shipment, $order)
+        ];
+
+        return $data;
+    }
+
+    /**
+     * @param       $shipmentId
+     * @param array $labelData
+     *
+     * @throws \Exception
+     * TODO: Use LabelRepositoryInterface for saving.
+     */
+    private function saveLabelData($shipmentId, array $labelData)
+    {
+        $labelFactory = $this->createLabelFactory();
+        $labelFactory->setData(
+            [
+                Label::GLS_SHIPMENT_LABEL_SHIPMENT_ID        => $shipmentId,
+                Label::GLS_SHIPMENT_LABEL_UNIT_ID            => $labelData['unitId'],
+                Label::GLS_SHIPMENT_LABEL_UNIT_NO            => $labelData['unitNo'],
+                Label::GLS_SHIPMENT_LABEL_UNIQUE_NO          => $labelData['uniqueNo'],
+                Label::GLS_SHIPMENT_LABEL_LABEL              => $labelData['label'],
+                Label::GLS_SHIPMENT_LABEL_UNIT_TRACKING_LINK => $labelData['unitTrackingLink']
+            ]
+        );
+        $labelFactory->save();
+    }
+
+    /**
+     * When an empty array is returned, the default BusinessParcel product is used
+     * in CreateLabel.
+     *
+     * @param null $type
+     * @param      $details
+     *
+     * @return array
+     */
+    private function mapServices($details, $type = null)
+    {
+        switch ($type) {
+            case 'parcelShop':
+                return [
+                    "shopDeliveryParcelShopId" => $details->parcelShopId
+                ];
+            case 'expressService':
+                return [
+                    $type => $details->service
+                ];
+            case 'saturdayService':
+                return [
+                    $type => true
+                ];
+            default:
+                return [];
+        }
+    }
+
+    /**
+     * The General Contact is used as
+     *
+     * @return array
+     */
+    private function prepareNotificationEmail()
+    {
+        return [
+            "sendMail"           => true,
+            "senderName"         => $this->scopeConfig->getValue(self::XPATH_CONFIG_TRANS_IDENT_GENERAL_NAME),
+            "senderReplyAddress" => $this->scopeConfig->getValue(self::XPATH_CONFIG_TRANS_IDENT_SUPPORT_EMAIL),
+            "senderContactName"  => $this->scopeConfig->getValue(self::XPATH_CONFIG_TRANS_IDENT_SUPPORT_NAME),
+            "EmailSubject"       => __('Your order has been shipped.')
+        ];
+    }
+
+    /**
+     * Returns the Pickup Address AKA Sender Address: we're using the information from
+     * Stores > Configuration > General > Store Information.
+     *
+     * @return array
+     */
+    private function preparePickupAddress()
+    {
+        return [
+            "name1"       => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_NAME),
+            "street"      => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_STREET),
+            "houseNo"     => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_HOUSE_NO),
+            "zipCode"     => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_POSTCODE),
+            "city"        => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_CITY),
+            "countryCode" => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_COUNTRY)
+        ];
+    }
+
+    /**
+     * @param $shipment
+     * @param $order
+     *
+     * @return array
+     */
+    private function prepareShippingUnit($shipment, $order)
+    {
+        return [
+            "unitId"   => $shipment->getIncrementId(),
+            "unitType" => "cO",
+            "weight"   => $order->getWeight() <= self::GLS_PARCEL_MAX_WEIGHT
+                ? $order->getWeight() : self::GLS_PARCEL_MAX_WEIGHT
+        ];
+    }
+}

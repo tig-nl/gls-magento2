@@ -163,7 +163,7 @@ define([
          * @returns {boolean}
          */
         setParcelShopAddress: function (address) {
-            this.setGlsDeliveryOption('parcel_shop', address);
+            this.setGlsDeliveryOption('parcelShop', address);
             parcelShop().parcelShopAddress(address);
 
             return true;
@@ -176,7 +176,12 @@ define([
          * @returns {boolean}
          */
         setDeliveryService: function (service) {
-            this.setGlsDeliveryOption('delivery_service', service);
+            /**
+             * TODO: when the getDeliveryOption API endpoint is implemented. The type parameter should
+             *       equal the service name, e.g. expressService, saturdayService, etc. It should default
+             *       to null. the service parameter should also default to null.
+             */
+            this.setGlsDeliveryOption('deliveryService', service);
             parcelShop().parcelShopAddress(null);
     
             return true;

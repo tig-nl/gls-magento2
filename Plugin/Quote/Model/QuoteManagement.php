@@ -65,9 +65,10 @@ class QuoteManagement
     // @codingStandardsIgnoreLine
     public function beforePlaceOrder($subject, $cartId)
     {
-        $quote          = $this->cartRepository->getActive($cartId);
-        $address        = $quote->getShippingAddress();
-        $deliveryOption = $address->getGlsDeliveryOption();
+        $quote           = $this->cartRepository->getActive($cartId);
+        $shippingAddress = $quote->getShippingAddress();
+        $billingAddress  = $quote->getBillingAddress();
+        $deliveryOption  = $shippingAddress->getGlsDeliveryOption();
 
         if (!$deliveryOption) {
             return;
@@ -76,9 +77,37 @@ class QuoteManagement
         $deliveryOption = json_decode($deliveryOption);
         $type           = $deliveryOption->type;
 
-        if ($type == 'parcel_shop') {
-            $this->changeShippingAddress($deliveryOption->details, $address);
+        if (!isset($deliveryOption->deliveryAddress)) {
+            $deliveryOption->deliveryAddress = $this->mapDeliveryAddress($shippingAddress, $billingAddress);
+            $shippingAddress->setGlsDeliveryOption(json_encode($deliveryOption));
         }
+
+        if ($type == 'parcelShop') {
+            $this->changeShippingAddress($deliveryOption->details, $shippingAddress);
+        }
+    }
+
+    /**
+     * We're saving the DeliveryAddress in the format required by GLS API, so we
+     * can always provide it in the same way for either service type.
+     *
+     * @param $shipping
+     *
+     * @return object
+     */
+    private function mapDeliveryAddress($shipping, $billing)
+    {
+        return (object) [
+            'name1'         => $shipping->getName(),
+            'street'        => $shipping->getStreetLine(1),
+            'houseNo'       => $shipping->getStreetLine(2),
+            'countryCode'   => $shipping->getCountryId(),
+            'zipCode'       => $shipping->getPostcode(),
+            'city'          => $shipping->getCity(),
+            // If Shipping Address is same as Billing Address, Email is only saved in Billing.
+            'email'         => $shipping->getEmail() ?: $billing->getEmail(),
+            'addresseeType' => $shipping->getCompany() ? 'b' : 'p'
+        ];
     }
 
     /**

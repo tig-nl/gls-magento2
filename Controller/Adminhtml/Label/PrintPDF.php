@@ -1,5 +1,4 @@
 <?php
-
 /**
  *
  *          ..::..
@@ -19,7 +18,7 @@
  * It is available through the world-wide-web at this URL:
  * http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  * If you are unable to obtain it through the world-wide-web, please send an email
- * to servicedesk@totalinternetgroup.nl so we can send you a copy immediately.
+ * to servicedesk@tig.nl so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
@@ -30,33 +29,21 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\GLS\Service\Label;
 
-use TIG\GLS\Webservice\Endpoint\Label\Create;
+namespace TIG\GLS\Controller\Adminhtml\Label;
 
-class Label
+use TIG\GLS\Controller\Adminhtml\AbstractLabel;
+
+class PrintPDF extends AbstractLabel
 {
-    /** @var Create $createLabel */
-    private $createLabel;
-
     /**
-     * @param Create $createLabel
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|void
      */
-    public function __construct(Create $createLabel)
-    {
-        $this->createLabel = $createLabel;
-    }
+    public function execute() {
+        $label = $this->getLabelByShipmentId();
+        $pdf   = base64_decode($label->getLabel());
 
-    /**
-     * @param $requestData
-     *
-     * @return mixed
-     * @throws \Zend_Http_Client_Exception
-     */
-    public function createLabel($requestData)
-    {
-        $this->createLabel->setRequestData($requestData);
-
-        return $this->createLabel->call();
+        header('Content-Type: application/pdf');
+        echo $pdf;
     }
 }

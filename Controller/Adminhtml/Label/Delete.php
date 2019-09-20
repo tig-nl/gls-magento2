@@ -30,44 +30,44 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 
-namespace TIG\GLS\Controller\Adminhtml\Credentials;
+namespace TIG\GLS\Controller\Adminhtml\Label;
 
-use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
-use TIG\GLS\Webservice\Endpoint\Authentication\ValidateLogin;
+use TIG\GLS\Controller\Adminhtml\AbstractLabel;
+use TIG\GLS\Model\Shipment\LabelFactory;
+use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
+use TIG\GLS\Webservice\Endpoint\Label\Delete as DeleteLabelEndpoint;
 
-class Validate extends Action
+class Delete extends AbstractLabel
 {
-    /** @var ValidateLogin $validationAPI */
-    private $validationAPI;
+    private $delete;
 
-    /**
-     * Validate constructor.
-     *
-     * @param Context       $context
-     * @param ValidateLogin $validationAPI
-     */
     public function __construct(
         Context $context,
-        ValidateLogin $validationAPI
+        LabelFactory $label,
+        LabelRepositoryInterface $labelRepository,
+        DeleteLabelEndpoint $delete
     ) {
-        parent::__construct($context);
+        parent::__construct($context, $label, $labelRepository);
 
-        $this->validationAPI = $validationAPI;
+        $this->delete = $delete;
     }
 
-    /**
-     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
-     */
     public function execute()
     {
-        $validation = $this->validationAPI->call();
+        $label          = $this->getLabelByShipmentId();
+        $data           = $this->addShippingInformation();
+        $data['unitNo'] = $label->getUnitNo();
 
-        $this->_response->setBody('nok');
-        if (isset($validation['status']) && $validation['status'] == 200 && !$validation['error']) {
-            $this->_response->setBody('ok');
+        $this->delete->setRequestData($data);
+        $this->setErrorMessage('Label could not be deleted.');
+        $this->setSuccessMessage('Label successfully deleted.');
+        $deleteCall = $this->delete->call();
+
+        if ($this->callIsSuccess($deleteCall)) {
+            $label->delete();
         }
 
-        return $this->_response->setStatusHeader(200, '1.1', 'Validated');
+        return $this->redirectToShipmentView($this->getShipmentId());
     }
 }

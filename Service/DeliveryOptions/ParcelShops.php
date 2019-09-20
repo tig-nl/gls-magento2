@@ -34,7 +34,7 @@
 namespace TIG\GLS\Service\DeliveryOptions;
 
 use TIG\GLS\Model\Config\Provider\Carrier;
-use TIG\GLS\Webservice\Endpoint\DeliveryOptions\ParcelShops as ParcelShopsEndpoint;
+use TIG\GLS\Webservice\Endpoint\ParcelShop\GetParcelShops as ParcelShopsEndpoint;
 
 class ParcelShops
 {
@@ -45,7 +45,7 @@ class ParcelShops
     private $carrierConfig;
 
     /**
-     * ParcelShops constructor.
+     * GetParcelShops constructor.
      *
      * @param ParcelShopsEndpoint $parcelShopsEndpoint
      * @param Carrier             $carrierConfig
