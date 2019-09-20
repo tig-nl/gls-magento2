@@ -34,8 +34,15 @@ namespace TIG\GLS\Model\ResourceModel\Shipment\Label;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 
+// @codingStandardsIgnoreFile
 class Collection extends AbstractCollection
 {
+    protected $_idFieldName = 'entity_id';
+
+    protected $_eventPrefix = 'tig_gls_shipment_label_collection';
+
+    protected $_eventObject = 'shipment_label_collection';
+
     public function _construct()
     {
         $this->_init("TIG\GLS\Model\Shipment\Label", "TIG\GLS\Model\ResourceModel\Shipment\Label");
