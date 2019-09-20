@@ -34,13 +34,22 @@ namespace TIG\GLS\Controller\Adminhtml;
 
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Request\Http as Request;
 use TIG\GLS\Model\Shipment\Label;
 use TIG\GLS\Model\Shipment\LabelFactory;
 
 abstract class AbstractLabel extends Action
 {
+    const ADMIN_ORDER_SHIPMENT_VIEW_URI = 'adminhtml/order_shipment/view';
+
     /** @var Label $label */
     private $label;
+
+    /** @var $errorMessage */
+    private $errorMessage;
+
+    /** @var $successMessage */
+    private $successMessage;
 
     /**
      * AbstractLabel constructor.
@@ -63,5 +72,79 @@ abstract class AbstractLabel extends Action
     public function createLabelFactory()
     {
         return $this->label->create();
+    }
+
+    /**
+     * @return int
+     */
+    public function getShipmentId()
+    {
+        return $this->getRequest()->getParam(Label::GLS_SHIPMENT_LABEL_SHIPMENT_ID);
+    }
+
+    /**
+     * @param $shipmentId
+     *
+     * @return \Magento\Framework\Controller\Result\Redirect
+     */
+    public function redirectToShipmentView($shipmentId)
+    {
+        $result = $this->resultRedirectFactory->create();
+        return $result->setPath(self::ADMIN_ORDER_SHIPMENT_VIEW_URI, ['shipment_id' => $shipmentId]);
+    }
+
+    /**
+     * @param $response
+     *
+     * @return bool
+     */
+    public function callIsSuccess($response)
+    {
+        if ($response['error']) {
+            $status  = $response['status'];
+            $message = $response['message'];
+            $this->messageManager->addErrorMessage(
+                __($this->errorMessage) . " $message [Status: $status]"
+            );
+
+            return false;
+        }
+
+        $this->messageManager->addSuccessMessage(
+            __($this->successMessage)
+        );
+
+        return true;
+    }
+
+    /**
+     * @param $message
+     */
+    public function setErrorMessage($message)
+    {
+        $this->errorMessage = $message;
+    }
+
+    /**
+     * @param $message
+     */
+    public function setSuccessMessage($message)
+    {
+        $this->successMessage = $message;
+    }
+
+    /**
+     * @return array
+     */
+    public function addShippingInformation()
+    {
+        /** @var Request $request */
+        $request = $this->getRequest();
+
+        return [
+            "shippingSystemName"    => $request->getControllerModule(),
+            "shippingSystemVersion" => $request->getVersion(),
+            "shiptype"              => "p"
+        ];
     }
 }

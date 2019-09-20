@@ -34,7 +34,6 @@ namespace TIG\GLS\Controller\Adminhtml\Label;
 
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\Request\Http as Request;
 use Magento\Sales\Api\ShipmentRepositoryInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use TIG\GLS\Controller\Adminhtml\AbstractLabel;
@@ -44,7 +43,6 @@ use TIG\GLS\Webservice\Endpoint\Label\Create as CreateLabelEndpoint;
 
 class Create extends AbstractLabel
 {
-    const ADMIN_ORDER_SHIPMENT_VIEW_URI                   = 'adminhtml/order_shipment/view';
     const XPATH_CONFIG_TRANS_IDENT_SUPPORT_NAME           = 'trans_email/ident_support/name';
     const XPATH_CONFIG_TRANS_IDENT_SUPPORT_EMAIL          = 'trans_email/ident_support/email';
     const XPATH_CONFIG_TRANS_IDENT_GENERAL_NAME           = 'trans_email/ident_support/name';
@@ -98,12 +96,12 @@ class Create extends AbstractLabel
     }
 
     /**
-     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Redirect|\Magento\Framework\Controller\ResultInterface|void
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|Create|void
      * @throws \Zend_Http_Client_Exception
      */
     public function execute()
     {
-        $shipmentId = $this->getRequest()->getParam('shipment_id');
+        $shipmentId = $this->getShipmentId();
         $shipment   = $this->shipments->get($shipmentId);
 
         if (!$shipment) {
@@ -119,14 +117,15 @@ class Create extends AbstractLabel
 
         $data = $this->mapLabelData($shipment, $order);
         $this->createLabel->setRequestData($data);
+        $this->setErrorMessage('An error occurred while creating the label.');
+        $this->setSuccessMessage('Label created successfully.');
         $label = $this->createLabel->call();
 
         if ($this->callIsSuccess($label)) {
             $this->saveLabelData($shipmentId, $label['units'][0]);
         }
 
-        $result = $this->resultRedirectFactory->create();
-        return $result->setPath(self::ADMIN_ORDER_SHIPMENT_VIEW_URI, ['shipment_id' => $shipmentId]);
+        return $this->redirectToShipmentView($shipmentId);
     }
 
     /**
@@ -138,32 +137,31 @@ class Create extends AbstractLabel
     private function mapLabelData($shipment, $order)
     {
         $deliveryOption = json_decode($order->getGlsDeliveryOption());
-        /** @var Request $request */
-        $request        = $this->getRequest();
 
-        return [
-            "services"              => $this->mapServices($deliveryOption->details, $deliveryOption->type),
-            "trackingLinkType"      => "u",
-            "labelType"             => "pdf",
-            "notificationEmail"     => $this->prepareNotificationEmail(),
-            "returnRoutingData"     => false,
-            "addresses"             => [
-                "deliveryAddress" => $deliveryOption->deliveryAddress,
-                "pickupAddress"   => $this->preparePickupAddress(),
-            ],
-            "shippingDate"          => date("Y-m-d"),
-            "units"                 => [
-                $this->prepareShippingUnit($shipment, $order)
-            ],
-            "shippingSystemName"    => $request->getControllerModule(),
-            "shippingSystemVersion" => $request->getVersion(),
-            "shiptype"              => "p"
+        $data                      = $this->addShippingInformation();
+        $data["services"]          = $this->mapServices($deliveryOption->details, $deliveryOption->type);
+        $data["trackingLinkType"]  = 'u';
+        $data['labelType']         = 'pdf';
+        $data['notificationEmail'] = $this->prepareNotificationEmail();
+        $data['returnRoutingData'] = false;
+        $data['addresses']         = [
+            'deliveryAddress' => $deliveryOption->deliveryAddress,
+            'pickupAddress'   => $this->preparePickupAddress()
         ];
+        $data['shippingData']      = date("Y-m-d");
+        $data['units']             = [
+            $this->prepareShippingUnit($shipment, $order)
+        ];
+
+        return $data;
     }
 
     /**
-     * @param $shipmentId
-     * @param $labelData
+     * @param       $shipmentId
+     * @param array $labelData
+     *
+     * @throws \Exception
+     * TODO: Use LabelRepositoryInterface for saving.
      */
     private function saveLabelData($shipmentId, array $labelData)
     {
@@ -179,30 +177,6 @@ class Create extends AbstractLabel
             ]
         );
         $labelFactory->save();
-    }
-
-    /**
-     * @param $label
-     *
-     * @return bool
-     */
-    private function callIsSuccess($label)
-    {
-        if ($label['error']) {
-            $status  = $label['status'];
-            $message = $label['message'];
-            $this->messageManager->addErrorMessage(
-                __('An error occurred while creating the label. ') . "$message [Status: $status]"
-            );
-
-            return false;
-        }
-
-        $this->messageManager->addSuccessMessage(
-            __('Label created successfully.')
-        );
-
-        return true;
     }
 
     /**
