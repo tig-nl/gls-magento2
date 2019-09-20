@@ -150,14 +150,14 @@ class Context
      * @param $buttonList
      * @param $shipmentId
      */
-    private function addPrintButton($buttonList, $shipmentId)
+    private function addConfirmButton($buttonList, $shipmentId)
     {
         $this->addButton(
             $buttonList,
-            self::GLS_ADMIN_LABEL_PRINT_BUTTON,
-            self::GLS_ADMIN_LABEL_PRINT_LABEL,
-            self::GLS_ADMIN_LABEL_PRINT_URI,
-            'gls-print save primary',
+            self::GLS_ADMIN_LABEL_CONFIRM_BUTTON,
+            self::GLS_ADMIN_LABEL_CONFIRM_LABEL,
+            self::GLS_ADMIN_LABEL_CONFIRM_URI,
+            'gls-confirm save primary',
             -1,
             0,
             [
@@ -170,14 +170,14 @@ class Context
      * @param $buttonList
      * @param $shipmentId
      */
-    private function addConfirmButton($buttonList, $shipmentId)
+    private function addPrintButton($buttonList, $shipmentId)
     {
         $this->addButton(
             $buttonList,
-            self::GLS_ADMIN_LABEL_CONFIRM_BUTTON,
-            self::GLS_ADMIN_LABEL_CONFIRM_LABEL,
-            self::GLS_ADMIN_LABEL_CONFIRM_URI,
-            'gls-confirm save primary',
+            self::GLS_ADMIN_LABEL_PRINT_BUTTON,
+            self::GLS_ADMIN_LABEL_PRINT_LABEL,
+            self::GLS_ADMIN_LABEL_PRINT_URI,
+            'gls-print save primary',
             0,
             0,
             [
