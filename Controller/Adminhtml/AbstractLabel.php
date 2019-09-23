@@ -117,7 +117,7 @@ abstract class AbstractLabel extends Action
      */
     public function callIsSuccess($response)
     {
-        if ($response['error']) {
+        if (isset($response['error']) && $response['error']) {
             $status  = $response['status'];
             $message = $response['message'];
             $this->messageManager->addErrorMessage(
