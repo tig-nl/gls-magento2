@@ -47,6 +47,7 @@
             </field>
             <field id="handling_fee" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                 <label>Handling Fee</label>
+                <validate>validate-number validate-zero-or-greater</validate>
                 <comment><![CDATA[The base handling fee used for all allowed shipping methods.]]></comment>
             </field>
             <field id="business_parcel_active" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
