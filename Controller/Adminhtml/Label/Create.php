@@ -67,6 +67,9 @@ class Create extends AbstractLabel
     /** @var CreateLabelEndpoint $createLabel */
     private $createLabel;
 
+    /** @var $missingData */
+    private $missingData = null;
+
     /**
      * Create constructor.
      *
@@ -120,6 +123,11 @@ class Create extends AbstractLabel
         }
 
         $data = $this->mapLabelData($shipment, $order);
+
+        if ($this->missingData) {
+            return $this->redirectToShipmentView($shipmentId);
+        }
+
         $this->createLabel->setRequestData($data);
         $this->setErrorMessage('An error occurred while creating the label.');
         $this->setSuccessMessage('Label created successfully.');
@@ -219,13 +227,27 @@ class Create extends AbstractLabel
      */
     private function prepareNotificationEmail()
     {
-        return [
+        $email = [
             "sendMail"           => true,
             "senderName"         => $this->scopeConfig->getValue(self::XPATH_CONFIG_TRANS_IDENT_GENERAL_NAME),
             "senderReplyAddress" => $this->scopeConfig->getValue(self::XPATH_CONFIG_TRANS_IDENT_SUPPORT_EMAIL),
             "senderContactName"  => $this->scopeConfig->getValue(self::XPATH_CONFIG_TRANS_IDENT_SUPPORT_NAME),
             "EmailSubject"       => __('Your order has been shipped.')
         ];
+
+        $this->missingData = $this->isDataMissing($email);
+
+        if ($this->missingData) {
+            $this->addErrorMessage(
+                $this->missingData,
+                'General Contact and a Customer Support contact',
+                'Stores > Configuration > General > Store Email Addresses'
+            );
+
+            return [];
+        }
+
+        return $email;
     }
 
     /**
@@ -236,7 +258,7 @@ class Create extends AbstractLabel
      */
     private function preparePickupAddress()
     {
-        return [
+        $address = [
             "name1"       => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_NAME),
             "street"      => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_STREET),
             "houseNo"     => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_HOUSE_NO),
@@ -244,6 +266,51 @@ class Create extends AbstractLabel
             "city"        => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_CITY),
             "countryCode" => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_COUNTRY)
         ];
+
+        $this->missingData = $this->isDataMissing($address);
+
+        if ($this->missingData) {
+            $this->addErrorMessage(
+                $this->missingData,
+                'Pickup Address',
+                'Stores > Configuration > General > General > Store Information'
+            );
+
+            return [];
+        }
+
+        return $address;
+    }
+
+    /**
+     * @param $data
+     *
+     * @return bool
+     */
+    private function isDataMissing($data)
+    {
+        $missing = array_search(null, $data);
+
+        if ($missing) {
+            return $missing;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $missingCode
+     * @param $missingOption
+     * @param $configurationPath
+     *
+     * @return \Magento\Framework\Message\ManagerInterface
+     */
+    private function addErrorMessage($missingCode, $missingOption, $configurationPath)
+    {
+        return $this->messageManager->addErrorMessage(
+        // @codingStandardsIgnoreLine
+            "Label could not be created, because $missingCode is not configured. Please make sure you've configured a $missingOption in $configurationPath."
+        );
     }
 
     /**
