@@ -240,7 +240,7 @@ class Create extends AbstractLabel
         if ($this->missingData) {
             $this->addErrorMessage(
                 $this->missingData,
-                'General Contact and a Customer Support contact',
+                'General Contact and a Customer Support Contact',
                 'Stores > Configuration > General > Store Email Addresses'
             );
 
