@@ -207,11 +207,11 @@ class Create extends AbstractLabel
                 return [
                     "shopDeliveryParcelShopId" => $details->parcelShopId
                 ];
-            case 'expressService':
+            case 'ExpressService':
                 return [
                     $type => $details->service
                 ];
-            case 'saturdayService':
+            case 'SaturdayService':
                 return [
                     $type => true
                 ];

@@ -67,8 +67,9 @@ class Shipping
         $rate    = $this->extractRate($shipping->getMethod(), $rates);
         $details = $deliveryOption->details;
         $fee     = $this->calculateFee($rate['price'], $details->fee);
+        $title   = $details->title ?: 'ParcelShop';
 
-        $this->adjustTotals($rate['method_title'], $subject->getCode(), $address, $total, $fee, $details->label);
+        $this->adjustTotals($rate['method_title'], $subject->getCode(), $address, $total, $fee, $title);
     }
 
     /**
@@ -85,10 +86,6 @@ class Shipping
         }
 
         $option = json_decode($option);
-
-        if ($option->type != 'deliveryService') {
-            return null;
-        }
 
         return $option;
     }
