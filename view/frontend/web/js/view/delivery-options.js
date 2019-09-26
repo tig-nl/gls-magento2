@@ -76,10 +76,7 @@ define([
                     return;
                 }
 
-                if (address.country !== 'NL') {
-                    return;
-                }
-                this.getAvailableServices();
+                this.getAvailableServices(address.postcode, address.country);
                 this.getParcelShops(address.postcode);
             }.bind(this));
 
@@ -92,13 +89,17 @@ define([
          * This is done through a controller, because we will start using an API
          * in the near future.
          */
-        getAvailableServices: function () {
+        getAvailableServices: function (postcode, country) {
             $.ajax({
                 method : 'GET',
                 url    : '/gls/deliveryoptions/services',
-                type   : 'jsonp'
-            }).done(function (data) {
-                this.availableServices(data);
+                type   : 'jsonp',
+                data   : {
+                    postcode: postcode,
+                    country: country
+                }
+            }).done(function (services) {
+                this.availableServices(services);
             }.bind(this));
         },
     
@@ -168,20 +169,16 @@ define([
 
             return true;
         },
-
+    
         /**
          * Needs to return true, otherwise KnockoutJS prevents default event.
          *
          * @param service
+         * @param selectedOption
          * @returns {boolean}
          */
-        setDeliveryService: function (service) {
-            /**
-             * TODO: when the getDeliveryOption API endpoint is implemented. The type parameter should
-             *       equal the service name, e.g. expressService, saturdayService, etc. It should default
-             *       to null. the service parameter should also default to null.
-             */
-            this.setGlsDeliveryOption('deliveryService', service);
+        setDeliveryService: function (service, selectedOption) {
+            service.setGlsDeliveryOption(this, selectedOption);
             parcelShop().parcelShopAddress(null);
     
             return true;

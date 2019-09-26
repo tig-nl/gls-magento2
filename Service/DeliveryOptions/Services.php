@@ -33,30 +33,15 @@
 namespace TIG\GLS\Service\DeliveryOptions;
 
 use TIG\GLS\Model\Config\Provider\Carrier;
-use TIG\GLS\Model\Config\Source\Carrier\Services as ServicesSource;
+use TIG\GLS\Webservice\Endpoint\DeliveryOptions\GetDeliveryOptions as DeliveryOptionsEndpoint;
 
 class Services
 {
-    const GLS_CARRIER_SERVICE_BUSINESS_PARCEL       = 'business_parcel';
-    const GLS_CARRIER_SERVICE_BUSINESS_PARCEL_LABEL = 'Next Business Day';
-    const GLS_CARRIER_SERVICE_EXPRESS               = [
-        ServicesSource::GLS_CARRIER_SERVICE_EXPRESS_SATURDAY          => 'Saturday',
-        ServicesSource::GLS_CARRIER_SERVICE_EXPRESS_TIME_DEFINITE_T9  => 'Before 9.00 AM',
-        ServicesSource::GLS_CARRIER_SERVICE_EXPRESS_TIME_DEFINITE_T12 => 'Before 12.00 AM'
-    ];
-
     /** @var Carrier $carrierConfig */
     private $carrierConfig;
 
-    /** @var array $availableServices */
-    private $availableServices = [];
-
-    /** @var array $requiredData */
-    private $requiredData = [
-        'code',
-        'label',
-        'fee'
-    ];
+    /** @var DeliveryOptionsEndpoint $deliveryOptions */
+    private $deliveryOptions;
 
     /**
      * Services constructor.
@@ -64,83 +49,38 @@ class Services
      * @param Carrier $carrierConfig
      */
     public function __construct(
-        Carrier $carrierConfig
+        Carrier $carrierConfig,
+        DeliveryOptionsEndpoint $deliveryOptions
     ) {
-        $this->carrierConfig = $carrierConfig;
+        $this->carrierConfig   = $carrierConfig;
+        $this->deliveryOptions = $deliveryOptions;
     }
 
     /**
-     * @return array
+     * @param $countryCode
+     * @param $languageCode
+     * @param $postCode
+     * @param $shippingDate
+     *
+     * @return mixed
+     * @throws \Zend_Http_Client_Exception
      */
-    public function getAvailableServices()
+    public function getDeliveryOptions($countryCode, $languageCode, $postCode)
     {
-        $this->mapBusinessServices();
-        $this->mapExpressServices();
+//        $shippingDate = date("Y-m-d");
+        $shippingDate = '2019-09-27';
 
-        return $this->availableServices;
-    }
+        // TODO: Implement configuration logic for cut-off time and processing time (verwerkingsduur).
 
-    /**
-     * @return array|null
-     */
-    private function mapBusinessServices()
-    {
-        if (!$this->carrierConfig->isBusinessParcelActive()) {
-            return null;
-        }
-
-        $this->availableServices[] = array_combine(
-            $this->requiredData,
+        $this->deliveryOptions->setRequestData(
             [
-                self::GLS_CARRIER_SERVICE_BUSINESS_PARCEL,
-                self::GLS_CARRIER_SERVICE_BUSINESS_PARCEL_LABEL,
-                ''
+                "countryCode"  => $countryCode,
+                "langCode"     => $languageCode,
+                "zipCode"      => $postCode,
+                "shippingDate" => $shippingDate
             ]
         );
 
-        return $this->availableServices;
-    }
-
-    /**
-     * @return array
-     */
-    private function mapExpressServices()
-    {
-        $services = $this->carrierConfig->getActiveExpressServices();
-        $fees     = $this->carrierConfig->getExpressHandlingFees();
-
-        foreach ($services as $service) {
-            $this->availableServices[] = array_combine(
-                $this->requiredData,
-                [
-                    $service,
-                    self::GLS_CARRIER_SERVICE_EXPRESS[$service],
-                    $this->getCorrespondingServiceFee($service, (array) $fees)
-                ]
-            );
-        }
-
-        return $this->availableServices;
-    }
-
-    /**
-     * @param $code
-     * @param $serviceFees
-     *
-     * @return string
-     */
-    private function getCorrespondingServiceFee($code, $serviceFees)
-    {
-        $fee = array_filter(
-            $serviceFees,
-            function ($value) use ($code) {
-                return $code == $value->shipping_method;
-            }
-        );
-
-        $fee = reset($fee);
-        $fee = $fee->additional_handling_fee;
-
-        return (string) $fee;
+        return $this->deliveryOptions->call();
     }
 }
