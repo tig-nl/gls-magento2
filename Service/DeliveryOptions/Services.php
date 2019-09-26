@@ -67,8 +67,7 @@ class Services
      */
     public function getDeliveryOptions($countryCode, $languageCode, $postCode)
     {
-//        $shippingDate = date("Y-m-d");
-        $shippingDate = '2019-09-27';
+        $shippingDate = date("Y-m-d");
 
         // TODO: Implement configuration logic for cut-off time and processing time (verwerkingsduur).
 
