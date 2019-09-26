@@ -106,7 +106,7 @@ class QuoteManagement
             'city'          => $shipping->getCity(),
             // If Shipping Address is same as Billing Address, Email is only saved in Billing.
             'email'         => $shipping->getEmail() ?: $billing->getEmail(),
-            'phone'       => $shipping->getTelephone() ?: '+31612345678',
+            'phone'         => $shipping->getTelephone() ?: '+31612345678',
             'addresseeType' => $shipping->getCompany() ? 'b' : 'p'
         ];
     }
