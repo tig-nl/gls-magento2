@@ -34,6 +34,7 @@ namespace TIG\GLS\Plugin\Quote\Model;
 
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use TIG\GLS\Model\Config\Provider\Carrier;
 
 class QuoteManagement
 {
@@ -82,7 +83,7 @@ class QuoteManagement
             $shippingAddress->setGlsDeliveryOption(json_encode($deliveryOption));
         }
 
-        if ($type == 'parcelShop') {
+        if ($type == Carrier::GLS_DELIVERY_OPTION_PARCEL_SHOP_LABEL) {
             $this->changeShippingAddress($deliveryOption->details, $shippingAddress);
         }
     }

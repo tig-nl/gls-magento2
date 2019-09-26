@@ -164,7 +164,7 @@ define([
          * @returns {boolean}
          */
         setParcelShopAddress: function (address) {
-            this.setGlsDeliveryOption('parcelShop', address);
+            this.setGlsDeliveryOption('ParcelShop', address);
             parcelShop().parcelShopAddress(address);
 
             return true;

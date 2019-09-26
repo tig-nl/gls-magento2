@@ -37,6 +37,7 @@ class Carrier extends AbstractConfigProvider
 {
     const GLS_DELIVERY_OPTION_EXPRESS_LABEL                        = 'ExpressService';
     const GLS_DELIVERY_OPTION_SATURDAY_LABEL                       = 'SaturdayService';
+    const GLS_DELIVERY_OPTION_PARCEL_SHOP_LABEL                    = 'ParcelShop';
     const XPATH_CARRIER_ACTIVE                                     = 'carriers/tig_gls/active';
     const XPATH_CARRIER_HANDLING_FEE                               = 'carriers/tig_gls/handling_fee';
     const XPATH_CARRIER_BUSINESS_PARCEL_ACTIVE                     = 'carriers/tig_gls/business_parcel_active';
