@@ -160,12 +160,12 @@ define([
          * Needs to return true, otherwise KnockoutJS prevents default event.
          * The toggleParcelShopAddress is triggered to control display of the ship-to block.
          *
-         * @param address
+         * @param selectedAddress
          * @returns {boolean}
          */
-        setParcelShopAddress: function (address) {
-            this.setGlsDeliveryOption('ParcelShop', address);
-            parcelShop().parcelShopAddress(address);
+        setParcelShopAddress: function (selectedAddress) {
+            this.setGlsDeliveryOption('ParcelShop', selectedAddress);
+            parcelShop().parcelShopAddress(selectedAddress);
 
             return true;
         },

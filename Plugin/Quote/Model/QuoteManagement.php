@@ -113,6 +113,23 @@ class QuoteManagement
     }
 
     /**
+     * @param $newAddress
+     * @param $shippingAddress
+     *
+     * @return mixed
+     */
+    private function changeShippingAddress($newAddress, $shippingAddress)
+    {
+        $shippingAddress->setStreet($newAddress->street . ' ' . $newAddress->houseNo);
+        $shippingAddress->setCompany($newAddress->name);
+        $shippingAddress->setPostcode($newAddress->zipcode);
+        $shippingAddress->setCity($newAddress->city);
+        $shippingAddress->setCountryId($newAddress->countryCode);
+
+        return $shippingAddress;
+    }
+
+    /**
      * @param $subject
      * @param $orderId
      * @param $quoteId
@@ -141,22 +158,5 @@ class QuoteManagement
         $order->save();
 
         return $orderId;
-    }
-
-    /**
-     * @param $newAddress
-     * @param $shippingAddress
-     *
-     * @return mixed
-     */
-    private function changeShippingAddress($newAddress, $shippingAddress)
-    {
-        $shippingAddress->setStreet($newAddress->street . ' ' . $newAddress->houseNo);
-        $shippingAddress->setCompany($newAddress->name);
-        $shippingAddress->setPostcode($newAddress->zipcode);
-        $shippingAddress->setCity($newAddress->city);
-        $shippingAddress->setCountryId($newAddress->countryCode);
-
-        return $shippingAddress;
     }
 }
