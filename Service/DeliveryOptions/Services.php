@@ -32,11 +32,15 @@
 
 namespace TIG\GLS\Service\DeliveryOptions;
 
+use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use TIG\GLS\Model\Config\Provider\Carrier;
 use TIG\GLS\Webservice\Endpoint\DeliveryOptions\GetDeliveryOptions as DeliveryOptionsEndpoint;
 
 class Services
 {
+    /** @var TimezoneInterface $timezone */
+    private $timezone;
+
     /** @var Carrier $carrierConfig */
     private $carrierConfig;
 
@@ -49,9 +53,11 @@ class Services
      * @param Carrier $carrierConfig
      */
     public function __construct(
+        TimezoneInterface $timezone,
         Carrier $carrierConfig,
         DeliveryOptionsEndpoint $deliveryOptions
     ) {
+        $this->timezone        = $timezone;
         $this->carrierConfig   = $carrierConfig;
         $this->deliveryOptions = $deliveryOptions;
     }
@@ -60,26 +66,42 @@ class Services
      * @param $countryCode
      * @param $languageCode
      * @param $postCode
-     * @param $shippingDate
      *
      * @return mixed
      * @throws \Zend_Http_Client_Exception
      */
     public function getDeliveryOptions($countryCode, $languageCode, $postCode)
     {
-        $shippingDate = date("Y-m-d");
-
-        // TODO: Implement configuration logic for cut-off time and processing time (verwerkingsduur).
-
         $this->deliveryOptions->setRequestData(
             [
                 "countryCode"  => $countryCode,
                 "langCode"     => $languageCode,
                 "zipCode"      => $postCode,
-                "shippingDate" => $shippingDate
+                "shippingDate" => $this->calculateShippingDate('Y-m-d')
             ]
         );
 
         return $this->deliveryOptions->call();
+    }
+
+    /**
+     * @param $format
+     *
+     * @return string
+     */
+    private function calculateShippingDate($format)
+    {
+        $currentTime    = $this->timezone->date();
+        $currentTime    = $currentTime->format('H:m:s');
+        $cutOffTime     = $this->carrierConfig->getCutOffTime();
+        $shippingDate   = $this->timezone->date(null, null, true, false);
+        $processingTime = $this->carrierConfig->getProcessingTime();
+        $shippingDate->modify("+ $processingTime days");
+
+        if ($currentTime > $cutOffTime) {
+            $shippingDate->modify("+ 1 days");
+        }
+
+        return $shippingDate->format($format);
     }
 }
