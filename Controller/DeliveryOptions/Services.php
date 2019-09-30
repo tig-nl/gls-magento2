@@ -36,6 +36,7 @@ use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\Action;
 use TIG\GLS\Model\Config\Provider\Carrier as CarrierConfig;
+use TIG\GLS\Model\Config\Provider\Carrier;
 use TIG\GLS\Service\DeliveryOptions\Services as ServicesService;
 
 class Services extends Action
@@ -89,30 +90,12 @@ class Services extends Action
             $option['fee']           = $this->getAdditionalHandlingFee($option);
 
             if ($option['hasSubOptions']) {
+                $this->filterExpressServices($option['subDeliveryOptions']);
                 $this->addExpressAdditionalHandlingFees($option['subDeliveryOptions']);
             }
         }
 
         return $this->jsonResponse($deliveryOptions);
-    }
-
-    /**
-     * @param string $data
-     * @param null   $code
-     *
-     * @return mixed
-     */
-    private function jsonResponse($data = '', $code = null)
-    {
-        $response = $this->getResponse();
-
-        if ($code !== null) {
-            $response->setStatusCode($code);
-        }
-
-        return $response->representJson(
-            \Zend_Json::encode($data)
-        );
     }
 
     /**
@@ -127,6 +110,27 @@ class Services extends Action
         }
 
         return null;
+    }
+
+    /**
+     * @param $services
+     *
+     * @return array
+     */
+    private function filterExpressServices(&$services)
+    {
+        $allowedServices = $this->carrierConfig->getActiveExpressServices();
+
+        $services = array_filter(
+            $services,
+            function ($details) use ($allowedServices) {
+                return in_array($details['service'], $allowedServices);
+            }
+        );
+
+        $services = array_values($services);
+
+        return $services;
     }
 
     /**
@@ -150,5 +154,24 @@ class Services extends Action
         }
 
         return $options;
+    }
+
+    /**
+     * @param string $data
+     * @param null   $code
+     *
+     * @return mixed
+     */
+    private function jsonResponse($data = '', $code = null)
+    {
+        $response = $this->getResponse();
+
+        if ($code !== null) {
+            $response->setStatusCode($code);
+        }
+
+        return $response->representJson(
+            \Zend_Json::encode($data)
+        );
     }
 }
