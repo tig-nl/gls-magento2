@@ -45,7 +45,7 @@
             <!-- ko if: isService === false && hasSubOptions === false -->
             <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: 'deliveryService', click: $parent.setDeliveryService.bind('deliveryService', $parent), attr: {id: 'default' }" />
             <label data-bind="i18n: title, attr: { for: 'default' }"></label>
-            <!-- ko if: fee -->
+            <!-- ko if: $data.fee -->
             <span class="delivery-fee" data-bind="text: fee"></span>
             <!-- /ko -->
             <!-- /ko -->
@@ -53,7 +53,7 @@
             <!-- ko if: isService === true && hasSubOptions === false -->
             <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: service, click: $parent.setDeliveryService.bind(service, $parent), attr: {id: service }" />
             <label data-bind="i18n: title, attr: { for: service }"></label>
-            <!-- ko if: fee -->
+            <!-- ko if: $data.fee -->
             <span class="delivery-fee" data-bind="text: fee"></span>
             <!-- /ko -->
             <!-- /ko -->
@@ -67,7 +67,7 @@
                 <div class="container gls-sub-delivery-options">
                     <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: service, click: $parentContext.$parent.setDeliveryService.bind($parent.service, $parentContext.$parent), attr: { id: service }" />
                     <label data-bind="i18n: title, attr: { for: service }"></label>
-                    <!-- ko if: fee -->
+                    <!-- ko if: $data.fee -->
                     <span class="delivery-fee" data-bind="text: fee"></span>
                     <!-- /ko -->
                 </div>
