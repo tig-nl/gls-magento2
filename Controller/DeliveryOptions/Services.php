@@ -81,6 +81,7 @@ class Services extends Action
         $country  = $request->getParam('country');
         $postcode = $request->getParam('postcode');
 
+        // TODO: Load language code dynamically.
         $services        = $this->services->getDeliveryOptions($country, 'NL', $postcode);
         $deliveryOptions = $services['deliveryOptions'];
 
