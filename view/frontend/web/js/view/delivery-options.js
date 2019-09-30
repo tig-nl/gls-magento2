@@ -76,10 +76,7 @@ define([
                     return;
                 }
 
-                if (address.country !== 'NL') {
-                    return;
-                }
-                this.getAvailableServices();
+                this.getAvailableServices(address.postcode, address.country);
                 this.getParcelShops(address.postcode);
             }.bind(this));
 
@@ -88,17 +85,18 @@ define([
 
         /**
          * Retrieve Delivery Options from GLS.
-         *
-         * This is done through a controller, because we will start using an API
-         * in the near future.
          */
-        getAvailableServices: function () {
+        getAvailableServices: function (postcode, country) {
             $.ajax({
                 method : 'GET',
                 url    : '/gls/deliveryoptions/services',
-                type   : 'jsonp'
-            }).done(function (data) {
-                this.availableServices(data);
+                type   : 'jsonp',
+                data   : {
+                    postcode: postcode,
+                    country: country
+                }
+            }).done(function (services) {
+                this.availableServices(services);
             }.bind(this));
         },
     
@@ -159,29 +157,25 @@ define([
          * Needs to return true, otherwise KnockoutJS prevents default event.
          * The toggleParcelShopAddress is triggered to control display of the ship-to block.
          *
-         * @param address
+         * @param selectedAddress
          * @returns {boolean}
          */
-        setParcelShopAddress: function (address) {
-            this.setGlsDeliveryOption('parcelShop', address);
-            parcelShop().parcelShopAddress(address);
+        setParcelShopAddress: function (selectedAddress) {
+            this.setGlsDeliveryOption('ParcelShop', selectedAddress);
+            parcelShop().parcelShopAddress(selectedAddress);
 
             return true;
         },
-
+    
         /**
          * Needs to return true, otherwise KnockoutJS prevents default event.
          *
          * @param service
+         * @param selectedOption
          * @returns {boolean}
          */
-        setDeliveryService: function (service) {
-            /**
-             * TODO: when the getDeliveryOption API endpoint is implemented. The type parameter should
-             *       equal the service name, e.g. expressService, saturdayService, etc. It should default
-             *       to null. the service parameter should also default to null.
-             */
-            this.setGlsDeliveryOption('deliveryService', service);
+        setDeliveryService: function (service, selectedOption) {
+            service.setGlsDeliveryOption(this, selectedOption);
             parcelShop().parcelShopAddress(null);
     
             return true;

@@ -39,16 +39,19 @@
                 <name>GLS</name>
                 <model>TIG\GLS\Model\Carrier\GLS</model>
                 <handling_fee>4.95</handling_fee>
+                <cut_off_time>18:00:00</cut_off_time>
+                <processing_time>0</processing_time>
                 <business_parcel_active>1</business_parcel_active>
                 <express_parcel_active>1</express_parcel_active>
                 <business_parcel_services>
                     <flex_delivery_active>1</flex_delivery_active>
+                    <saturday_active>1</saturday_active>
                     <shop_delivery_active>1</shop_delivery_active>
                     <shop_delivery_shop_amount>5</shop_delivery_shop_amount>
                     <shop_return_active>1</shop_return_active>
                 </business_parcel_services>
                 <express_parcel_services>
-                    <services_active>saturday_service,time_definite_t9,time_definite_t12</services_active>
+                    <services_active>T9,T12,T17,S9,S12,S17</services_active>
                 </express_parcel_services>
             </tig_gls>
         </carriers>

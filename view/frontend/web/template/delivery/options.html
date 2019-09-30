@@ -42,9 +42,31 @@
 
     <div data-bind="foreach: availableServices">
         <div class="container gls-delivery-service">
-            <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: code, click: $parent.setDeliveryService.bind($parent), attr: { id: code }">
-            <label data-bind="i18n: label, attr: { for: code }"></label>
-            <span class="delivery-fee" data-bind="text: $parent.formatAdditionalFee(fee)"></span>
+            <!-- ko if: isService === false && hasSubOptions === false -->
+            <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: 'deliveryService', click: $parent.setDeliveryService.bind('deliveryService', $parent), attr: {id: 'default' }" />
+            <label data-bind="i18n: title, attr: { for: 'default' }"></label>
+            <span class="delivery-fee" data-bind="text: fee"></span>
+            <!-- /ko -->
+
+            <!-- ko if: isService === true && hasSubOptions === false -->
+            <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: service, click: $parent.setDeliveryService.bind(service, $parent), attr: {id: service }" />
+            <label data-bind="i18n: title, attr: { for: service }"></label>
+            <span class="delivery-fee" data-bind="text: fee"></span>
+            <!-- /ko -->
+
+            <!-- ko if: isService === true && hasSubOptions === true-->
+            <span data-bind="i18n: title"></span>
+            <!-- /ko -->
+
+            <!-- ko if: hasSubOptions === true -->
+            <div data-bind="foreach: subDeliveryOptions">
+                <div class="container gls-sub-delivery-options">
+                    <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: service, click: $parentContext.$parent.setDeliveryService.bind($parent.service, $parentContext.$parent), attr: { id: service }" />
+                    <label data-bind="i18n: title, attr: { for: service }"></label>
+                    <span class="delivery-fee" data-bind="text: fee"></span>
+                </div>
+            </div>
+            <!-- /ko -->
         </div>
     </div>
 
@@ -69,7 +91,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

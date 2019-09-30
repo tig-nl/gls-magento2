@@ -34,6 +34,7 @@ namespace TIG\GLS\Plugin\Quote\Model;
 
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use TIG\GLS\Model\Config\Provider\Carrier;
 
 class QuoteManagement
 {
@@ -82,7 +83,7 @@ class QuoteManagement
             $shippingAddress->setGlsDeliveryOption(json_encode($deliveryOption));
         }
 
-        if ($type == 'parcelShop') {
+        if ($type == Carrier::GLS_DELIVERY_OPTION_PARCEL_SHOP_LABEL) {
             $this->changeShippingAddress($deliveryOption->details, $shippingAddress);
         }
     }
@@ -106,8 +107,26 @@ class QuoteManagement
             'city'          => $shipping->getCity(),
             // If Shipping Address is same as Billing Address, Email is only saved in Billing.
             'email'         => $shipping->getEmail() ?: $billing->getEmail(),
+            'phone'         => $shipping->getTelephone() ?: '+00000000000',
             'addresseeType' => $shipping->getCompany() ? 'b' : 'p'
         ];
+    }
+
+    /**
+     * @param $newAddress
+     * @param $shippingAddress
+     *
+     * @return mixed
+     */
+    private function changeShippingAddress($newAddress, $shippingAddress)
+    {
+        $shippingAddress->setStreet($newAddress->street . ' ' . $newAddress->houseNo);
+        $shippingAddress->setCompany($newAddress->name);
+        $shippingAddress->setPostcode($newAddress->zipcode);
+        $shippingAddress->setCity($newAddress->city);
+        $shippingAddress->setCountryId($newAddress->countryCode);
+
+        return $shippingAddress;
     }
 
     /**
@@ -139,22 +158,5 @@ class QuoteManagement
         $order->save();
 
         return $orderId;
-    }
-
-    /**
-     * @param $newAddress
-     * @param $shippingAddress
-     *
-     * @return mixed
-     */
-    private function changeShippingAddress($newAddress, $shippingAddress)
-    {
-        $shippingAddress->setStreet($newAddress->street . ' ' . $newAddress->houseNo);
-        $shippingAddress->setCompany($newAddress->name);
-        $shippingAddress->setPostcode($newAddress->zipcode);
-        $shippingAddress->setCity($newAddress->city);
-        $shippingAddress->setCountryId($newAddress->countryCode);
-
-        return $shippingAddress;
     }
 }

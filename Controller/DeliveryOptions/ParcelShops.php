@@ -34,12 +34,16 @@ namespace TIG\GLS\Controller\DeliveryOptions;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\Action;
+use TIG\GLS\Model\Config\Provider\Carrier as CarrierConfig;
 use TIG\GLS\Service\DeliveryOptions\ParcelShops as ParcelShopsService;
 
 class ParcelShops extends Action
 {
     /** @var Session $checkoutSession */
     private $checkoutSession;
+
+    /** @var CarrierConfig $carrierConfig */
+    private $carrierConfig;
 
     /** @var ParcelShopsService $parcelShops*/
     private $parcelShops;
@@ -52,9 +56,11 @@ class ParcelShops extends Action
     public function __construct(
         Context $context,
         Session $checkoutSession,
+        CarrierConfig $carrierConfig,
         ParcelShopsService $parcelShops
     ) {
         $this->checkoutSession = $checkoutSession;
+        $this->carrierConfig = $carrierConfig;
         $this->parcelShops = $parcelShops;
 
         parent::__construct($context);
@@ -69,6 +75,10 @@ class ParcelShops extends Action
         $params = $this->getRequest()->getParams();
 
         $results = $this->parcelShops->getParcelShops($params['postcode']);
+
+        foreach ($results['parcelShops'] as &$parcelShop) {
+            $parcelShop['fee'] = $this->carrierConfig->getShopDeliveryHandlingFee();
+        }
 
         $responseBody = \Zend_Json::encode($results['parcelShops']);
         $response = $this->getResponse();

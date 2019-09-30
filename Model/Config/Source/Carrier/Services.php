@@ -39,12 +39,18 @@ use TIG\GLS\Service\ServicesReflectionClass;
 class Services implements ArrayInterface
 {
     const GLS_CARRIER_SERVICE_LABEL_OPERATOR                  = '_LABEL';
-    const GLS_CARRIER_SERVICE_EXPRESS_SATURDAY                = 'saturday_service';
-    const GLS_CARRIER_SERVICE_EXPRESS_SATURDAY_LABEL          = 'SaturdayService';
-    const GLS_CARRIER_SERVICE_EXPRESS_TIME_DEFINITE_T9        = 'time_definite_t9';
+    const GLS_CARRIER_SERVICE_EXPRESS_TIME_DEFINITE_T9        = 'T9';
     const GLS_CARRIER_SERVICE_EXPRESS_TIME_DEFINITE_T9_LABEL  = 'TimeDefiniteService (Before 9.00 AM)';
-    const GLS_CARRIER_SERVICE_EXPRESS_TIME_DEFINITE_T12       = 'time_definite_t12';
+    const GLS_CARRIER_SERVICE_EXPRESS_TIME_DEFINITE_T12       = 'T12';
     const GLS_CARRIER_SERVICE_EXPRESS_TIME_DEFINITE_T12_LABEL = 'TimeDefiniteService (Before 12.00 AM)';
+    const GLS_CARRIER_SERVICE_EXPRESS_TIME_DEFINITE_T17       = 'T17';
+    const GLS_CARRIER_SERVICE_EXPRESS_TIME_DEFINITE_T17_LABEL = 'TimeDefiniteService (Before 17.00 AM)';
+    const GLS_CARRIER_SERVICE_EXPRESS_SATURDAY_T9             = 'S9';
+    const GLS_CARRIER_SERVICE_EXPRESS_SATURDAY_T9_LABEL       = 'SaturdayService (Before 9.00 AM)';
+    const GLS_CARRIER_SERVICE_EXPRESS_SATURDAY_T12            = 'S12';
+    const GLS_CARRIER_SERVICE_EXPRESS_SATURDAY_T12_LABEL      = 'SaturdayService (Before 12.00 AM)';
+    const GLS_CARRIER_SERVICE_EXPRESS_SATURDAY_T17            = 'S17';
+    const GLS_CARRIER_SERVICE_EXPRESS_SATURDAY_T17_LABEL      = 'SaturdayService (Before 17.00 AM)';
 
     /** @var ServicesReflectionClass $servicesReflection */
     private $servicesReflection;

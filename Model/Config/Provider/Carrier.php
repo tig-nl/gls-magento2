@@ -35,16 +35,24 @@ namespace TIG\GLS\Model\Config\Provider;
 // @codingStandardsIgnoreFile
 class Carrier extends AbstractConfigProvider
 {
-    const XPATH_CARRIER_ACTIVE                        = 'carriers/tig_gls/active';
-    const XPATH_CARRIER_HANDLING_FEE                  = 'carriers/tig_gls/handling_fee';
-    const XPATH_CARRIER_BUSINESS_PARCEL_ACTIVE        = 'carriers/tig_gls/business_parcel_active';
-    const XPATH_CARRIER_EXPRESS_PARCEL_ACTIVE         = 'carriers/tig_gls/express_parcel_active';
-    const XPATH_CARRIER_BUSINESS_PARCEL_FLEX_DELIVERY = 'carriers/tig_gls/business_parcel_services/flex_delivery_active';
-    const XPATH_CARRIER_BUSINESS_PARCEL_SHOP_DELIVERY = 'carriers/tig_gls/business_parcel_services/shop_delivery_active';
-    const XPATH_CARRIER_BUSINESS_PARCEL_SHOP_AMOUNT   = 'carriers/tig_gls/business_parcel_services/shop_delivery_shop_amount';
-    const XPATH_CARRIER_BUSINESS_PARCEL_SHOP_RETURN   = 'carriers/tig_gls/business_parcel_services/shop_return_active';
-    const XPATH_CARRIER_EXPRESS_PARCEL_SERVICES       = 'carriers/tig_gls/express_parcel_services/services_active';
-    const XPATH_CARRIER_EXPRESS_PARCEL_HANDLING_FEES  = 'carriers/tig_gls/express_parcel_services/additional_handling_fee';
+    const GLS_DELIVERY_OPTION_EXPRESS_LABEL                        = 'ExpressService';
+    const GLS_DELIVERY_OPTION_SATURDAY_LABEL                       = 'SaturdayService';
+    const GLS_DELIVERY_OPTION_PARCEL_SHOP_LABEL                    = 'ParcelShop';
+    const XPATH_CARRIER_ACTIVE                                     = 'carriers/tig_gls/active';
+    const XPATH_CARRIER_HANDLING_FEE                               = 'carriers/tig_gls/handling_fee';
+    const XPATH_CARRIER_CUT_OFF_TIME                               = 'carriers/tig_gls/cut_off_time';
+    const XPATH_CARRIER_PROCESSING_TIME                            = 'carriers/tig_gls/processing_time';
+    const XPATH_CARRIER_BUSINESS_PARCEL_ACTIVE                     = 'carriers/tig_gls/business_parcel_active';
+    const XPATH_CARRIER_EXPRESS_PARCEL_ACTIVE                      = 'carriers/tig_gls/express_parcel_active';
+    const XPATH_CARRIER_BUSINESS_PARCEL_FLEX_DELIVERY              = 'carriers/tig_gls/business_parcel_services/flex_delivery_active';
+    const XPATH_CARRIER_BUSINESS_PARCEL_SATURDAY_SERVICE           = 'carriers/tig_gls/business_parcel_services/saturday_active';
+    const XPATH_CARRIER_BUSINESS_PARCEL_SATURDAY_HANDLING_FEE      = 'carriers/tig_gls/business_parcel_services/saturday_handling_fee';
+    const XPATH_CARRIER_BUSINESS_PARCEL_SHOP_DELIVERY              = 'carriers/tig_gls/business_parcel_services/shop_delivery_active';
+    const XPATH_CARRIER_BUSINESS_PARCEL_SHOP_DELIVERY_HANDLING_FEE = 'carriers/tig_gls/business_parcel_services/shop_delivery_handling_fee';
+    const XPATH_CARRIER_BUSINESS_PARCEL_SHOP_AMOUNT                = 'carriers/tig_gls/business_parcel_services/shop_delivery_shop_amount';
+    const XPATH_CARRIER_BUSINESS_PARCEL_SHOP_RETURN                = 'carriers/tig_gls/business_parcel_services/shop_return_active';
+    const XPATH_CARRIER_EXPRESS_PARCEL_SERVICES                    = 'carriers/tig_gls/express_parcel_services/services_active';
+    const XPATH_CARRIER_EXPRESS_PARCEL_HANDLING_FEES               = 'carriers/tig_gls/express_parcel_services/additional_handling_fee';
 
     /**
      * @return bool
@@ -60,6 +68,22 @@ class Carrier extends AbstractConfigProvider
     public function getBaseHandlingFee()
     {
         return $this->getConfigValue(self::XPATH_CARRIER_HANDLING_FEE);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCutOffTime()
+    {
+        return $this->getConfigValue(self::XPATH_CARRIER_CUT_OFF_TIME);
+    }
+
+    /**
+     * @return string
+     */
+    public function getProcessingTime()
+    {
+        return $this->getConfigValue(self::XPATH_CARRIER_PROCESSING_TIME);
     }
 
     /**
@@ -87,11 +111,35 @@ class Carrier extends AbstractConfigProvider
     }
 
     /**
+     * @return mixed
+     */
+    public function isSaturdayServiceActive()
+    {
+        return $this->getConfigValue(self::XPATH_CARRIER_BUSINESS_PARCEL_SATURDAY_SERVICE);
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getSaturdayHandlingFee()
+    {
+        return $this->getConfigValue(self::XPATH_CARRIER_BUSINESS_PARCEL_SATURDAY_HANDLING_FEE);
+    }
+
+    /**
      * @return bool
      */
     public function isShopDeliveryActive()
     {
         return $this->getConfigValue(self::XPATH_CARRIER_BUSINESS_PARCEL_SHOP_DELIVERY);
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getShopDeliveryHandlingFee()
+    {
+        return $this->getConfigValue(self::XPATH_CARRIER_BUSINESS_PARCEL_SHOP_DELIVERY_HANDLING_FEE);
     }
 
     /**

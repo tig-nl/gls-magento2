@@ -38,6 +38,7 @@ use Magento\Sales\Api\ShipmentRepositoryInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 use TIG\GLS\Controller\Adminhtml\AbstractLabel;
+use TIG\GLS\Model\Config\Provider\Carrier;
 use TIG\GLS\Model\Shipment\Label;
 use TIG\GLS\Model\Shipment\LabelFactory;
 use TIG\GLS\Webservice\Endpoint\Label\Create as CreateLabelEndpoint;
@@ -203,15 +204,15 @@ class Create extends AbstractLabel
     private function mapServices($details, $type = null)
     {
         switch ($type) {
-            case 'parcelShop':
+            case Carrier::GLS_DELIVERY_OPTION_PARCEL_SHOP_LABEL:
                 return [
                     "shopDeliveryParcelShopId" => $details->parcelShopId
                 ];
-            case 'expressService':
+            case Carrier::GLS_DELIVERY_OPTION_EXPRESS_LABEL:
                 return [
                     $type => $details->service
                 ];
-            case 'saturdayService':
+            case Carrier::GLS_DELIVERY_OPTION_SATURDAY_LABEL:
                 return [
                     $type => true
                 ];
