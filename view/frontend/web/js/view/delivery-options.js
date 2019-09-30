@@ -85,9 +85,6 @@ define([
 
         /**
          * Retrieve Delivery Options from GLS.
-         *
-         * This is done through a controller, because we will start using an API
-         * in the near future.
          */
         getAvailableServices: function (postcode, country) {
             $.ajax({

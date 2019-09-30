@@ -89,6 +89,7 @@ class Services extends Action
             $option['hasSubOptions'] = isset($option['subDeliveryOptions']);
             $option['fee']           = $this->getAdditionalHandlingFee($option);
 
+            // TODO: Is there a cleaner solution?
             if ($option['hasSubOptions']) {
                 $this->filterExpressServices($option['subDeliveryOptions']);
                 $this->addExpressAdditionalHandlingFees($option['subDeliveryOptions']);
