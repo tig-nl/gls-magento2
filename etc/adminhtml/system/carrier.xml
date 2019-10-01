@@ -60,13 +60,8 @@
                 <validate>validate-number validate-zero-or-greater</validate>
                 <comment><![CDATA[The time (in days) it takes to process and package an order before it's shipped.]]></comment>
             </field>
-            <field id="business_parcel_active" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                <label>BusinessParcel</label>
-                <comment><![CDATA[Enable this to use GLS BusinessParcel, EuroBusinessParcel and GlobalBusinessParcel.]]></comment>
-                <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
-            </field>
             <field id="express_parcel_active" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                <label>ExpressParcel</label>
+                <label>Express Delivery Services</label>
                 <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
             </field>
 

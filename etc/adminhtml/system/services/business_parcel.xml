@@ -35,9 +35,6 @@
     <group id="business_parcel_services" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
         <label>Delivery Services</label>
         <attribute type="expanded">1</attribute>
-        <depends>
-            <field id="business_parcel_active">1</field>
-        </depends>
         <field id="flex_delivery_active" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
             <label>FlexDeliveryService</label>
             <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
@@ -54,11 +51,11 @@
                 <field id="saturday_active">1</field>
             </depends>
         </field>
-        <field id="shop_delivery_active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+        <field id="shop_delivery_active" translate="label" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
             <label>ShopDeliveryService</label>
             <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
         </field>
-        <field id="shop_delivery_handling_fee" translate="label comment" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+        <field id="shop_delivery_handling_fee" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
             <label>ShopDelivery Additional Handling Fee</label>
             <comment>Configure an additional handling fee or discount for delivery to ParcelShops (e.g. 2.00 or -3.95)</comment>
             <validate>validate-number</validate>
@@ -66,13 +63,13 @@
                 <field id="shop_delivery_active">1</field>
             </depends>
         </field>
-        <field id="shop_delivery_shop_amount" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+        <field id="shop_delivery_shop_amount" translate="label" type="text" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
             <label>No. of Shops to Display</label>
             <depends>
                 <field id="shop_delivery_active">1</field>
             </depends>
         </field>
-        <field id="shop_return_active" translate="label" type="select" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+        <field id="shop_return_active" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
             <label>ShopReturnService</label>
             <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
         </field>

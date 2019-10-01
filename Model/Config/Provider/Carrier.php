@@ -42,7 +42,6 @@ class Carrier extends AbstractConfigProvider
     const XPATH_CARRIER_HANDLING_FEE                               = 'carriers/tig_gls/handling_fee';
     const XPATH_CARRIER_CUT_OFF_TIME                               = 'carriers/tig_gls/cut_off_time';
     const XPATH_CARRIER_PROCESSING_TIME                            = 'carriers/tig_gls/processing_time';
-    const XPATH_CARRIER_BUSINESS_PARCEL_ACTIVE                     = 'carriers/tig_gls/business_parcel_active';
     const XPATH_CARRIER_EXPRESS_PARCEL_ACTIVE                      = 'carriers/tig_gls/express_parcel_active';
     const XPATH_CARRIER_BUSINESS_PARCEL_FLEX_DELIVERY              = 'carriers/tig_gls/business_parcel_services/flex_delivery_active';
     const XPATH_CARRIER_BUSINESS_PARCEL_SATURDAY_SERVICE           = 'carriers/tig_gls/business_parcel_services/saturday_active';
@@ -84,14 +83,6 @@ class Carrier extends AbstractConfigProvider
     public function getProcessingTime()
     {
         return $this->getConfigValue(self::XPATH_CARRIER_PROCESSING_TIME);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isBusinessParcelActive()
-    {
-        return $this->getConfigValue(self::XPATH_CARRIER_BUSINESS_PARCEL_ACTIVE);
     }
 
     /**
@@ -167,7 +158,7 @@ class Carrier extends AbstractConfigProvider
     /**
      * @return array|null
      */
-    public function getActiveExpressServices()
+    public function getActiveTimeDefiniteServices()
     {
         if (!$this->isExpressParcelActive()) {
             return null;

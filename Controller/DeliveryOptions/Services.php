@@ -85,6 +85,8 @@ class Services extends Action
         $services        = $this->services->getDeliveryOptions($country, 'NL', $postcode);
         $deliveryOptions = $services['deliveryOptions'];
 
+        $this->filterDeliveryOptions($deliveryOptions);
+
         foreach ($deliveryOptions as &$option) {
             $option['isService']     = isset($option['service']);
             $option['hasSubOptions'] = isset($option['subDeliveryOptions']);
@@ -92,12 +94,43 @@ class Services extends Action
 
             // TODO: Is there a cleaner solution?
             if ($option['hasSubOptions']) {
-                $this->filterExpressServices($option['subDeliveryOptions']);
+                $this->filterTimeDefiniteServices($option['subDeliveryOptions']);
                 $this->addExpressAdditionalHandlingFees($option['subDeliveryOptions']);
             }
         }
 
         return $this->jsonResponse($deliveryOptions);
+    }
+
+    /**
+     * Filters non-active Delivery Options from the output.
+     *
+     * @param $options
+     *
+     * @return array
+     */
+    private function filterDeliveryOptions(&$options)
+    {
+        $isExpressServicesActive = $this->carrierConfig->isExpressParcelActive();
+        $isSaturdayServiceActive = $this->carrierConfig->isSaturdayServiceActive();
+
+        $options = array_filter(
+            $options,
+            function ($details) use ($isExpressServicesActive, $isSaturdayServiceActive) {
+                // Always allow BusinessParcel (the default service)
+                return !isset($details['service'])
+                       // Allow SaturdayService if active.
+                       || ($isSaturdayServiceActive
+                           && ($details['service'] == CarrierConfig::GLS_DELIVERY_OPTION_SATURDAY_LABEL))
+                       // Allow Express Delivery Services if active.
+                       || ($isExpressServicesActive
+                           && ($details['service'] == CarrierConfig::GLS_DELIVERY_OPTION_EXPRESS_LABEL));
+            }
+        );
+
+        $options = array_values($options);
+
+        return $options;
     }
 
     /**
@@ -119,9 +152,9 @@ class Services extends Action
      *
      * @return array
      */
-    private function filterExpressServices(&$services)
+    private function filterTimeDefiniteServices(&$services)
     {
-        $allowedServices = $this->carrierConfig->getActiveExpressServices();
+        $allowedServices = $this->carrierConfig->getActiveTimeDefiniteServices();
 
         $services = array_filter(
             $services,
