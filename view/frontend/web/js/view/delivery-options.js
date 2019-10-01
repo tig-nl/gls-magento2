@@ -54,7 +54,8 @@ define([
             country: null,
             availableServices: ko.observableArray([]),
             parcelShops: ko.observableArray([]),
-            deliveryFee: ko.observable()
+            deliveryFee: ko.observable(),
+            pickupFee: ko.observable()
         },
 
         initObservable: function () {
@@ -99,7 +100,7 @@ define([
                 this.availableServices(services);
             }.bind(this));
         },
-    
+
         /**
          * Format fee if fee is higher than zero.
          *
@@ -110,6 +111,9 @@ define([
             var formattedFee = '';
             if (fee > 0) {
                 formattedFee = '+ ' + priceUtils.formatPrice(fee, quote.getPriceFormat());
+            }
+            if (fee < 0) {
+                formattedFee = '- ' + priceUtils.formatPrice(Math.abs(fee), quote.getPriceFormat());
             }
             return formattedFee;
         },
@@ -147,10 +151,8 @@ define([
             // TODO: This should be done the Magento-way: shippingAddress.customAttributes.etc.
             $('input[name="custom_attributes[gls_delivery_option]"]').val(JSON.stringify(deliveryOption));
 
-            $('.gls-delivery-options input[name="gls_delivery_option"]').parent().removeClass('active');
-            $('.gls-delivery-options input[name="gls_delivery_option"]:checked').parent().addClass('active');
-
-            this.deliveryFee(this.formatAdditionalFee(details.fee));
+            $('.gls-delivery-options input[name="gls_delivery_option"]').parents().removeClass('active');
+            $('.gls-delivery-options input[name="gls_delivery_option"]:checked').parents().addClass('active');
         },
 
         /**
@@ -164,9 +166,11 @@ define([
             this.setGlsDeliveryOption('ParcelShop', selectedAddress);
             parcelShop().parcelShopAddress(selectedAddress);
 
+            this.pickupFee(this.formatAdditionalFee(selectedAddress.fee));
+
             return true;
         },
-    
+
         /**
          * Needs to return true, otherwise KnockoutJS prevents default event.
          *
@@ -177,10 +181,12 @@ define([
         setDeliveryService: function (service, selectedOption) {
             service.setGlsDeliveryOption(this, selectedOption);
             parcelShop().parcelShopAddress(null);
-    
+
+            service.deliveryFee(service.formatAdditionalFee(selectedOption.fee));
+
             return true;
         },
-    
+
         /**
          * Toggles between Parcel Shops and Delivery Services
          *
@@ -195,7 +201,7 @@ define([
             $(previousContent).hide();
             $(currentContent).fadeIn('slow');
         },
-    
+
         /**
          * Show Business Hours when link is clicked.
          */
@@ -203,7 +209,7 @@ define([
             $(this).hide();
             $(this).next('.table-container').fadeIn('slow');
         },
-    
+
         /**
          * Close Business Hours when link is clicked.
          */

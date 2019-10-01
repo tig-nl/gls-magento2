@@ -96,6 +96,7 @@ border-blue:    #D4D9E3;
     display : inline-block;
 }
 
+
 @media screen and (max-width: 380px){
     .gls-delivery-options .gls-tab {
         width: 100%;
@@ -120,6 +121,10 @@ border-blue:    #D4D9E3;
     position: relative;
 }
 
+.gls-delivery-options .gls-sub-delivery-options label {
+    font-weight: 400;
+}
+
 .gls-delivery-options label:hover {
     text-decoration: underline;
 }
@@ -129,6 +134,18 @@ border-blue:    #D4D9E3;
 .gls-delivery-service .delivery-fee {
     float :right;
     padding-top: 5px;
+}
+
+/* Sub */
+
+.gls-delivery-options .gls-sub-delivery-options-title {
+    padding: 5px 0 10px;
+    float: left;
+    width: 100%;
+}
+
+.gls-delivery-options .gls-sub-delivery-options {
+    padding-top: 10px;
 }
 
 /* Pick up points =================================================================================================== */
@@ -288,6 +305,7 @@ border-blue:    #D4D9E3;
     height: 20px;
     border-radius: 50%;
     box-sizing: border-box;
+    background: white;
 }
 
 .gls-delivery-options input[type=radio]:checked + label:after {
