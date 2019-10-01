@@ -102,19 +102,20 @@ define([
         },
 
         /**
-         * Format fee if fee is higher than zero.
-         *
          * @param fee
          * @returns {string}
          */
         formatAdditionalFee: function (fee) {
             var formattedFee = '';
+            
             if (fee > 0) {
                 formattedFee = '+ ' + priceUtils.formatPrice(fee, quote.getPriceFormat());
             }
+            
             if (fee < 0) {
                 formattedFee = '- ' + priceUtils.formatPrice(Math.abs(fee), quote.getPriceFormat());
             }
+            
             return formattedFee;
         },
 
