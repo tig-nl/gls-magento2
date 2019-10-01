@@ -193,13 +193,13 @@ class Create extends AbstractLabel
     }
 
     /**
-     * When an empty array is returned, the default BusinessParcel product is used
+     * When an empty object is returned, the default BusinessParcel product is used
      * in CreateLabel.
      *
-     * @param null $type
      * @param      $details
+     * @param null $type
      *
-     * @return array
+     * @return array|object
      */
     private function mapServices($details, $type = null)
     {
@@ -217,7 +217,7 @@ class Create extends AbstractLabel
                     $type => true
                 ];
             default:
-                return [];
+                return (object) null;
         }
     }
 
