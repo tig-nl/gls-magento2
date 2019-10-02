@@ -315,18 +315,30 @@ class Create extends AbstractLabel
     }
 
     /**
+     * TODO: getTotalWeight() return null too often. How to trigger calculation?
+     *
      * @param $shipment
-     * @param $order
      *
      * @return array
      */
-    private function prepareShippingUnit($shipment, $order)
+    private function prepareShippingUnit($shipment)
     {
+        $totalWeight = $shipment->getTotalWeight();
+
+        if ($totalWeight > self::GLS_PARCEL_MAX_WEIGHT) {
+            $this->messageManager->addErrorMessage(
+                "Label could not be created, because the shipment is too heavy."
+            );
+
+            return [];
+        }
+
+        $weight = $totalWeight != 0 ? $totalWeight : 1;
+
         return [
             "unitId"   => $shipment->getIncrementId(),
             "unitType" => "cO",
-            "weight"   => $order->getWeight() <= self::GLS_PARCEL_MAX_WEIGHT
-                ? $order->getWeight() : self::GLS_PARCEL_MAX_WEIGHT
+            "weight"   => $weight
         ];
     }
 }
