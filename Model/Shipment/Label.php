@@ -94,11 +94,23 @@ class Label extends AbstractModel implements LabelInterface
         return $this->setData(self::GLS_SHIPMENT_LABEL_UNIQUE_NO, $uniqueNo);
     }
 
+    /**
+     * Is not used in this extension, but we'll keep it available for 3rd Parties
+     * who might need it through an API connection.
+     *
+     * @return bool
+     */
     public function getIsConfirmed()
     {
         return $this->_getData(self::GLS_SHIPMENT_LABEL_CONFIRMED);
     }
 
+    /**
+     * Is not used in this extension, but we'll keep it available for 3rd Parties
+     * who might need it through an API connection.
+     *
+     * @return mixed
+     */
     public function isConfirmed($confirmed)
     {
         return $this->setData(self::GLS_SHIPMENT_LABEL_CONFIRMED, $confirmed);

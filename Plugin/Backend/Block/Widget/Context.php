@@ -48,9 +48,6 @@ class Context
     const GLS_ADMIN_LABEL_PRINT_BUTTON   = 'gls_label_print';
     const GLS_ADMIN_LABEL_PRINT_LABEL    = 'GLS - Print Label';
     const GLS_ADMIN_LABEL_PRINT_URI      = 'gls/label/printPdf';
-    const GLS_ADMIN_LABEL_CONFIRM_BUTTON = 'gls_label_confirm';
-    const GLS_ADMIN_LABEL_CONFIRM_LABEL  = 'GLS - Confirm Label';
-    const GLS_ADMIN_LABEL_CONFIRM_URI    = 'gls/label/confirm';
     const GLS_ADMIN_LABEL_DELETE_BUTTON  = 'gls_label_delete';
     const GLS_ADMIN_LABEL_DELETE_LABEL   = 'GLS - Delete Label';
     const GLS_ADMIN_LABEL_DELETE_URI     = 'gls/label/delete';
@@ -116,14 +113,7 @@ class Context
             return $buttonList;
         }
 
-        /**
-         * Confirmed Labels cannot be deleted through the API.
-         */
-        if (!$label->getIsConfirmed()) {
-            $this->addConfirmButton($buttonList, $shipmentId);
-            $this->addDeleteButton($buttonList, $shipmentId);
-        }
-
+        $this->addDeleteButton($buttonList, $shipmentId);
         $this->addPrintButton($buttonList, $shipmentId);
 
         return $buttonList;
@@ -142,26 +132,6 @@ class Context
             self::GLS_ADMIN_LABEL_CREATE_URI,
             'gls-create save primary',
             0,
-            0,
-            [
-                'shipment_id' => $shipmentId
-            ]
-        );
-    }
-
-    /**
-     * @param $buttonList
-     * @param $shipmentId
-     */
-    private function addConfirmButton($buttonList, $shipmentId)
-    {
-        $this->addButton(
-            $buttonList,
-            self::GLS_ADMIN_LABEL_CONFIRM_BUTTON,
-            self::GLS_ADMIN_LABEL_CONFIRM_LABEL,
-            self::GLS_ADMIN_LABEL_CONFIRM_URI,
-            'gls-confirm save primary',
-            -1,
             0,
             [
                 'shipment_id' => $shipmentId
