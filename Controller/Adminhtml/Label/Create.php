@@ -161,7 +161,7 @@ class Create extends AbstractLabel
             'deliveryAddress' => $deliveryOption->deliveryAddress,
             'pickupAddress'   => $this->preparePickupAddress()
         ];
-        $data['shippingData']      = date("Y-m-d");
+        $data['shippingDate']      = date("Y-m-d");
         $data['units']             = [
             $this->prepareShippingUnit($shipment, $order)
         ];
