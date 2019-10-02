@@ -41,6 +41,7 @@ use TIG\GLS\Controller\Adminhtml\AbstractLabel;
 use TIG\GLS\Model\Config\Provider\Carrier;
 use TIG\GLS\Model\Shipment\Label;
 use TIG\GLS\Model\Shipment\LabelFactory;
+use TIG\GLS\Service\ShippingDate;
 use TIG\GLS\Webservice\Endpoint\Label\Create as CreateLabelEndpoint;
 
 class Create extends AbstractLabel
@@ -65,6 +66,9 @@ class Create extends AbstractLabel
     /** @var OrderRepositoryInterface $orders */
     private $orders;
 
+    /** @var ShippingDate $shippingDate */
+    private $shippingDate;
+
     /** @var CreateLabelEndpoint $createLabel */
     private $createLabel;
 
@@ -80,6 +84,7 @@ class Create extends AbstractLabel
      * @param OrderRepositoryInterface    $orders
      * @param LabelRepositoryInterface    $labelRepository
      * @param LabelFactory                $label
+     * @param ShippingDate                $shippingDate
      * @param CreateLabelEndpoint         $createLabel
      */
     public function __construct(
@@ -89,6 +94,7 @@ class Create extends AbstractLabel
         OrderRepositoryInterface $orders,
         LabelRepositoryInterface $labelRepository,
         LabelFactory $label,
+        ShippingDate $shippingDate,
         CreateLabelEndpoint $createLabel
     ) {
         parent::__construct(
@@ -97,10 +103,11 @@ class Create extends AbstractLabel
             $labelRepository
         );
 
-        $this->scopeConfig = $scopeConfig;
-        $this->shipments   = $shipments;
-        $this->orders      = $orders;
-        $this->createLabel = $createLabel;
+        $this->scopeConfig  = $scopeConfig;
+        $this->shipments    = $shipments;
+        $this->orders       = $orders;
+        $this->shippingDate = $shippingDate;
+        $this->createLabel  = $createLabel;
     }
 
     /**
@@ -161,9 +168,9 @@ class Create extends AbstractLabel
             'deliveryAddress' => $deliveryOption->deliveryAddress,
             'pickupAddress'   => $this->preparePickupAddress()
         ];
-        $data['shippingDate']      = date("Y-m-d");
+        $data['shippingDate']      = $this->shippingDate->calculate("Y-m-d", false);
         $data['units']             = [
-            $this->prepareShippingUnit($shipment, $order)
+            $this->prepareShippingUnit($shipment)
         ];
 
         return $data;
