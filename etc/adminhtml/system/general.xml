@@ -55,10 +55,18 @@
                 <field id="mode" separator=",">1,2</field>
             </depends>
         </field>
-        <field id="subscription_key" translate="label" type="obscure" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="live_subscription_key" translate="label" type="obscure" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Subscription key</label>
             <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-            <config_path>tig_gls/general/subscription_key</config_path>
+            <config_path>tig_gls/general/live_subscription_key</config_path>
+            <depends>
+                <field id="mode">1</field>
+            </depends>
+        </field>
+        <field id="test_subscription_key" translate="label" type="obscure" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Subscription key</label>
+            <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+            <config_path>tig_gls/general/test_subscription_key</config_path>
             <depends>
                 <field id="mode">2</field>
             </depends>

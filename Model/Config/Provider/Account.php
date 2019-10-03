@@ -38,13 +38,13 @@ use Magento\Framework\Module\Manager;
 
 class Account extends AbstractConfigProvider
 {
-    const XPATH_GENERAL_MODE             = 'tig_gls/general/mode';
-    const XPATH_GENERAL_USERNAME         = 'tig_gls/general/username';
-    const XPATH_GENERAL_PASSWORD         = 'tig_gls/general/password';
-    const XPATH_GENERAL_SUBSCRIPTION_KEY = 'tig_gls/general/subscription_key';
-    const XPATH_API_LIVE_BASE_URL        = 'tig_gls/api/live_base_url';
-    const XPATH_API_TEST_BASE_URL        = 'tig_gls/api/test_base_url';
-
+    const XPATH_GENERAL_MODE                  = 'tig_gls/general/mode';
+    const XPATH_GENERAL_USERNAME              = 'tig_gls/general/username';
+    const XPATH_GENERAL_PASSWORD              = 'tig_gls/general/password';
+    const XPATH_GENERAL_LIVE_SUBSCRIPTION_KEY = 'tig_gls/general/live_subscription_key';
+    const XPATH_GENERAL_TEST_SUBSCRIPTION_KEY = 'tig_gls/general/test_subscription_key';
+    const XPATH_API_LIVE_BASE_URL             = 'tig_gls/api/live_base_url';
+    const XPATH_API_TEST_BASE_URL             = 'tig_gls/api/test_base_url';
     /** @var Encryptor $encryptor */
     private $encryptor;
 
@@ -77,7 +77,7 @@ class Account extends AbstractConfigProvider
 
     /**
      * @param null|int $store
-     * Should return one of these values
+     *  Should return one of these values
      *  '1' => live ||
      *  '2' => test
      *
@@ -137,7 +137,11 @@ class Account extends AbstractConfigProvider
      */
     public function getSubscriptionKey($store = null)
     {
-        $encryptedSubscriptionKey = $this->getConfigValue(self::XPATH_GENERAL_SUBSCRIPTION_KEY, $store);
+        $encryptedSubscriptionKey = $this->getConfigValue(self::XPATH_GENERAL_TEST_SUBSCRIPTION_KEY, $store);
+
+        if ($this->getMode($store) == 1) {
+            $encryptedSubscriptionKey = $this->getConfigValue(self::XPATH_GENERAL_LIVE_SUBSCRIPTION_KEY, $store);
+        }
 
         try {
             return $this->encryptor->decrypt($encryptedSubscriptionKey);
