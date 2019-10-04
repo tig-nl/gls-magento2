@@ -115,6 +115,8 @@ class InstallSchema implements InstallSchemaInterface
         $this->addText($table, Label::GLS_SHIPMENT_LABEL_UNIQUE_NO, 50, 'Unique Number');
         $this->addBool($table, Label::GLS_SHIPMENT_LABEL_CONFIRMED, 'Is Confirmed?');
         $this->addBlob($table, Label::GLS_SHIPMENT_LABEL_LABEL, 'GLS Label (Base64 encoded)');
+        $this->addText($table, Label::GLS_SHIPMENT_LABEL_UNIT_NO_SHOP_RETURN, 50, 'Shop Return Unit Number');
+        $this->addBlob($table, Label::GLS_SHIPMENT_LABEL_LABEL_SHOP_RETURN, 'GLS Shop Return Label (Base64 encoded)');
         $this->addText($table, Label::GLS_SHIPMENT_LABEL_UNIT_TRACKING_LINK, 256, 'GLS Tracking Link');
 
         $connection->createTable($table);

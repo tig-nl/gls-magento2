@@ -41,13 +41,15 @@ class Label extends AbstractModel implements LabelInterface
     /** @var string */
     protected $_idFieldName = 'entity_id';
 
-    const GLS_SHIPMENT_LABEL_SHIPMENT_ID        = 'shipment_id';
-    const GLS_SHIPMENT_LABEL_UNIT_ID            = 'unit_id';
-    const GLS_SHIPMENT_LABEL_UNIT_NO            = 'unit_no';
-    const GLS_SHIPMENT_LABEL_UNIQUE_NO          = 'unique_no';
-    const GLS_SHIPMENT_LABEL_CONFIRMED          = 'confirmed';
-    const GLS_SHIPMENT_LABEL_LABEL              = 'label';
-    const GLS_SHIPMENT_LABEL_UNIT_TRACKING_LINK = 'unit_tracking_link';
+    const GLS_SHIPMENT_LABEL_SHIPMENT_ID         = 'shipment_id';
+    const GLS_SHIPMENT_LABEL_UNIT_ID             = 'unit_id';
+    const GLS_SHIPMENT_LABEL_UNIT_NO             = 'unit_no';
+    const GLS_SHIPMENT_LABEL_UNIQUE_NO           = 'unique_no';
+    const GLS_SHIPMENT_LABEL_CONFIRMED           = 'confirmed';
+    const GLS_SHIPMENT_LABEL_LABEL               = 'label';
+    const GLS_SHIPMENT_LABEL_UNIT_NO_SHOP_RETURN = 'unit_no_shop_return';
+    const GLS_SHIPMENT_LABEL_LABEL_SHOP_RETURN   = 'label_shop_return';
+    const GLS_SHIPMENT_LABEL_UNIT_TRACKING_LINK  = 'unit_tracking_link';
 
     public function _construct()
     {
@@ -124,6 +126,26 @@ class Label extends AbstractModel implements LabelInterface
     public function setLabel($label)
     {
         return $this->setData(self::GLS_SHIPMENT_LABEL_LABEL, $label);
+    }
+
+    public function getUnitNoShopReturn()
+    {
+        return $this->_getData(self::GLS_SHIPMENT_LABEL_UNIT_NO_SHOP_RETURN);
+    }
+
+    public function setUnitNoShopReturn($unitNo)
+    {
+        return $this->setData(self::GLS_SHIPMENT_LABEL_UNIT_NO_SHOP_RETURN, $unitNo);
+    }
+
+    public function getLabelShopReturn()
+    {
+        return $this->_getData(self::GLS_SHIPMENT_LABEL_LABEL_SHOP_RETURN);
+    }
+
+    public function setLabelShopReturn($label)
+    {
+        return $this->setData(self::GLS_SHIPMENT_LABEL_LABEL_SHOP_RETURN, $label);
     }
 
     public function getUnitTrackingLink()

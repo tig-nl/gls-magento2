@@ -66,6 +66,9 @@ class Create extends AbstractLabel
     /** @var OrderRepositoryInterface $orders */
     private $orders;
 
+    /** @var $carrierConfig */
+    private $carrierConfig;
+
     /** @var ShippingDate $shippingDate */
     private $shippingDate;
 
@@ -82,6 +85,7 @@ class Create extends AbstractLabel
      * @param ScopeConfigInterface        $scopeConfig
      * @param ShipmentRepositoryInterface $shipments
      * @param OrderRepositoryInterface    $orders
+     * @param Carrier                     $carrierConfig
      * @param LabelRepositoryInterface    $labelRepository
      * @param LabelFactory                $label
      * @param ShippingDate                $shippingDate
@@ -92,6 +96,7 @@ class Create extends AbstractLabel
         ScopeConfigInterface $scopeConfig,
         ShipmentRepositoryInterface $shipments,
         OrderRepositoryInterface $orders,
+        Carrier $carrierConfig,
         LabelRepositoryInterface $labelRepository,
         LabelFactory $label,
         ShippingDate $shippingDate,
@@ -103,11 +108,12 @@ class Create extends AbstractLabel
             $labelRepository
         );
 
-        $this->scopeConfig  = $scopeConfig;
-        $this->shipments    = $shipments;
-        $this->orders       = $orders;
-        $this->shippingDate = $shippingDate;
-        $this->createLabel  = $createLabel;
+        $this->scopeConfig   = $scopeConfig;
+        $this->shipments     = $shipments;
+        $this->orders        = $orders;
+        $this->carrierConfig = $carrierConfig;
+        $this->shippingDate  = $shippingDate;
+        $this->createLabel   = $createLabel;
     }
 
     /**
@@ -142,7 +148,7 @@ class Create extends AbstractLabel
         $label = $this->createLabel->call();
 
         if ($this->callIsSuccess($label)) {
-            $this->saveLabelData($shipmentId, $label['units'][0]);
+            $this->saveLabelData($shipmentId, $label['units']);
         }
 
         return $this->redirectToShipmentView($shipmentId);
@@ -186,16 +192,22 @@ class Create extends AbstractLabel
     private function saveLabelData($shipmentId, array $labelData)
     {
         $labelFactory = $this->createLabelFactory();
-        $labelFactory->setData(
-            [
-                Label::GLS_SHIPMENT_LABEL_SHIPMENT_ID        => $shipmentId,
-                Label::GLS_SHIPMENT_LABEL_UNIT_ID            => $labelData['unitId'],
-                Label::GLS_SHIPMENT_LABEL_UNIT_NO            => $labelData['unitNo'],
-                Label::GLS_SHIPMENT_LABEL_UNIQUE_NO          => $labelData['uniqueNo'],
-                Label::GLS_SHIPMENT_LABEL_LABEL              => $labelData['label'],
-                Label::GLS_SHIPMENT_LABEL_UNIT_TRACKING_LINK => $labelData['unitTrackingLink']
-            ]
-        );
+
+        foreach ($labelData as $label) {
+            $labelFactory->setData(
+                [
+                    Label::GLS_SHIPMENT_LABEL_SHIPMENT_ID         => $shipmentId,
+                    Label::GLS_SHIPMENT_LABEL_UNIT_ID             => $label['unitId'],
+                    Label::GLS_SHIPMENT_LABEL_UNIT_NO             => $label['unitNo'],
+                    Label::GLS_SHIPMENT_LABEL_UNIQUE_NO           => $label['uniqueNo'],
+                    Label::GLS_SHIPMENT_LABEL_LABEL               => $label['label'],
+                    Label::GLS_SHIPMENT_LABEL_UNIT_NO_SHOP_RETURN => $label['unitNoShopReturn'],
+                    Label::GLS_SHIPMENT_LABEL_LABEL_SHOP_RETURN   => $label['labelShopReturn'],
+                    Label::GLS_SHIPMENT_LABEL_UNIT_TRACKING_LINK  => $label['unitTrackingLink']
+                ]
+            );
+        }
+
         $labelFactory->save();
     }
 
@@ -210,21 +222,25 @@ class Create extends AbstractLabel
      */
     private function mapServices($details, $type = null)
     {
+        $service = [
+            "shopReturnService" => (bool) $this->carrierConfig->isShopReturnActive()
+        ];
+
         switch ($type) {
             case Carrier::GLS_DELIVERY_OPTION_PARCEL_SHOP_LABEL:
-                return [
-                    "shopDeliveryParcelShopId" => $details->parcelShopId
-                ];
+                return $service + [
+                        "shopDeliveryParcelShopId" => $details->parcelShopId
+                    ];
             case Carrier::GLS_DELIVERY_OPTION_EXPRESS_LABEL:
-                return [
-                    $type => $details->service
-                ];
+                return $service + [
+                        $type => $details->service
+                    ];
             case Carrier::GLS_DELIVERY_OPTION_SATURDAY_LABEL:
-                return [
-                    $type => true
-                ];
+                return $service + [
+                        $type => true
+                    ];
             default:
-                return (object) null;
+                return $service;
         }
     }
 
