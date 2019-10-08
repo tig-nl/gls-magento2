@@ -138,7 +138,9 @@ define([
         },
 
         /**
-         * Sets the Delivery Option in gls_delivery_option
+         * Sets the Delivery Option in the gls_delivery_option extension attribute.
+         * There's no need to retrieve it from e.g. shippingAddress.customAttribute, since frontend
+         * storage is handled entirely by Magento 2's extension attributes.
          *
          * @param type
          * @param details
@@ -148,10 +150,15 @@ define([
                 type: type,
                 details: details
             };
-
-            // TODO: This should be done the Magento-way: shippingAddress.customAttributes.etc.
-            $('input[name="custom_attributes[gls_delivery_option]"]').val(JSON.stringify(deliveryOption));
-
+            
+            var shippingAddress = quote.shippingAddress();
+    
+            if (shippingAddress['extension_attributes'] === undefined) {
+                shippingAddress['extension_attributes'] = {};
+            }
+    
+            shippingAddress['extension_attributes']['gls_delivery_option'] = JSON.stringify(deliveryOption);
+            
             $('.gls-delivery-options input[name="gls_delivery_option"]').parents().removeClass('active');
             $('.gls-delivery-options input[name="gls_delivery_option"]:checked').parents().addClass('active');
         },
