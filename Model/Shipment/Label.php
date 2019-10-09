@@ -48,7 +48,6 @@ class Label extends AbstractModel implements LabelInterface
     const GLS_SHIPMENT_LABEL_CONFIRMED           = 'confirmed';
     const GLS_SHIPMENT_LABEL_LABEL               = 'label';
     const GLS_SHIPMENT_LABEL_UNIT_NO_SHOP_RETURN = 'unit_no_shop_return';
-    const GLS_SHIPMENT_LABEL_LABEL_SHOP_RETURN   = 'label_shop_return';
     const GLS_SHIPMENT_LABEL_UNIT_TRACKING_LINK  = 'unit_tracking_link';
 
     public function _construct()
@@ -136,16 +135,6 @@ class Label extends AbstractModel implements LabelInterface
     public function setUnitNoShopReturn($unitNo)
     {
         return $this->setData(self::GLS_SHIPMENT_LABEL_UNIT_NO_SHOP_RETURN, $unitNo);
-    }
-
-    public function getLabelShopReturn()
-    {
-        return $this->_getData(self::GLS_SHIPMENT_LABEL_LABEL_SHOP_RETURN);
-    }
-
-    public function setLabelShopReturn($label)
-    {
-        return $this->setData(self::GLS_SHIPMENT_LABEL_LABEL_SHOP_RETURN, $label);
     }
 
     public function getUnitTrackingLink()

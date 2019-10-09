@@ -37,10 +37,10 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Sales\Api\ShipmentRepositoryInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
+use TIG\GLS\Api\Shipment\Data\LabelInterface;
+use TIG\GLS\Api\Shipment\Data\LabelInterfaceFactory;
 use TIG\GLS\Controller\Adminhtml\AbstractLabel;
 use TIG\GLS\Model\Config\Provider\Carrier;
-use TIG\GLS\Model\Shipment\Label;
-use TIG\GLS\Model\Shipment\LabelFactory;
 use TIG\GLS\Service\ShippingDate;
 use TIG\GLS\Webservice\Endpoint\Label\Create as CreateLabelEndpoint;
 
@@ -87,7 +87,7 @@ class Create extends AbstractLabel
      * @param OrderRepositoryInterface    $orders
      * @param Carrier                     $carrierConfig
      * @param LabelRepositoryInterface    $labelRepository
-     * @param LabelFactory                $label
+     * @param LabelInterfaceFactory       $labelInterfaceFactory
      * @param ShippingDate                $shippingDate
      * @param CreateLabelEndpoint         $createLabel
      */
@@ -98,26 +98,26 @@ class Create extends AbstractLabel
         OrderRepositoryInterface $orders,
         Carrier $carrierConfig,
         LabelRepositoryInterface $labelRepository,
-        LabelFactory $label,
+        LabelInterfaceFactory $labelInterfaceFactory,
         ShippingDate $shippingDate,
         CreateLabelEndpoint $createLabel
     ) {
         parent::__construct(
             $context,
-            $label,
-            $labelRepository
+            $labelRepository,
+            $labelInterfaceFactory
         );
 
-        $this->scopeConfig   = $scopeConfig;
-        $this->shipments     = $shipments;
-        $this->orders        = $orders;
-        $this->carrierConfig = $carrierConfig;
-        $this->shippingDate  = $shippingDate;
-        $this->createLabel   = $createLabel;
+        $this->scopeConfig    = $scopeConfig;
+        $this->shipments      = $shipments;
+        $this->orders         = $orders;
+        $this->carrierConfig  = $carrierConfig;
+        $this->shippingDate   = $shippingDate;
+        $this->createLabel    = $createLabel;
     }
 
     /**
-     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|Create|void
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Redirect|\Magento\Framework\Controller\ResultInterface|void
      * @throws \Zend_Http_Client_Exception
      */
     public function execute()
@@ -167,7 +167,7 @@ class Create extends AbstractLabel
         $data                      = $this->addShippingInformation();
         $data["services"]          = $this->mapServices($deliveryOption->details, $deliveryOption->type);
         $data["trackingLinkType"]  = 'u';
-        $data['labelType']         = 'pdf';
+        $data['labelType']         = $this->carrierConfig->isShopReturnActive() ? 'pdfA6U' : 'pdf';
         $data['notificationEmail'] = $this->prepareNotificationEmail();
         $data['returnRoutingData'] = false;
         $data['addresses']         = [
@@ -185,30 +185,21 @@ class Create extends AbstractLabel
     /**
      * @param       $shipmentId
      * @param array $labelData
-     *
-     * @throws \Exception
-     * TODO: Use LabelRepositoryInterface for saving.
      */
     private function saveLabelData($shipmentId, array $labelData)
     {
-        $labelFactory = $this->createLabelFactory();
-
         foreach ($labelData as $label) {
-            $labelFactory->setData(
-                [
-                    Label::GLS_SHIPMENT_LABEL_SHIPMENT_ID         => $shipmentId,
-                    Label::GLS_SHIPMENT_LABEL_UNIT_ID             => $label['unitId'],
-                    Label::GLS_SHIPMENT_LABEL_UNIT_NO             => $label['unitNo'],
-                    Label::GLS_SHIPMENT_LABEL_UNIQUE_NO           => $label['uniqueNo'],
-                    Label::GLS_SHIPMENT_LABEL_LABEL               => $label['label'],
-                    Label::GLS_SHIPMENT_LABEL_UNIT_NO_SHOP_RETURN => $label['unitNoShopReturn'],
-                    Label::GLS_SHIPMENT_LABEL_LABEL_SHOP_RETURN   => $label['labelShopReturn'],
-                    Label::GLS_SHIPMENT_LABEL_UNIT_TRACKING_LINK  => $label['unitTrackingLink']
-                ]
-            );
-        }
+            $createdLabel = $this->createLabelFactory();
+            $createdLabel->setShipmentId($shipmentId);
+            $createdLabel->setUnitId($label['unitId']);
+            $createdLabel->setUnitNo($label['unitNo']);
+            $createdLabel->setUniqueNo($label['uniqueNo']);
+            $createdLabel->setLabel($label['label']);
+            $createdLabel->setUnitNoShopReturn($label['unitNoShopReturn']);
+            $createdLabel->setUnitTrackingLink($label['unitTrackingLink']);
 
-        $labelFactory->save();
+            $this->saveLabel($createdLabel);
+        }
     }
 
     /**
@@ -338,7 +329,7 @@ class Create extends AbstractLabel
     }
 
     /**
-     * TODO: getTotalWeight() return null too often. How to trigger calculation?
+     * TODO: getTotalWeight() returns null too often. How to trigger calculation?
      *
      * @param $shipment
      *
