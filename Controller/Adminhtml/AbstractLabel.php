@@ -36,18 +36,19 @@ use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Request\Http as Request;
 use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
+use TIG\GLS\Api\Shipment\Data\LabelInterface;
+use TIG\GLS\Api\Shipment\Data\LabelInterfaceFactory;
 use TIG\GLS\Model\Shipment\Label;
-use TIG\GLS\Model\Shipment\LabelFactory;
 
 abstract class AbstractLabel extends Action
 {
     const ADMIN_ORDER_SHIPMENT_VIEW_URI = 'adminhtml/order_shipment/view';
 
-    /** @var Label $label */
-    private $label;
-
     /** @var LabelRepositoryInterface $labelRepository */
     private $labelRepository;
+
+    /** @var LabelInterface $labelInterface */
+    private $labelInterface;
 
     /** @var $errorMessage */
     private $errorMessage;
@@ -59,30 +60,50 @@ abstract class AbstractLabel extends Action
      * AbstractLabel constructor.
      *
      * @param Context                  $context
-     * @param LabelFactory             $label
      * @param LabelRepositoryInterface $labelRepository
+     * @param LabelInterfaceFactory    $labelInterface
      */
     public function __construct(
         Context $context,
-        LabelFactory $label,
-        LabelRepositoryInterface $labelRepository
+        LabelRepositoryInterface $labelRepository,
+        LabelInterfaceFactory $labelInterface
     ) {
         parent::__construct($context);
 
-        $this->label = $label;
         $this->labelRepository = $labelRepository;
+        $this->labelInterface  = $labelInterface;
     }
 
     /**
-     * @return Label
+     * @return LabelInterface
      */
     public function createLabelFactory()
     {
-        return $this->label->create();
+        return $this->labelInterface->create();
     }
 
     /**
-     * @return \TIG\Gls\Api\Shipment\Data\LabelInterface
+     * @param LabelInterface $label
+     *
+     * @return LabelInterface
+     */
+    public function saveLabel(LabelInterface $label)
+    {
+        return $this->labelRepository->save($label);
+    }
+
+    /**
+     * @param LabelInterface $label
+     *
+     * @return LabelInterface
+     */
+    public function deleteLabel(LabelInterface $label)
+    {
+        return $this->labelRepository->delete($label);
+    }
+
+    /**
+     * @return LabelInterface
      */
     public function getLabelByShipmentId()
     {
@@ -107,6 +128,7 @@ abstract class AbstractLabel extends Action
     public function redirectToShipmentView($shipmentId)
     {
         $result = $this->resultRedirectFactory->create();
+
         return $result->setPath(self::ADMIN_ORDER_SHIPMENT_VIEW_URI, ['shipment_id' => $shipmentId]);
     }
 
