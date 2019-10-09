@@ -35,6 +35,7 @@ namespace TIG\GLS\Controller\DeliveryOptions;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\Action;
+use Magento\Framework\Locale\ResolverInterface as LocaleResolver;
 use TIG\GLS\Model\Config\Provider\Carrier as CarrierConfig;
 use TIG\GLS\Model\Config\Provider\Carrier;
 use TIG\GLS\Service\DeliveryOptions\Services as ServicesService;
@@ -43,6 +44,9 @@ class Services extends Action
 {
     /** @var Session $checkoutSession */
     private $checkoutSession;
+
+    /** @var LocaleResolver $scopeConfig */
+    private $localeResolver;
 
     /** @var CarrierConfig $config */
     private $carrierConfig;
@@ -61,10 +65,12 @@ class Services extends Action
     public function __construct(
         Context $context,
         Session $checkoutSession,
+        LocaleResolver $localeResolver,
         CarrierConfig $carrierConfig,
         ServicesService $services
     ) {
         $this->checkoutSession = $checkoutSession;
+        $this->localeResolver  = $localeResolver;
         $this->carrierConfig   = $carrierConfig;
         $this->services        = $services;
 
@@ -81,8 +87,8 @@ class Services extends Action
         $country  = $request->getParam('country');
         $postcode = $request->getParam('postcode');
 
-        // TODO: Load language code dynamically.
-        $services        = $this->services->getDeliveryOptions($country, 'NL', $postcode);
+        $languageCode    = strtoupper(strstr($this->localeResolver->getLocale(), '_', true));
+        $services        = $this->services->getDeliveryOptions($country, $languageCode, $postcode);
         $deliveryOptions = $services['deliveryOptions'];
 
         $this->filterDeliveryOptions($deliveryOptions);
