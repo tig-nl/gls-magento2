@@ -33,10 +33,12 @@
 -->
 <include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
     <!-- General Configuration -->
-    <group id="general" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+    <group id="general" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
         <label>General Configuration</label>
-        <field id="mode" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+        <comment><![CDATA[Enter your API credentials. Further configuration can be done in Stores / Configuration / Sales / Shipping Methods / GLS]]></comment>
+        <field id="mode" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Mode</label>
+            <comment>Use Test-mode in staging or development environments. Use Live-mode in production environments.</comment>
             <source_model>TIG\GLS\Model\Config\Source\General\Mode</source_model>
             <config_path>tig_gls/general/mode</config_path>
         </field>

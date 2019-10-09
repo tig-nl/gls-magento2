@@ -1,14 +1,67 @@
-"Magento version compatibility","Magento versie compatibiliteit"
-"Supported Magento versions","Ondersteunde Magento versies"
-"GLS version","GLS versie"
-"Your PHP version","Jouw PHP versie"
-Support,Support
+"Add Additional Handling Fee","Voeg extra verwerkingskosten toe"
+"Shipping Method","Verzendmethode"
+"Additional Fee","Extra kosten"
+"Your order has been shipped.","Jouw order is verzonden."
+". ':00'",". ':00'"
+". ':30'",". ':30'"
+Flat,Flat
+Table,Table
+Matrix,Matrix
+.,.
+Live,Live
+Test,Test
+"%1 : Zend Http Client exception","%1 : Zend Http Client exception"
+"Validating API credentials","API-inloggegevens valideren"
+"API credentials are incorrect","API-inloggegevens zijn onjuist"
+"Unable to validate API credentials","Kan API-inloggegevens niet valideren"
+"API credentials are correct","API-inloggegevens zijn juist"
+"Magento version compatibility","Compatibiliteit met Magento-versie"
+"Supported Magento versions","Ondersteunde Magento-versies"
+"Extension version","Versie van extensie"
+"Your PHP version","Jouw PHP-versie"
+Support,Ondersteuning
 "This extension is developed by <a href=""https://tig.nl"" target=""_BLANK"">TIG</a>","Deze extensie is ontwikkeld door <a href=""https://tig.nl"" target=""_BLANK"">TIG</a>"
-"Extension basic configuration and account information","Extensie basisconfiguratie en accountinformatie"
-"Please contact:","Neem contact op:"
+"Extension basic configuration and account information","Basisconfiguratie en accountinformatie voor extensie"
+"Please contact:","Neem contact op met:"
+Delivery,Bezorging
+"Pick up","Afhalen"
+"Show business hours","Toon openingstijden"
+Close,Sluiten
+"ParcelShop Address:","ParcelShop-adres:"
 GLS,GLS
-"General Configuration","Algemene Configuratie"
-Mode,Modus
-"Version & Support","Versie & Support"
-"Delivery","Bezorgen"
-"Pick Up","Afhalen"
+Enabled,Ingeschakeld
+Title,Titel
+"Method Name","Naam van Verzendmethode"
+"Handling Fee","Verzendkosten"
+"The base handling fee used for all allowed services.","De basisverwerkingskosten die worden gebruikt voor alle toegestane services."
+"Cut-off Time","Cut-off Time"
+"Deadline at which an order can be placed in order to be processed.","Deadline waarop een bestelling kan worden geplaatst om te worden verwerkt."
+"Processing Time","Verwerkingsduur"
+"The time (in days) it takes to process and package an order before it's shipped.","De tijd (in dagen) die nodig is om een bestelling te verwerken en te verpakken voordat deze wordt verzonden."
+"Express Delivery Services","Expressbezorgdiensten"
+"Ship to Applicable Countries","Verzenden naar geschikte landen"
+"Ship to Specific Countries","Verzenden naar specifieke landen"
+"Show Method if Not Applicable","Toon verzendmethode indien niet van toepassing"
+"Displayed Error Message","Getoonde foutmelding"
+"Sort Order","Sorteervolgorde"
+"General Configuration","Algemene configuratie"
+"Enter your API credentials. Further configuration can be done in Stores / Configuration / Sales / Shipping Methods / GLS","Voer uw API-inloggegevens in. Verdere configuratie kan worden gedaan in Winkels / Configuratie / Verkoop / Verzendmethoden / GLS"
+Mode,Mode
+"Use Test-mode in staging or development environments. Use Live-mode in production environments.","Gebruik de testmodus in staging- of ontwikkelomgevingen. Gebruik de Live-modus in productieomgevingen."
+Username,Gebruikersnaam
+Password,Wachtwoord
+"Subscription key","Subscription key"
+FlexDeliveryService,FlexDeliveryService
+SaturdayService,SaturdayService
+"Saturday Additional Handling Fee","Extra kosten voor zaterdagbezorging"
+"Configure an additional handling fee or discount for SaturdayService (e.g. 2 or -1.95)","Configureer extra kosten of korting voor SaturdayService (bijv. 2 of -1.95)"
+ShopDeliveryService,ShopDeliveryService
+"ShopDelivery Additional Handling Fee","Extra kosten voor ShopDelivery"
+"Configure an additional handling fee or discount for delivery to ParcelShops (e.g. 2.00 or -3.95)","Configureer extra kosten of korting voor levering aan ParcelShops (bijv. 2.00 of -3.95)"
+"No. of Shops to Display","Aantal weer te geven winkels"
+ShopReturnService,ShopReturnService
+"Enable Services","Services inschakelen"
+"Additional Handling Fee","Extra verwerkingskosten"
+"Configure an additional handling fee for specific shipping methods. The additional handling fee is added to or subtracted from the base handling fee.","Configureer extra kosten voor specifieke verzendmethoden. De extra kosten worden toegevoegd aan of afgetrokken van de basisverwerkingskosten."
+"Version & Support","Versie en ondersteuning"
+"Easily integrate GLS shipping services into Magento 2.","Integreer GLS-verzenddiensten eenvoudig in Magento 2."
