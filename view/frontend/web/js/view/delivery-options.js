@@ -54,7 +54,8 @@ define([
             country: null,
             availableServices: ko.observableArray([]),
             parcelShops: ko.observableArray([]),
-            deliveryFee: ko.observable()
+            deliveryFee: ko.observable(),
+            pickupFee: ko.observable()
         },
 
         initObservable: function () {
@@ -76,10 +77,7 @@ define([
                     return;
                 }
 
-                if (address.country !== 'NL') {
-                    return;
-                }
-                this.getAvailableServices();
+                this.getAvailableServices(address.postcode, address.country);
                 this.getParcelShops(address.postcode);
             }.bind(this));
 
@@ -88,31 +86,36 @@ define([
 
         /**
          * Retrieve Delivery Options from GLS.
-         *
-         * This is done through a controller, because we will start using an API
-         * in the near future.
          */
-        getAvailableServices: function () {
+        getAvailableServices: function (postcode, country) {
             $.ajax({
                 method : 'GET',
                 url    : '/gls/deliveryoptions/services',
-                type   : 'jsonp'
-            }).done(function (data) {
-                this.availableServices(data);
+                type   : 'jsonp',
+                data   : {
+                    postcode: postcode,
+                    country: country
+                }
+            }).done(function (services) {
+                this.availableServices(services);
             }.bind(this));
         },
-    
+
         /**
-         * Format fee if fee is higher than zero.
-         *
          * @param fee
          * @returns {string}
          */
         formatAdditionalFee: function (fee) {
             var formattedFee = '';
+            
             if (fee > 0) {
                 formattedFee = '+ ' + priceUtils.formatPrice(fee, quote.getPriceFormat());
             }
+            
+            if (fee < 0) {
+                formattedFee = '- ' + priceUtils.formatPrice(Math.abs(fee), quote.getPriceFormat());
+            }
+            
             return formattedFee;
         },
 
@@ -135,7 +138,9 @@ define([
         },
 
         /**
-         * Sets the Delivery Option in gls_delivery_option
+         * Sets the Delivery Option in the gls_delivery_option extension attribute.
+         * There's no need to retrieve it from e.g. shippingAddress.customAttribute, since frontend
+         * storage is handled entirely by Magento 2's extension attributes.
          *
          * @param type
          * @param details
@@ -145,26 +150,31 @@ define([
                 type: type,
                 details: details
             };
-
-            // TODO: This should be done the Magento-way: shippingAddress.customAttributes.etc.
-            $('input[name="custom_attributes[gls_delivery_option]"]').val(JSON.stringify(deliveryOption));
-
-            $('.gls-delivery-options input[name="gls_delivery_option"]').parent().removeClass('active');
-            $('.gls-delivery-options input[name="gls_delivery_option"]:checked').parent().addClass('active');
-
-            this.deliveryFee(this.formatAdditionalFee(details.fee));
+            
+            var shippingAddress = quote.shippingAddress();
+    
+            if (shippingAddress['extension_attributes'] === undefined) {
+                shippingAddress['extension_attributes'] = {};
+            }
+    
+            shippingAddress['extension_attributes']['gls_delivery_option'] = JSON.stringify(deliveryOption);
+            
+            $('.gls-delivery-options input[name="gls_delivery_option"]').parents().removeClass('active');
+            $('.gls-delivery-options input[name="gls_delivery_option"]:checked').parents().addClass('active');
         },
 
         /**
          * Needs to return true, otherwise KnockoutJS prevents default event.
          * The toggleParcelShopAddress is triggered to control display of the ship-to block.
          *
-         * @param address
+         * @param selectedAddress
          * @returns {boolean}
          */
-        setParcelShopAddress: function (address) {
-            this.setGlsDeliveryOption('parcelShop', address);
-            parcelShop().parcelShopAddress(address);
+        setParcelShopAddress: function (selectedAddress) {
+            this.setGlsDeliveryOption('ParcelShop', selectedAddress);
+            parcelShop().parcelShopAddress(selectedAddress);
+
+            this.pickupFee(this.formatAdditionalFee(selectedAddress.fee));
 
             return true;
         },
@@ -173,20 +183,18 @@ define([
          * Needs to return true, otherwise KnockoutJS prevents default event.
          *
          * @param service
+         * @param selectedOption
          * @returns {boolean}
          */
-        setDeliveryService: function (service) {
-            /**
-             * TODO: when the getDeliveryOption API endpoint is implemented. The type parameter should
-             *       equal the service name, e.g. expressService, saturdayService, etc. It should default
-             *       to null. the service parameter should also default to null.
-             */
-            this.setGlsDeliveryOption('deliveryService', service);
+        setDeliveryService: function (service, selectedOption) {
+            service.setGlsDeliveryOption(this, selectedOption);
             parcelShop().parcelShopAddress(null);
-    
+
+            service.deliveryFee(service.formatAdditionalFee(selectedOption.fee));
+
             return true;
         },
-    
+
         /**
          * Toggles between Parcel Shops and Delivery Services
          *
@@ -201,7 +209,7 @@ define([
             $(previousContent).hide();
             $(currentContent).fadeIn('slow');
         },
-    
+
         /**
          * Show Business Hours when link is clicked.
          */
@@ -209,7 +217,7 @@ define([
             $(this).hide();
             $(this).next('.table-container').fadeIn('slow');
         },
-    
+
         /**
          * Close Business Hours when link is clicked.
          */

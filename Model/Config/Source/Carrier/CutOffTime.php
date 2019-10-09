@@ -29,15 +29,41 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
+namespace TIG\GLS\Model\Config\Source\Carrier;
 
-namespace TIG\GLS\Webservice\Endpoint\Label;
+use Magento\Framework\Option\ArrayInterface;
 
-use TIG\GLS\Webservice\Endpoint\AbstractEndpoint;
-
-class Confirm extends AbstractEndpoint
+class CutOffTime implements ArrayInterface
 {
-    // @codingStandardsIgnoreStart
-    protected $method = 'POST';
-    protected $endpoint = 'Label/Confirm';
-    // @codingStandardsIgnoreEnd
+    /**
+     * @return array
+     */
+    public function toOptionArray()
+    {
+        $options = [];
+
+        for ($hour = 0; $hour < 24; $hour++) {
+            $options = array_merge($options, $this->addHour($hour));
+        }
+
+        return $options;
+    }
+
+    /**
+     * @param $hour
+     *
+     * @return array
+     */
+    private function addHour($hour)
+    {
+        $hour    = str_pad($hour, 2, '0', STR_PAD_LEFT);
+        $options = [];
+
+        // @codingStandardsIgnoreStart
+        $options[] = ['value' => $hour . ':00:00', 'label' => __($hour . ':00')];
+        $options[] = ['value' => $hour . ':30:00', 'label' => __($hour . ':30')];
+        // @codingStandardsIgnoreEnd
+
+        return $options;
+    }
 }

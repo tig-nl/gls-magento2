@@ -34,25 +34,43 @@ namespace TIG\GLS\Controller\Adminhtml\Label;
 
 use Magento\Framework\App\Action\Context;
 use TIG\GLS\Controller\Adminhtml\AbstractLabel;
-use TIG\GLS\Model\Shipment\LabelFactory;
 use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
+use TIG\GLS\Api\Shipment\Data\LabelInterface;
+use TIG\GLS\Api\Shipment\Data\LabelInterfaceFactory;
 use TIG\GLS\Webservice\Endpoint\Label\Delete as DeleteLabelEndpoint;
 
 class Delete extends AbstractLabel
 {
+    /** @var DeleteLabelEndpoint $delete */
     private $delete;
 
+    /**
+     * Delete constructor.
+     *
+     * @param Context                  $context
+     * @param LabelRepositoryInterface $labelRepository
+     * @param LabelInterfaceFactory    $labelInterfaceFactory
+     * @param DeleteLabelEndpoint      $delete
+     */
     public function __construct(
         Context $context,
-        LabelFactory $label,
         LabelRepositoryInterface $labelRepository,
+        LabelInterfaceFactory $labelInterfaceFactory,
         DeleteLabelEndpoint $delete
     ) {
-        parent::__construct($context, $label, $labelRepository);
+        parent::__construct(
+            $context,
+            $labelRepository,
+            $labelInterfaceFactory
+        );
 
         $this->delete = $delete;
     }
 
+    /**
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Redirect|\Magento\Framework\Controller\ResultInterface
+     * @throws \Zend_Http_Client_Exception
+     */
     public function execute()
     {
         $label          = $this->getLabelByShipmentId();
@@ -65,7 +83,7 @@ class Delete extends AbstractLabel
         $deleteCall = $this->delete->call();
 
         if ($this->callIsSuccess($deleteCall)) {
-            $label->delete();
+            $this->deleteLabel($label);
         }
 
         return $this->redirectToShipmentView($this->getShipmentId());

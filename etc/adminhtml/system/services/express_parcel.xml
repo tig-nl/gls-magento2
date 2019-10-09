@@ -33,7 +33,7 @@
 -->
 <include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
     <group id="express_parcel_services" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
-        <label>Additional ExpressParcel Services</label>
+        <label>Express Delivery Services</label>
         <attribute type="expanded">1</attribute>
         <depends>
             <field id="express_parcel_active">1</field>
@@ -44,7 +44,7 @@
         </field>
         <field id="additional_handling_fee" translate="label comment" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
             <label>Additional Handling Fee</label>
-            <comment><![CDATA[Configure an additional handling fee for specific shipping methods. The additional handling fee is added to the base handling fee.]]></comment>
+            <comment><![CDATA[Configure an additional handling fee for specific shipping methods. The additional handling fee is added to or subtracted from the base handling fee.]]></comment>
             <frontend_model>TIG\GLS\Block\System\Config\Form\Field\FieldArray</frontend_model>
             <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
         </field>

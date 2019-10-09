@@ -34,6 +34,7 @@ namespace TIG\GLS\Setup;
 
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Ddl\Table;
+use Magento\Framework\Setup\Declaration\Schema\Dto\Factories\MediumBlob;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
@@ -112,9 +113,10 @@ class InstallSchema implements InstallSchemaInterface
         $this->addForeignKey($installer, $table, self::GLS_TABLE_SHIPMENT_LABEL, Label::GLS_SHIPMENT_LABEL_SHIPMENT_ID, 'sales_shipment', 'entity_id', Table::ACTION_CASCADE);
         $this->addText($table, Label::GLS_SHIPMENT_LABEL_UNIT_ID, 50, 'Unit ID');
         $this->addText($table, Label::GLS_SHIPMENT_LABEL_UNIT_NO, 50, 'Unit Number');
+        $this->addText($table, Label::GLS_SHIPMENT_LABEL_UNIT_NO_SHOP_RETURN, 50, 'Shop Return Unit Number');
         $this->addText($table, Label::GLS_SHIPMENT_LABEL_UNIQUE_NO, 50, 'Unique Number');
         $this->addBool($table, Label::GLS_SHIPMENT_LABEL_CONFIRMED, 'Is Confirmed?');
-        $this->addBlob($table, Label::GLS_SHIPMENT_LABEL_LABEL, 'GLS Label (Base64 encoded)');
+        $this->addBlob($table, Label::GLS_SHIPMENT_LABEL_LABEL, MediumBlob::DEFAULT_BLOB_LENGTH, 'GLS Label (Base64 encoded)');
         $this->addText($table, Label::GLS_SHIPMENT_LABEL_UNIT_TRACKING_LINK, 256, 'GLS Tracking Link');
 
         $connection->createTable($table);
@@ -170,7 +172,8 @@ class InstallSchema implements InstallSchemaInterface
                 'auto_increment' => $autoIncrement,
                 'nullable' => false,
                 'unsigned' => true
-            ]
+            ],
+            $comment
         );
     }
 
@@ -199,10 +202,11 @@ class InstallSchema implements InstallSchemaInterface
     /**
      * @param Table $table
      * @param       $name
+     * @param bool  $comment
      *
      * @throws \Zend_Db_Exception
      */
-    private function addBool(Table $table, $name, $comment)
+    private function addBool(Table $table, $name, $comment = false)
     {
         $table->addColumn(
             $name,
@@ -220,16 +224,17 @@ class InstallSchema implements InstallSchemaInterface
     /**
      * @param Table $table
      * @param       $name
-     * @param       $comment
+     * @param null  $size    Increase this if you want to make larger blobs.
+     * @param bool  $comment
      *
      * @throws \Zend_Db_Exception
      */
-    private function addBlob(Table $table, $name, $comment)
+    private function addBlob(Table $table, $name,  $size = null, $comment = false)
     {
         $table->addColumn(
             $name,
             Table::TYPE_BLOB,
-            null,
+            $size ?: null,
             [
                 'identity' => false,
                 'unsigned' => false,

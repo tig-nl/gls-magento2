@@ -1,0 +1,67 @@
+"Add Additional Handling Fee","Add Additional Handling Fee"
+"Shipping Method","Shipping Method"
+"Additional Fee","Additional Fee"
+"Your order has been shipped.","Your order has been shipped."
+". ':00'",". ':00'"
+". ':30'",". ':30'"
+Flat,Flat
+Table,Table
+Matrix,Matrix
+.,.
+Live,Live
+Test,Test
+"%1 : Zend Http Client exception","%1 : Zend Http Client exception"
+"Validating API credentials","Validating API credentials"
+"API credentials are incorrect","API credentials are incorrect"
+"Unable to validate API credentials","Unable to validate API credentials"
+"API credentials are correct","API credentials are correct"
+"Magento version compatibility","Magento version compatibility"
+"Supported Magento versions","Supported Magento versions"
+"Extension version","Extension version"
+"Your PHP version","Your PHP version"
+Support,Support
+"This extension is developed by <a href=""https://tig.nl"" target=""_BLANK"">TIG</a>","This extension is developed by <a href=""https://tig.nl"" target=""_BLANK"">TIG</a>"
+"Extension basic configuration and account information","Extension basic configuration and account information"
+"Please contact:","Please contact:"
+Delivery,Delivery
+"Pick up","Pick up"
+"Show business hours","Show business hours"
+Close,Close
+"ParcelShop Address:","ParcelShop Address:"
+GLS,GLS
+Enabled,Enabled
+Title,Title
+"Method Name","Method Name"
+"Handling Fee","Handling Fee"
+"The base handling fee used for all allowed services.","The base handling fee used for all allowed services."
+"Cut-off Time","Cut-off Time"
+"Deadline at which an order can be placed in order to be processed.","Deadline at which an order can be placed in order to be processed."
+"Processing Time","Processing Time"
+"The time (in days) it takes to process and package an order before it's shipped.","The time (in days) it takes to process and package an order before it's shipped."
+"Express Delivery Services","Express Delivery Services"
+"Ship to Applicable Countries","Ship to Applicable Countries"
+"Ship to Specific Countries","Ship to Specific Countries"
+"Show Method if Not Applicable","Show Method if Not Applicable"
+"Displayed Error Message","Displayed Error Message"
+"Sort Order","Sort Order"
+"General Configuration","General Configuration"
+"Enter your API credentials. Further configuration can be done in Stores / Configuration / Sales / Shipping Methods / GLS","Enter your API credentials. Further configuration can be done in Stores / Configuration / Sales / Shipping Methods / GLS"
+Mode,Mode
+"Use Test-mode in staging or development environments. Use Live-mode in production environments.","Use Test-mode in staging or development environments. Use Live-mode in production environments."
+Username,Username
+Password,Password
+"Subscription key","Subscription key"
+FlexDeliveryService,FlexDeliveryService
+SaturdayService,SaturdayService
+"Saturday Additional Handling Fee","Saturday Additional Handling Fee"
+"Configure an additional handling fee or discount for SaturdayService (e.g. 2 or -1.95)","Configure an additional handling fee or discount for SaturdayService (e.g. 2 or -1.95)"
+ShopDeliveryService,ShopDeliveryService
+"ShopDelivery Additional Handling Fee","ShopDelivery Additional Handling Fee"
+"Configure an additional handling fee or discount for delivery to ParcelShops (e.g. 2.00 or -3.95)","Configure an additional handling fee or discount for delivery to ParcelShops (e.g. 2.00 or -3.95)"
+"No. of Shops to Display","No. of Shops to Display"
+ShopReturnService,ShopReturnService
+"Enable Services","Enable Services"
+"Additional Handling Fee","Additional Handling Fee"
+"Configure an additional handling fee for specific shipping methods. The additional handling fee is added to or subtracted from the base handling fee.","Configure an additional handling fee for specific shipping methods. The additional handling fee is added to or subtracted from the base handling fee."
+"Version & Support","Version & Support"
+"Easily integrate GLS shipping services into Magento 2.","Easily integrate GLS shipping services into Magento 2."

@@ -38,13 +38,39 @@
     </div>
     <div data-bind="click: toggleTab.bind($parent, '.gls-tab-delivery', '.gls-tab-pickup', '.gls-delivery-service', '.gls-parcel-shop')" class="gls-tab gls-tab-pickup">
         <span data-bind="i18n: 'Pick up'"></span>
+        <strong data-bind="text: pickupFee"></strong>
     </div>
 
     <div data-bind="foreach: availableServices">
         <div class="container gls-delivery-service">
-            <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: code, click: $parent.setDeliveryService.bind($parent), attr: { id: code }">
-            <label data-bind="i18n: label, attr: { for: code }"></label>
-            <span class="delivery-fee" data-bind="text: $parent.formatAdditionalFee(fee)"></span>
+            <!-- ko if: isService === false && hasSubOptions === false -->
+            <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: 'deliveryService', click: $parent.setDeliveryService.bind('deliveryService', $parent), attr: {id: 'default' }" />
+            <label data-bind="i18n: title, attr: { for: 'default' }"></label>
+            <!-- /ko -->
+
+            <!-- ko if: isService === true && hasSubOptions === false -->
+            <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: service, click: $parent.setDeliveryService.bind(service, $parent), attr: {id: service }" />
+            <label data-bind="i18n: title, attr: { for: service }"></label>
+            <!-- ko if: $data.fee -->
+            <span class="delivery-fee" data-bind="text: $parent.formatAdditionalFee($data.fee)"></span>
+            <!-- /ko -->
+            <!-- /ko -->
+
+            <!-- ko if: isService === true && hasSubOptions === true-->
+            <strong class="gls-sub-delivery-options-title" data-bind="i18n: title"></strong>
+            <!-- /ko -->
+
+            <!-- ko if: hasSubOptions === true -->
+            <div data-bind="foreach: subDeliveryOptions">
+                <div class="gls-sub-delivery-options">
+                    <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: service, click: $parentContext.$parent.setDeliveryService.bind($parent.service, $parentContext.$parent), attr: { id: service }" />
+                    <label data-bind="i18n: title, attr: { for: service }"></label>
+                    <!-- ko if: $data.fee -->
+                    <span class="delivery-fee" data-bind="text: $parentContext.$parent.formatAdditionalFee($data.fee)"></span>
+                    <!-- /ko -->
+                </div>
+            </div>
+            <!-- /ko -->
         </div>
     </div>
 
@@ -69,7 +95,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

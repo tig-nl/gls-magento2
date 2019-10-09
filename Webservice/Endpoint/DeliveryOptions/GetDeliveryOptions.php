@@ -1,3 +1,4 @@
+<?php
 /**
  *
  *          ..::..
@@ -28,32 +29,15 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-/*jshint browser:true jquery:true*/
-/*global alert*/
-define([
-    'jquery',
-    'mage/utils/wrapper',
-    'Magento_Checkout/js/model/quote'
-], function (
-    $,
-    wrapper,
-    quote
-) {
-    'use strict';
-    
-    return function (setShippingInformationAction) {
-        
-        return wrapper.wrap(setShippingInformationAction, function (originalAction) {
-            var shippingAddress = quote.shippingAddress();
-            
-            if (shippingAddress['extension_attributes'] === undefined) {
-                shippingAddress['extension_attributes'] = {};
-            }
-            
-            // TODO: This shouldn't be set with a jQuery-element, but Magento's storage. E.g. shippingAddress.customAttributes.gls_delivery_option.
-            shippingAddress['extension_attributes']['gls_delivery_option'] = jQuery('input[name="custom_attributes[gls_delivery_option]"]').val();
-            
-            return originalAction();
-        });
-    };
-});
+
+namespace TIG\GLS\Webservice\Endpoint\DeliveryOptions;
+
+use TIG\GLS\Webservice\Endpoint\AbstractEndpoint;
+
+class GetDeliveryOptions extends AbstractEndpoint
+{
+    // @codingStandardsIgnoreStart
+    protected $method = 'POST';
+    protected $endpoint = 'DeliveryOptions/GetDeliveryOptions';
+    // @codingStandardsIgnoreEnd
+}

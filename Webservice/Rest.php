@@ -29,6 +29,7 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
+
 namespace TIG\GLS\Webservice;
 
 use Magento\Framework\HTTP\ZendClient;
@@ -40,10 +41,8 @@ class Rest
 {
     /** @var ZendClient $zendClient */
     private $zendClient;
-
     /** @var SoftwareData $softwareData */
     private $softwareData;
-
     /** @var Account $accountConfigProvider */
     private $accountConfigProvider;
 
@@ -82,7 +81,7 @@ class Rest
         } catch (\Zend_Http_Client_Exception $exception) {
             $response = [
                 'success' => false,
-                'error' => __('%1 : Zend Http Client exception', $exception->getCode())
+                'error'   => __('%1 : Zend Http Client exception', $exception->getCode())
             ];
         }
 
@@ -107,14 +106,11 @@ class Rest
     private function setHeaders()
     {
         $headers = [
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json; charset=UTF-8',
-            'User-Agent' => 'GLSMagento2Plugin/' . $this->softwareData->getVersionNumber()
+            'Accept'                    => 'application/json',
+            'Content-Type'              => 'application/json; charset=UTF-8',
+            'User-Agent'                => 'GLSMagento2Plugin/' . $this->softwareData->getVersionNumber(),
+            'Ocp-Apim-Subscription-Key' => $this->accountConfigProvider->getSubscriptionKey()
         ];
-
-        if ($this->accountConfigProvider->getMode()) {
-            $headers['Ocp-Apim-Subscription-Key'] = $this->accountConfigProvider->getSubscriptionKey();
-        }
 
         $this->zendClient->setHeaders($headers);
     }
@@ -128,7 +124,7 @@ class Rest
     {
         $endpointMethod = $endpoint->getMethod();
 
-        $endpointData = $endpoint->getRequestData();
+        $endpointData             = $endpoint->getRequestData();
         $endpointData['Username'] = $this->accountConfigProvider->getUsername();
         $endpointData['Password'] = $this->accountConfigProvider->getPassword();
 

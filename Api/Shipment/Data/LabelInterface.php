@@ -61,6 +61,10 @@ interface LabelInterface extends ExtensibleDataInterface
 
     public function setLabel($label);
 
+    public function getUnitNoShopReturn();
+
+    public function setUnitNoShopReturn($unitNo);
+
     public function getUnitTrackingLink();
 
     public function setUnitTrackingLink($url);
