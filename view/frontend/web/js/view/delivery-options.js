@@ -64,6 +64,10 @@ define([
                 var selectedMethod = method != null ? method.carrier_code + '_' + method.method_code : null;
                 return selectedMethod;
             }, this);
+            
+            this.tabClasses = ko.computed(function () {
+                return this.parcelShops().length > 0 ? 'gls-tabs' : 'gls-tabs gls-one-available';
+            }, this);
 
             this._super().observe([
                 'postcode',
@@ -76,7 +80,7 @@ define([
                 if (!address || JSON.stringify(address) == JSON.stringify(oldAddress)) {
                     return;
                 }
-
+                
                 this.getAvailableServices(address.postcode, address.country);
                 this.getParcelShops(address.postcode);
             }.bind(this));
