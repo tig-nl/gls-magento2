@@ -32,10 +32,13 @@
 -->
 <div class="gls-delivery-options" data-bind="visible: selectedMethod() == 'tig_gls_tig_gls'">
     <div data-bind="css: tabClasses()">
+
+        <!-- ko if: availableServices().length > 0 -->
         <div data-bind="click: toggleTab.bind($parent, '.gls-tab-pickup', '.gls-tab-delivery', '.gls-parcel-shop', '.gls-delivery-service')" class="gls-tab gls-tab-delivery active">
             <span data-bind="i18n: 'Delivery'"></span>
             <strong data-bind="text: deliveryFee"></strong>
         </div>
+        <!-- /ko -->
 
         <!-- ko if: parcelShops().length > 0 -->
         <div data-bind="click: toggleTab.bind($parent, '.gls-tab-delivery', '.gls-tab-pickup', '.gls-delivery-service', '.gls-parcel-shop')" class="gls-tab gls-tab-pickup">

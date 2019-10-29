@@ -73,15 +73,21 @@ class ParcelShops extends Action
     public function execute()
     {
         $params = $this->getRequest()->getParams();
+        $response = $this->getResponse();
 
         $results = $this->parcelShops->getParcelShops($params['postcode']);
+
+        if (!isset($results['parcelShops'])) {
+            $responseBody = \Zend_Json::encode([]);
+            return $response->representJson($responseBody);
+        }
 
         foreach ($results['parcelShops'] as &$parcelShop) {
             $parcelShop['fee'] = $this->carrierConfig->getShopDeliveryHandlingFee();
         }
 
         $responseBody = \Zend_Json::encode($results['parcelShops']);
-        $response = $this->getResponse();
+
 
         return $response->representJson($responseBody);
     }

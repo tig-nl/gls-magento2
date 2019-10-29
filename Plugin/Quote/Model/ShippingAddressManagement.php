@@ -71,11 +71,10 @@ class ShippingAddressManagement
     {
         $extensionAttributes = $address->getExtensionAttributes();
 
-        if (empty($extensionAttributes)) {
-            return $subject;
+        $deliveryOption = null;
+        if (!empty($extensionAttributes)) {
+            $deliveryOption = $extensionAttributes->getGlsDeliveryOption();
         }
-
-        $deliveryOption = $extensionAttributes->getGlsDeliveryOption();
 
         try {
             $address->setGlsDeliveryOption($deliveryOption);

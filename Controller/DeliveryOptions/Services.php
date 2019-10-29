@@ -89,7 +89,12 @@ class Services extends Action
 
         $languageCode    = strtoupper(strstr($this->localeResolver->getLocale(), '_', true));
         $services        = $this->services->getDeliveryOptions($country, $languageCode, $postcode);
-        $deliveryOptions = $services['deliveryOptions'];
+
+        $deliveryOptions = (isset($services['deliveryOptions'])) ? $services['deliveryOptions'] : null;
+
+        if (!$deliveryOptions) {
+            return $this->jsonResponse([]);
+        }
 
         $this->filterDeliveryOptions($deliveryOptions);
 
