@@ -32,7 +32,6 @@
 
 namespace TIG\GLS\Model\Carrier;
 
-use Braintree\Address;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Quote\Model\Quote\Address\RateRequest;
 use Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory;
