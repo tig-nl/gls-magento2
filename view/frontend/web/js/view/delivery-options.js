@@ -64,7 +64,7 @@ define([
                 var selectedMethod = method != null ? method.carrier_code + '_' + method.method_code : null;
                 return selectedMethod;
             }, this);
-            
+
             this.tabClasses = ko.computed(function () {
                 return this.parcelShops().length > 0 ? 'gls-tabs' : 'gls-tabs gls-one-available';
             }, this);
@@ -80,9 +80,9 @@ define([
                 if (!address || JSON.stringify(address) == JSON.stringify(oldAddress)) {
                     return;
                 }
-                
+
                 this.getAvailableServices(address.postcode, address.country);
-                this.getParcelShops(address.postcode);
+                this.getParcelShops(address.postcode, address.country);
             }.bind(this));
 
             return this;
@@ -111,24 +111,32 @@ define([
          */
         formatAdditionalFee: function (fee) {
             var formattedFee = '';
-            
+
             if (fee > 0) {
                 formattedFee = '+ ' + priceUtils.formatPrice(fee, quote.getPriceFormat());
             }
-            
+
             if (fee < 0) {
                 formattedFee = '- ' + priceUtils.formatPrice(Math.abs(fee), quote.getPriceFormat());
             }
-            
+
             return formattedFee;
         },
 
         /**
-         * Retrieve Parcel Shops from GLS.
+         * Retrieve ParcelShops from GLS.
+         *
+         * Since ParcelShops are only available in the Netherlands,
+         * there's no need to execute the call if 'country' is anything else.
          *
          * @param postcode
+         * @param country
          */
-        getParcelShops: function (postcode) {
+        getParcelShops: function (postcode, country) {
+            if (country !== 'NL') {
+                return this.parcelShops([]);
+            }
+
             $.ajax({
                 method : 'GET',
                 url    : '/gls/deliveryoptions/parcelshops',
@@ -154,15 +162,15 @@ define([
                 type: type,
                 details: details
             };
-            
+
             var shippingAddress = quote.shippingAddress();
-    
+
             if (shippingAddress['extension_attributes'] === undefined) {
                 shippingAddress['extension_attributes'] = {};
             }
-    
+
             shippingAddress['extension_attributes']['gls_delivery_option'] = JSON.stringify(deliveryOption);
-            
+
             $('.gls-delivery-options input[name="gls_delivery_option"]').parents().removeClass('active');
             $('.gls-delivery-options input[name="gls_delivery_option"]:checked').parents().addClass('active');
         },

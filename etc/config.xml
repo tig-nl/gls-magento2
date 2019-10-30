@@ -39,6 +39,7 @@
                 <name>GLS</name>
                 <model>TIG\GLS\Model\Carrier\GLS</model>
                 <handling_fee>4.95</handling_fee>
+                <international_handling_fee>0.00</international_handling_fee>
                 <cut_off_time>18:00:00</cut_off_time>
                 <processing_time>0</processing_time>
                 <express_parcel_active>1</express_parcel_active>

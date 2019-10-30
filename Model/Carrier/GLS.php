@@ -60,6 +60,12 @@ class GLS extends AbstractCarrier implements CarrierInterface
     /** @var MethodFactory $rateMethodFactory */
     private $rateMethodFactory;
 
+    /** @var RateRequest $request */
+    private $request;
+
+    /** @var ScopeConfigInterface|\TIG\GLS\Model\Carrier\ScopeConfigInterface */
+    private $scopeConfig;
+
     /**
      * GLS constructor.
      *
@@ -85,6 +91,7 @@ class GLS extends AbstractCarrier implements CarrierInterface
         $this->accountConfigProvider = $accountConfigProvider;
         $this->rateResultFactory = $rateResultFactory;
         $this->rateMethodFactory = $rateMethodFactory;
+        $this->scopeConfig = $scopeConfig;
     }
 
     /**
@@ -105,6 +112,9 @@ class GLS extends AbstractCarrier implements CarrierInterface
         if (!$this->getConfigFlag('active')) {
             return false;
         }
+
+        /** @var RateRequest $request */
+        $this->request = $request;
 
         /** @var \Magento\Shipping\Model\Rate\Result $result */
         $result = $this->rateResultFactory->create();
@@ -142,9 +152,27 @@ class GLS extends AbstractCarrier implements CarrierInterface
     {
         $configPrice = $this->getConfigData('price');
 
+        $countryOfOrigin = $this->getCountryOfOrigin();
+
+        if ($this->request->getDestCountryId() != $countryOfOrigin) {
+            $configPriceInternational = $this->getConfigData('international_handling_fee');
+            $configPrice += $configPriceInternational;
+        }
+
         $shippingPrice = $this->getFinalPriceWithHandlingFee($configPrice);
 
         return $shippingPrice;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getCountryOfOrigin()
+    {
+        $country = $this->scopeConfig->getValue('general/store_information/country_id',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $country ?: 'NL';
     }
 
     /**
