@@ -33,25 +33,25 @@ namespace TIG\GLS\Controller\DeliveryOptions;
 
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Action\Action;
+use TIG\GLS\Controller\AbstractDeliveryOptions;
 use TIG\GLS\Model\Config\Provider\Carrier as CarrierConfig;
 use TIG\GLS\Service\DeliveryOptions\ParcelShops as ParcelShopsService;
 
-class ParcelShops extends Action
+class ParcelShops extends AbstractDeliveryOptions
 {
     /** @var Session $checkoutSession */
     private $checkoutSession;
-
-    /** @var CarrierConfig $carrierConfig */
-    private $carrierConfig;
 
     /** @var ParcelShopsService $parcelShops*/
     private $parcelShops;
 
     /**
-     * @param Context             $context
-     * @param Session             $checkoutSession
-     * @param ParcelShopsService $parcelShopsEndpoint
+     * ParcelShops constructor.
+     *
+     * @param Context            $context
+     * @param Session            $checkoutSession
+     * @param CarrierConfig      $carrierConfig
+     * @param ParcelShopsService $parcelShops
      */
     public function __construct(
         Context $context,
@@ -60,10 +60,12 @@ class ParcelShops extends Action
         ParcelShopsService $parcelShops
     ) {
         $this->checkoutSession = $checkoutSession;
-        $this->carrierConfig = $carrierConfig;
         $this->parcelShops = $parcelShops;
 
-        parent::__construct($context);
+        parent::__construct(
+            $context,
+            $carrierConfig
+        );
     }
 
     /**
@@ -73,22 +75,17 @@ class ParcelShops extends Action
     public function execute()
     {
         $params = $this->getRequest()->getParams();
-        $response = $this->getResponse();
 
         $results = $this->parcelShops->getParcelShops($params['postcode']);
 
         if (!isset($results['parcelShops'])) {
-            $responseBody = \Zend_Json::encode([]);
-            return $response->representJson($responseBody);
+            return $this->jsonResponse([]);
         }
 
         foreach ($results['parcelShops'] as &$parcelShop) {
-            $parcelShop['fee'] = $this->carrierConfig->getShopDeliveryHandlingFee();
+            $parcelShop['fee'] = $this->getCarrierConfig()->getShopDeliveryHandlingFee();
         }
 
-        $responseBody = \Zend_Json::encode($results['parcelShops']);
-
-
-        return $response->representJson($responseBody);
+        return $this->jsonResponse($results['parcelShops']);
     }
 }
