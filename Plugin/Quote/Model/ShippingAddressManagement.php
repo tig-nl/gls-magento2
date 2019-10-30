@@ -69,7 +69,10 @@ class ShippingAddressManagement
     // @codingStandardsIgnoreLine
     public function beforeAssign(QuoteShippingAddressManagement $subject, $cartId, AddressInterface $address = null)
     {
-        $extensionAttributes = $address->getExtensionAttributes();
+        $extensionAttributes = null;
+        if ($address) {
+            $extensionAttributes = $address->getExtensionAttributes();
+        }
 
         $deliveryOption = null;
         if (!empty($extensionAttributes)) {
