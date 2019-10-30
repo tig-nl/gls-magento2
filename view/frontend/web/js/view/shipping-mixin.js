@@ -28,15 +28,33 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-var config = {
-    config: {
-        mixins: {
-            'Magento_Checkout/js/view/shipping': {
-                'TIG_GLS/js/view/shipping-mixin': true
-            },
-            'Magento_Checkout/js/view/shipping-information': {
-                'TIG_GLS/js/view/shipping-information-mixin': true
+/*global alert*/
+/*jshint browser:true jquery:true*/
+define([
+    'Magento_Checkout/js/model/quote',
+    'mage/translate'
+], function (
+    quote,
+    $t
+) {
+    'use strict';
+
+    return function (Component) {
+        return Component.extend({
+            validateShippingInformation: function () {
+                var originalResult = this._super();
+                var shippingAddress = quote.shippingAddress();
+
+                if (shippingAddress['extension_attributes'] === undefined || shippingAddress['extension_attributes']['gls_delivery_option'] === undefined) {
+                    this.errorValidationMessage(
+                        $t('Please select a GLS delivery option.')
+                    );
+
+                    return false;
+                }
+
+                return originalResult;
             }
-        }
+        });
     }
-};
+});
