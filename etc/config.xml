@@ -39,6 +39,7 @@
                 <name>GLS</name>
                 <model>TIG\GLS\Model\Carrier\GLS</model>
                 <handling_fee>4.95</handling_fee>
+                <international_handling_fee>0.00</international_handling_fee>
                 <cut_off_time>18:00:00</cut_off_time>
                 <processing_time>0</processing_time>
                 <express_parcel_active>1</express_parcel_active>
@@ -56,7 +57,7 @@
         </carriers>
         <tig_gls>
             <stability />
-            <supported_magento_version>2.2.0 - 2.2.9, 2.3.0 - 2.3.2</supported_magento_version>
+            <supported_magento_version>2.2.9 - 2.2.10, 2.3.2 - 2.3.3</supported_magento_version>
             <api>
                 <live_base_url>https://api.gls.nl/V1/api/</live_base_url>
                 <test_base_url>https://api.gls.nl/Test/V1/api/</test_base_url>

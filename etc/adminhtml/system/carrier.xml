@@ -50,6 +50,13 @@
                 <validate>validate-number validate-zero-or-greater</validate>
                 <comment><![CDATA[The base handling fee used for all allowed services.]]></comment>
             </field>
+
+            <field id="international_handling_fee" translate="label comment" type="text" sortOrder="45" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <label>International Additional Handling Fee</label>
+                <validate>validate-number validate-zero-or-greater</validate>
+                <comment><![CDATA[Configure an additional handling fee or discount for International Shipments (e.g. 2 or -1.95). The additional handling fee is added to or subtracted from the base handling fee.]]></comment>
+            </field>
+
             <field id="cut_off_time" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                 <label>Cut-off Time</label>
                 <comment><![CDATA[Deadline at which an order can be placed in order to be processed.]]></comment>

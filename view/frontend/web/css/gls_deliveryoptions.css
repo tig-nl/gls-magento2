@@ -68,12 +68,18 @@ border-blue:    #D4D9E3;
     text-align: center;
 }
 
-.gls-delivery-options .gls-tab:nth-child(1) {
-    border-radius: 5px 0 0 5px;
+.gls-delivery-options .gls-one-available .gls-tab {
+    width: 100%;
 }
 
-.gls-delivery-options .gls-tab:nth-child(2) {
-    border-radius: 0 5px 5px 0;
+.gls-delivery-options .gls-tab:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.gls-delivery-options .gls-tab:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
 .gls-delivery-options .gls-tab:not(.active):hover {

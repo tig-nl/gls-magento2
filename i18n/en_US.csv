@@ -34,6 +34,8 @@ Title,Title
 "Method Name","Method Name"
 "Handling Fee","Handling Fee"
 "The base handling fee used for all allowed services.","The base handling fee used for all allowed services."
+"International Additional Handling Fee","International Additional Handling Fee"
+"Configure an additional handling fee or discount for International Shipments (e.g. 2 or -1.95). The additional handling fee is added to or subtracted from the base handling fee.","Configure an additional handling fee or discount for International Shipments (e.g. 2 or -1.95). The additional handling fee is added to or subtracted from the base handling fee."
 "Cut-off Time","Cut-off Time"
 "Deadline at which an order can be placed in order to be processed.","Deadline at which an order can be placed in order to be processed."
 "Processing Time","Processing Time"

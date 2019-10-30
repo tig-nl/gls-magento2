@@ -34,22 +34,19 @@ namespace TIG\GLS\Controller\DeliveryOptions;
 
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Action\Action;
 use Magento\Framework\Locale\ResolverInterface as LocaleResolver;
+use TIG\GLS\Controller\AbstractDeliveryOptions;
 use TIG\GLS\Model\Config\Provider\Carrier as CarrierConfig;
 use TIG\GLS\Model\Config\Provider\Carrier;
 use TIG\GLS\Service\DeliveryOptions\Services as ServicesService;
 
-class Services extends Action
+class Services extends AbstractDeliveryOptions
 {
     /** @var Session $checkoutSession */
     private $checkoutSession;
 
     /** @var LocaleResolver $scopeConfig */
     private $localeResolver;
-
-    /** @var CarrierConfig $config */
-    private $carrierConfig;
 
     /** @var ServicesService $services */
     private $services;
@@ -71,10 +68,12 @@ class Services extends Action
     ) {
         $this->checkoutSession = $checkoutSession;
         $this->localeResolver  = $localeResolver;
-        $this->carrierConfig   = $carrierConfig;
         $this->services        = $services;
 
-        parent::__construct($context);
+        parent::__construct(
+            $context,
+            $carrierConfig
+        );
     }
 
     /**
@@ -89,7 +88,12 @@ class Services extends Action
 
         $languageCode    = strtoupper(strstr($this->localeResolver->getLocale(), '_', true));
         $services        = $this->services->getDeliveryOptions($country, $languageCode, $postcode);
-        $deliveryOptions = $services['deliveryOptions'];
+
+        $deliveryOptions = (isset($services['deliveryOptions'])) ? $services['deliveryOptions'] : null;
+
+        if (!$deliveryOptions) {
+            return $this->jsonResponse([]);
+        }
 
         $this->filterDeliveryOptions($deliveryOptions);
 
@@ -117,8 +121,9 @@ class Services extends Action
      */
     private function filterDeliveryOptions(&$options)
     {
-        $isExpressServicesActive = $this->carrierConfig->isExpressParcelActive();
-        $isSaturdayServiceActive = $this->carrierConfig->isSaturdayServiceActive();
+        $carrierConfig           = $this->getCarrierConfig();
+        $isExpressServicesActive = $carrierConfig->isExpressParcelActive();
+        $isSaturdayServiceActive = $carrierConfig->isSaturdayServiceActive();
 
         $options = array_filter(
             $options,
@@ -147,7 +152,7 @@ class Services extends Action
     private function getAdditionalHandlingFee($option)
     {
         if ($option['isService'] && $option['service'] == CarrierConfig::GLS_DELIVERY_OPTION_SATURDAY_LABEL) {
-            return (string) $this->carrierConfig->getSaturdayHandlingFee();
+            return (string) $this->getCarrierConfig()->getSaturdayHandlingFee();
         }
 
         return null;
@@ -160,7 +165,7 @@ class Services extends Action
      */
     private function filterTimeDefiniteServices(&$services)
     {
-        $allowedServices = $this->carrierConfig->getActiveTimeDefiniteServices();
+        $allowedServices = $this->getCarrierConfig()->getActiveTimeDefiniteServices();
 
         $services = array_filter(
             $services,
@@ -181,7 +186,7 @@ class Services extends Action
      */
     private function addExpressAdditionalHandlingFees(&$options)
     {
-        $fees = (array) $this->carrierConfig->getExpressHandlingFees();
+        $fees = (array) $this->getCarrierConfig()->getExpressHandlingFees();
 
         foreach ($options as &$option) {
             array_filter(
@@ -195,24 +200,5 @@ class Services extends Action
         }
 
         return $options;
-    }
-
-    /**
-     * @param string $data
-     * @param null   $code
-     *
-     * @return mixed
-     */
-    private function jsonResponse($data = '', $code = null)
-    {
-        $response = $this->getResponse();
-
-        if ($code !== null) {
-            $response->setStatusCode($code);
-        }
-
-        return $response->representJson(
-            \Zend_Json::encode($data)
-        );
     }
 }

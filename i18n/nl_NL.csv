@@ -34,6 +34,8 @@ Title,Titel
 "Method Name","Naam van Verzendmethode"
 "Handling Fee","Verzendkosten"
 "The base handling fee used for all allowed services.","De basisverwerkingskosten die worden gebruikt voor alle toegestane services."
+"International Additional Handling Fee","Extra kosten voor Internationale bezorging"
+"Configure an additional handling fee or discount for International Shipments (e.g. 2 or -1.95). The additional handling fee is added to or subtracted from the base handling fee.","Configureer extra kosten of korting voor Internationale Bezorging (bijv. 2 or -1.95). De extra kosten worden toegevoegd aan of afgetrokken van de basisverwerkingskosten."
 "Cut-off Time","Cut-off Time"
 "Deadline at which an order can be placed in order to be processed.","Deadline waarop een bestelling kan worden geplaatst om te worden verwerkt."
 "Processing Time","Verwerkingsduur"
