@@ -62,27 +62,27 @@ class ShippingAddressManagement
     /**
      * @param QuoteShippingAddressManagement $subject
      * @param                                $cartId
-     * @param AddressInterface               $address
+     * @param AddressInterface|null          $address
      *
-     * @return \Exception|QuoteShippingAddressManagement|void
+     * @return array|void
      */
     // @codingStandardsIgnoreLine
     public function beforeAssign(QuoteShippingAddressManagement $subject, $cartId, AddressInterface $address = null)
     {
-        $extensionAttributes = null;
-        if ($address) {
-            $extensionAttributes = $address->getExtensionAttributes();
+        $result = [$cartId, $address];
+
+        if (!$address) {
+            return $result;
         }
 
-        $deliveryOption = null;
-        if (!empty($extensionAttributes)) {
-            $deliveryOption = $extensionAttributes->getGlsDeliveryOption();
+        $extensionAttributes = $address->getExtensionAttributes();
+
+        if (!$extensionAttributes) {
+            return $result;
         }
 
-        try {
-            $address->setGlsDeliveryOption($deliveryOption);
-        } catch (\Exception $error) {
-            return $error;
-        }
+        $deliveryOption = $extensionAttributes->getGlsDeliveryOption();
+
+        $address->setGlsDeliveryOption($deliveryOption);
     }
 }
