@@ -29,6 +29,8 @@ border-blue:    #D4D9E3;
 /* Shipping method GLS ============================================================================================== */
 
 .gls-delivery-options {
+    display: inline-block;
+    width: 100%;
     max-width: 500px;
 }
 

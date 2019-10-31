@@ -31,6 +31,9 @@
 var config = {
     config: {
         mixins: {
+            'Magento_Checkout/js/view/shipping': {
+                'TIG_GLS/js/view/shipping-mixin': true
+            },
             'Magento_Checkout/js/view/shipping-information': {
                 'TIG_GLS/js/view/shipping-information-mixin': true
             }
