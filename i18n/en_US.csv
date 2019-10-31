@@ -28,6 +28,7 @@ Delivery,Delivery
 "Show business hours","Show business hours"
 Close,Close
 "ParcelShop Address:","ParcelShop Address:"
+"Please select a GLS delivery option. If no options are visible, please make sure you've entered your address information correctly.","Please select a GLS delivery option. If no options are visible, please make sure you've entered your address information correctly."
 GLS,GLS
 Enabled,Enabled
 Title,Title

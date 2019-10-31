@@ -52,7 +52,7 @@ define([
 
                 if (shippingAddress['extension_attributes'] === undefined || shippingAddress['extension_attributes']['gls_delivery_option'] === undefined) {
                     this.errorValidationMessage(
-                        $t('Please select a GLS delivery option.')
+                        $t('Please select a GLS delivery option. If no options are visible, please make sure you\'ve entered your address information correctly.')
                     );
 
                     return false;

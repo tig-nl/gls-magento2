@@ -28,6 +28,7 @@ Delivery,Bezorging
 "Show business hours","Toon openingstijden"
 Close,Sluiten
 "ParcelShop Address:","ParcelShop-adres:"
+"Please select a GLS delivery option. If no options are visible, please make sure you've entered your address information correctly.","Selecteer een GLS bezorgoptie. Indien er geen opties zichtbaar zijn, controleer dan uw ingevoerde adresgegevens."
 GLS,GLS
 Enabled,Ingeschakeld
 Title,Titel
