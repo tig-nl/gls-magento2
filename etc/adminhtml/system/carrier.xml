@@ -81,7 +81,7 @@
                 <frontend_class>shipping-applicable-country</frontend_class>
                 <source_model>Magento\Shipping\Model\Config\Source\Allspecificcountries</source_model>
             </field>
-            <field id="specific_country" translate="label" type="multiselect" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+            <field id="specificcountry" translate="label" type="multiselect" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
                 <label>Ship to Specific Countries</label>
                 <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                 <can_be_empty>1</can_be_empty>
