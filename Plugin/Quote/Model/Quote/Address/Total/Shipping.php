@@ -67,7 +67,7 @@ class Shipping
 
         $rate    = $this->extractRate($shipping->getMethod(), $rates);
         $details = $deliveryOption->details;
-        $fee     = $this->calculateFee($rate['price'], $details->fee);
+        $fee     = $this->calculateFee($rate['price'], $details->fee ?? 0);
         $title   = isset($details->title) ? $details->title : Carrier::GLS_DELIVERY_OPTION_PARCEL_SHOP_LABEL;
 
         $this->adjustTotals($rate['method_title'], $subject->getCode(), $address, $total, $fee, $title);
