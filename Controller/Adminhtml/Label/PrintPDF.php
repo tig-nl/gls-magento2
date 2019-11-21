@@ -70,7 +70,10 @@ class PrintPDF extends AbstractLabel
     {
         $pdf = $this->getPDF->getPdf($this->getShipmentId());
 
-        header('Content-Type: application/pdf');
-        echo $pdf;
+        $resultPage = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_RAW);
+        $resultPage->setHeader('Content-Type', 'application/pdf');
+        $resultPage->setContents($pdf);
+
+        return $resultPage;
     }
 }

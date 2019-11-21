@@ -72,9 +72,22 @@ class Delete extends AbstractLabel
 
         $deleteCall = $this->deleteLabel->deleteLabel($shipmentId, $controllerModule, $version);
 
+        $this->deleteLabel($deleteCall, $shipmentId);
+
+        return $this->redirectToShipmentView($shipmentId);
+    }
+
+    /**
+     * @param array $deleteCall
+     * @param int $shipmentId
+     */
+    private function deleteLabel($deleteCall, $shipmentId)
+    {
         if ($this->callIsSuccess($deleteCall)) {
             $this->deleteLabel->deleteLabelByShipmentId($shipmentId);
-        } elseif (strpos($deleteCall['message'], 'V032') !== false) {
+        }
+
+        if (!$this->callIsSuccess($deleteCall) && strpos($deleteCall['message'], 'V032') !== false) {
             // V032 equals to 'Unit has already been deleted', implying the error
 
             $this->messageManager->addNoticeMessage(
@@ -82,7 +95,5 @@ class Delete extends AbstractLabel
             );
             $this->deleteLabel->deleteLabelByShipmentId($shipmentId);
         }
-
-        return $this->redirectToShipmentView($shipmentId);
     }
 }

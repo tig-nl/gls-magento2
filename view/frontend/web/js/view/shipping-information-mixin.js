@@ -29,7 +29,9 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 /*global alert*/
+/*ignore jslint start*/
 /*jshint browser:true jquery:true*/
+/*ignore jslint end*/
 define(
     [
         'uiComponent',
@@ -50,7 +52,7 @@ define(
         parcelShop
     ) {
         'use strict';
-        
+
         var mixin = {
             /**
              * Hide Ship-To Block if Parcel Shop is selected.
@@ -61,13 +63,13 @@ define(
                 if (parcelShop().parcelShopAddress() !== null) {
                     return false;
                 }
-                
+
                 return !quote.isVirtual() && stepNavigator.isProcessed('shipping');
             }
         };
-        
+
         return function (target) {
             return target.extend(mixin);
-        }
+        };
     }
 );

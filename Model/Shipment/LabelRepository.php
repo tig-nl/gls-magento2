@@ -70,16 +70,16 @@ class LabelRepository implements LabelRepositoryInterface
     }
 
     /**
-     * @param $id
+     * @param $entityId
      *
      * @return mixed
      * @throws NoSuchEntityException
      */
-    public function getById($id)
+    public function getById($entityId)
     {
         $label = $this->labelFactory->create();
         $label->getResource();
-        $label->load($label, $id);
+        $label->load($label, $entityId);
 
         if (!$label->getId()) {
             return null;
@@ -148,6 +148,7 @@ class LabelRepository implements LabelRepositoryInterface
      */
     private function addFiltersToCollection(SearchCriteriaInterface $searchCriteria, Collection $collection)
     {
+        // @codingStandardsIgnoreStart
         foreach ($searchCriteria->getFilterGroups() as $filterGroup) {
             $fields = $conditions = [];
             foreach ($filterGroup->getFilters() as $filter) {
@@ -156,6 +157,7 @@ class LabelRepository implements LabelRepositoryInterface
             }
             $collection->addFieldToFilter($fields, $conditions);
         }
+        // @codingStandardsIgnoreEnd
     }
 
     /**

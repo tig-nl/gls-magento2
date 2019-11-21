@@ -73,11 +73,9 @@ class Save
             $createdLabel->setUnitNo($label['unitNo']);
             $createdLabel->setUniqueNo($label['uniqueNo']);
             $createdLabel->setLabel($label['label']);
-            if (isset($label['unitNoShopReturn'])) {
-                $createdLabel->setUnitNoShopReturn($label['unitNoShopReturn']);
-            }
+            !isset($label['unitNoShopReturn']) ?: $createdLabel->setUnitNoShopReturn($label['unitNoShopReturn']);
             $createdLabel->setUnitTrackingLink($label['unitTrackingLink']);
-
+            // @codingStandardsIgnoreFile
             $this->labelRepository->save($createdLabel);
         }
     }

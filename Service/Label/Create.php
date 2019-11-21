@@ -28,13 +28,13 @@
  *
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ *
+ * @codingStandardsIgnoreFile
  */
 namespace TIG\GLS\Service\Label;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Sales\Api\ShipmentRepositoryInterface;
-use Magento\Shipping\Model\Shipping\LabelGenerator;
-use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 use TIG\GLS\Model\Config\Provider\Carrier;
 use TIG\GLS\Service\ShippingDate;
 use TIG\GLS\Webservice\Endpoint\Label\Create as EndpointLabelCreate;
@@ -176,11 +176,11 @@ class Create extends ShippingInformation
             "senderName"         => $this->scopeConfig->getValue(self::XPATH_CONFIG_TRANS_IDENT_GENERAL_NAME),
             "senderReplyAddress" => $this->scopeConfig->getValue(self::XPATH_CONFIG_TRANS_IDENT_SUPPORT_EMAIL),
             "senderContactName"  => $this->scopeConfig->getValue(self::XPATH_CONFIG_TRANS_IDENT_SUPPORT_NAME),
+            // @codingStandardsIgnoreLine
             "EmailSubject"       => __('Your order has been shipped.')
         ];
 
         $missing = $this->isDataMissing($email);
-
         if ($missing) {
             $this->errors['missing'][] = [
                 'missingCode' => $missing,
@@ -212,9 +212,7 @@ class Create extends ShippingInformation
         ];
 
         $missing = $this->isDataMissing($address);
-
         if ($missing) {
-
             $this->errors['missing'][] = [
                 'missingCode' => $missing,
                 'missingOption' => 'Pickup Address',
@@ -226,7 +224,6 @@ class Create extends ShippingInformation
 
         return $address;
     }
-
 
     /**
      * When an empty object is returned, the default BusinessParcel product is used
@@ -245,17 +242,11 @@ class Create extends ShippingInformation
 
         switch ($type) {
             case Carrier::GLS_DELIVERY_OPTION_PARCEL_SHOP_LABEL:
-                return $service + [
-                        "shopDeliveryParcelShopId" => $details->parcelShopId
-                    ];
+                return $service + ["shopDeliveryParcelShopId" => $details->parcelShopId];
             case Carrier::GLS_DELIVERY_OPTION_EXPRESS_LABEL:
-                return $service + [
-                        $type => $details->service
-                    ];
+                return $service + [$type => $details->service];
             case Carrier::GLS_DELIVERY_OPTION_SATURDAY_LABEL:
-                return $service + [
-                        $type => true
-                    ];
+                return $service + [$type => true];
             default:
                 return $service;
         }

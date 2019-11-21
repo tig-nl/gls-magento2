@@ -96,20 +96,24 @@ class Services extends AbstractDeliveryOptions
         }
 
         $this->filterDeliveryOptions($deliveryOptions);
+        $this->filterSubOptions($deliveryOptions);
 
+        return $this->jsonResponse($deliveryOptions);
+    }
+
+    /**
+     * @param $deliveryOptions
+     */
+    private function filterSubOptions(&$deliveryOptions)
+    {
         foreach ($deliveryOptions as &$option) {
             $option['isService']     = isset($option['service']);
             $option['hasSubOptions'] = isset($option['subDeliveryOptions']);
             $option['fee']           = $this->getAdditionalHandlingFee($option);
 
-            // TODO: Is there a cleaner solution?
-            if ($option['hasSubOptions']) {
-                $this->filterTimeDefiniteServices($option['subDeliveryOptions']);
-                $this->addExpressAdditionalHandlingFees($option['subDeliveryOptions']);
-            }
+            !$option['hasSubOptions'] ?: $this->filterTimeDefiniteServices($option['subDeliveryOptions']);
+            !$option['hasSubOptions'] ?: $this->addExpressAdditionalHandlingFees($option['subDeliveryOptions']);
         }
-
-        return $this->jsonResponse($deliveryOptions);
     }
 
     /**

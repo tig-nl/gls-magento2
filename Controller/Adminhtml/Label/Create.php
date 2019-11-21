@@ -86,11 +86,7 @@ class Create extends AbstractLabel
         $shipmentId = $this->getShipmentId();
         $requestData = $this->createLabel->getRequestData($shipmentId, $controllerModule, $version);
 
-        $errors = $this->createLabel->getErrors();
-        if (!empty($errors)) {
-            $this->handleMissingOptions($errors);
-            $this->handleErrors($errors);
-
+        if ($this->errorsOccured()) {
             return $this->redirectToShipmentView($shipmentId);
         }
 
@@ -100,6 +96,22 @@ class Create extends AbstractLabel
         }
 
         return $this->redirectToShipmentView($shipmentId);
+    }
+
+    /**
+     * @return bool
+     */
+    private function errorsOccured()
+    {
+        $errors = $this->createLabel->getErrors();
+        if (!empty($errors)) {
+            $this->handleMissingOptions($errors);
+            $this->handleErrors($errors);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -113,6 +125,7 @@ class Create extends AbstractLabel
 
         foreach ($errors['missing'] as $error) {
             $this->messageManager->addErrorMessage(
+                 // @codingStandardsIgnoreLine
                 __(
                     "Label could not be created, because %1 is not configured. " .
                     "Please make sure you've configured a %2 in %3.",
@@ -133,6 +146,7 @@ class Create extends AbstractLabel
 
         foreach ($errors['errors'] as $error) {
             $this->messageManager->addErrorMessage(
+                // @codingStandardsIgnoreLine
                 __($error)
             );
         }

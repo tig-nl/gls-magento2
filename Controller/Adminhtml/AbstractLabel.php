@@ -111,6 +111,7 @@ abstract class AbstractLabel extends Action
         }
 
         $this->messageManager->addSuccessMessage(
+            // @codingStandardsIgnoreLine
             __($this->successMessage)
         );
 
