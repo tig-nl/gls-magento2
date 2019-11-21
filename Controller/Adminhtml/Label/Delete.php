@@ -36,7 +36,6 @@ use Magento\Framework\App\Action\Context;
 use TIG\GLS\Api\Shipment\Data\LabelInterfaceFactory;
 use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 use TIG\GLS\Controller\Adminhtml\AbstractLabel;
-use TIG\GLS\Model\Shipment\Label as ShipmentLabel;
 use TIG\GLS\Service\Label;
 
 class Delete extends AbstractLabel
@@ -66,7 +65,7 @@ class Delete extends AbstractLabel
         $request = $this->getRequest();
         $controllerModule = $request->getControllerModule();
         $version = $request->getVersion();
-        $shipmentId = $request->getParam(ShipmentLabel::GLS_SHIPMENT_LABEL_SHIPMENT_ID);
+        $shipmentId = $this->getShipmentId();
 
         $this->setErrorMessage('Label could not be deleted.');
         $this->setSuccessMessage('Label succesfully deleted.');
@@ -84,6 +83,6 @@ class Delete extends AbstractLabel
             $this->deleteLabel->deleteLabelByShipmentId($shipmentId);
         }
 
-        return $this->redirectToShipmentView($this->getShipmentId());
+        return $this->redirectToShipmentView($shipmentId);
     }
 }

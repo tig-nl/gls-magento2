@@ -74,34 +74,6 @@ abstract class AbstractLabel extends Action
     }
 
     /**
-     * @return LabelInterface
-     */
-    public function createLabelFactory()
-    {
-        return $this->labelInterface->create();
-    }
-
-    /**
-     * @param LabelInterface $label
-     *
-     * @return LabelInterface
-     */
-    public function saveLabel(LabelInterface $label)
-    {
-        return $this->labelRepository->save($label);
-    }
-
-    /**
-     * @return LabelInterface
-     */
-    public function getLabelByShipmentId()
-    {
-        $shipmentId = $this->getShipmentId();
-
-        return $this->labelRepository->getByShipmentId($shipmentId);
-    }
-
-    /**
      * @return int
      */
     public function getShipmentId()

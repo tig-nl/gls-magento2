@@ -31,71 +31,62 @@
  */
 namespace TIG\GLS\Service\Label;
 
+use Magento\Shipping\Model\Shipping\LabelGenerator;
 use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
-use TIG\GLS\Model\Shipment\LabelFactory;
-use TIG\GLS\Webservice\Endpoint\Label;
 
-class Delete extends ShippingInformation
+class GetPDF
 {
-    /**
-     * @var LabelFactory
-     */
-    private $labelFactory;
-
     /**
      * @var LabelRepositoryInterface
      */
     private $labelRepository;
 
     /**
-     * @var Label\Delete
+     * @var LabelGenerator
      */
-    private $deleteLabel;
+    private $labelGenerator;
 
     /**
-     * Save constructor.
+     * PrintPDF constructor.
      *
-     * @param LabelFactory             $labelFactory
      * @param LabelRepositoryInterface $labelRepository
-     * @param Label\Delete             $deleteLabel
+     * @param LabelGenerator           $labelGenerator
      */
     public function __construct(
-        LabelFactory $labelFactory,
         LabelRepositoryInterface $labelRepository,
-        Label\Delete $deleteLabel
+        LabelGenerator $labelGenerator
     ) {
-        $this->labelFactory = $labelFactory;
         $this->labelRepository = $labelRepository;
-        $this->deleteLabel = $deleteLabel;
+        $this->labelGenerator = $labelGenerator;
     }
 
     /**
      * @param $shipmentId
-     * @param $controllerModule
-     * @param $version
      *
-     * @throws \Zend_Http_Client_Exception
+     * @return false|string
      */
-    public function deleteLabel($shipmentId, $controllerModule, $version)
-    {
-        $label          = $this->labelRepository->getByShipmentId($shipmentId);
-        $data           = $this->addShippingInformation($controllerModule, $version);
-        $data['unitNo'] = $label->getUnitNo();
-
-        $this->deleteLabel->setRequestData($data);
-
-        return $this->deleteLabel->call();
-    }
-
-    /**
-     * @param $shipmentId
-     */
-    public function deleteLabelByShipmentId($shipmentId)
+    public function getPdf($shipmentId)
     {
         $label = $this->labelRepository->getByShipmentId($shipmentId);
 
-        if ($label) {
-            $this->labelRepository->delete($label);
+        return base64_decode($label->getLabel());
+    }
+
+    /**
+     * @param $shipmentIds
+     *
+     * @return \Zend_Pdf
+     */
+    public function createMassLabel($shipmentIds)
+    {
+        $labels = [];
+        foreach ($shipmentIds as $shipmentId) {
+            $label = $this->getPdf($shipmentId);
+            // TODO - Remove this line when GLS removes whitespaces from PDF output
+            $content = substr($label, 0, strpos($label, 'EOF')) . 'EOF';
+            $labels[] = $content;
         }
+
+        return $this->labelGenerator->combineLabelsPdf($labels);
     }
 }

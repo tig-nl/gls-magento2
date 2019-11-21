@@ -33,9 +33,8 @@ namespace TIG\GLS\Service\Label;
 
 use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 use TIG\GLS\Model\Shipment\LabelFactory;
-use TIG\GLS\Webservice\Endpoint\Label;
 
-class Delete extends ShippingInformation
+class Save
 {
     /**
      * @var LabelFactory
@@ -48,54 +47,38 @@ class Delete extends ShippingInformation
     private $labelRepository;
 
     /**
-     * @var Label\Delete
-     */
-    private $deleteLabel;
-
-    /**
      * Save constructor.
      *
      * @param LabelFactory             $labelFactory
      * @param LabelRepositoryInterface $labelRepository
-     * @param Label\Delete             $deleteLabel
      */
     public function __construct(
         LabelFactory $labelFactory,
-        LabelRepositoryInterface $labelRepository,
-        Label\Delete $deleteLabel
+        LabelRepositoryInterface $labelRepository
     ) {
         $this->labelFactory = $labelFactory;
         $this->labelRepository = $labelRepository;
-        $this->deleteLabel = $deleteLabel;
     }
 
     /**
-     * @param $shipmentId
-     * @param $controllerModule
-     * @param $version
-     *
-     * @throws \Zend_Http_Client_Exception
+     * @param       $shipmentId
+     * @param array $labelData
      */
-    public function deleteLabel($shipmentId, $controllerModule, $version)
+    public function saveLabel($shipmentId, array $labelData)
     {
-        $label          = $this->labelRepository->getByShipmentId($shipmentId);
-        $data           = $this->addShippingInformation($controllerModule, $version);
-        $data['unitNo'] = $label->getUnitNo();
+        foreach ($labelData as $label) {
+            $createdLabel = $this->labelFactory->create();
+            $createdLabel->setShipmentId($shipmentId);
+            $createdLabel->setUnitId($label['unitId']);
+            $createdLabel->setUnitNo($label['unitNo']);
+            $createdLabel->setUniqueNo($label['uniqueNo']);
+            $createdLabel->setLabel($label['label']);
+            if (isset($label['unitNoShopReturn'])) {
+                $createdLabel->setUnitNoShopReturn($label['unitNoShopReturn']);
+            }
+            $createdLabel->setUnitTrackingLink($label['unitTrackingLink']);
 
-        $this->deleteLabel->setRequestData($data);
-
-        return $this->deleteLabel->call();
-    }
-
-    /**
-     * @param $shipmentId
-     */
-    public function deleteLabelByShipmentId($shipmentId)
-    {
-        $label = $this->labelRepository->getByShipmentId($shipmentId);
-
-        if ($label) {
-            $this->labelRepository->delete($label);
+            $this->labelRepository->save($createdLabel);
         }
     }
 }
