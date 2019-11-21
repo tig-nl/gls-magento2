@@ -34,7 +34,6 @@ namespace TIG\GLS\Controller\Adminhtml;
 
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Request\Http as Request;
 use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 use TIG\GLS\Api\Shipment\Data\LabelInterface;
 use TIG\GLS\Api\Shipment\Data\LabelInterfaceFactory;
@@ -90,16 +89,6 @@ abstract class AbstractLabel extends Action
     public function saveLabel(LabelInterface $label)
     {
         return $this->labelRepository->save($label);
-    }
-
-    /**
-     * @param LabelInterface $label
-     *
-     * @return LabelInterface
-     */
-    public function deleteLabel(LabelInterface $label)
-    {
-        return $this->labelRepository->delete($label);
     }
 
     /**
@@ -170,20 +159,5 @@ abstract class AbstractLabel extends Action
     public function setSuccessMessage($message)
     {
         $this->successMessage = $message;
-    }
-
-    /**
-     * @return array
-     */
-    public function addShippingInformation()
-    {
-        /** @var Request $request */
-        $request = $this->getRequest();
-
-        return [
-            "shippingSystemName"    => $request->getControllerModule(),
-            "shippingSystemVersion" => $request->getVersion(),
-            "shiptype"              => "p"
-        ];
     }
 }

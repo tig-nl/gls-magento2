@@ -33,38 +33,28 @@
 namespace TIG\GLS\Controller\Adminhtml\Label;
 
 use Magento\Framework\App\Action\Context;
-use TIG\GLS\Controller\Adminhtml\AbstractLabel;
-use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
-use TIG\GLS\Api\Shipment\Data\LabelInterface;
 use TIG\GLS\Api\Shipment\Data\LabelInterfaceFactory;
-use TIG\GLS\Webservice\Endpoint\Label\Delete as DeleteLabelEndpoint;
+use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
+use TIG\GLS\Controller\Adminhtml\AbstractLabel;
+use TIG\GLS\Model\Shipment\Label as ShipmentLabel;
+use TIG\GLS\Service\Label;
 
 class Delete extends AbstractLabel
 {
-    /** @var DeleteLabelEndpoint $delete */
-    private $delete;
-
     /**
-     * Delete constructor.
-     *
-     * @param Context                  $context
-     * @param LabelRepositoryInterface $labelRepository
-     * @param LabelInterfaceFactory    $labelInterfaceFactory
-     * @param DeleteLabelEndpoint      $delete
+     * @var Label\Delete
      */
+    private $deleteLabel;
+
     public function __construct(
         Context $context,
         LabelRepositoryInterface $labelRepository,
-        LabelInterfaceFactory $labelInterfaceFactory,
-        DeleteLabelEndpoint $delete
+        LabelInterfaceFactory $labelInterface,
+        Label\Delete $deleteLabel
     ) {
-        parent::__construct(
-            $context,
-            $labelRepository,
-            $labelInterfaceFactory
-        );
+        parent::__construct($context, $labelRepository, $labelInterface);
 
-        $this->delete = $delete;
+        $this->deleteLabel = $deleteLabel;
     }
 
     /**
@@ -73,17 +63,25 @@ class Delete extends AbstractLabel
      */
     public function execute()
     {
-        $label          = $this->getLabelByShipmentId();
-        $data           = $this->addShippingInformation();
-        $data['unitNo'] = $label->getUnitNo();
+        $request = $this->getRequest();
+        $controllerModule = $request->getControllerModule();
+        $version = $request->getVersion();
+        $shipmentId = $request->getParam(ShipmentLabel::GLS_SHIPMENT_LABEL_SHIPMENT_ID);
 
-        $this->delete->setRequestData($data);
         $this->setErrorMessage('Label could not be deleted.');
-        $this->setSuccessMessage('Label successfully deleted.');
-        $deleteCall = $this->delete->call();
+        $this->setSuccessMessage('Label succesfully deleted.');
+
+        $deleteCall = $this->deleteLabel->deleteLabel($shipmentId, $controllerModule, $version);
 
         if ($this->callIsSuccess($deleteCall)) {
-            $this->deleteLabel($label);
+            $this->deleteLabel->deleteLabelByShipmentId($shipmentId);
+        } elseif (strpos($deleteCall['message'], 'V032') !== false) {
+            // V032 equals to 'Unit has already been deleted', implying the error
+
+            $this->messageManager->addNoticeMessage(
+                __('This label was already deleted at GLS therefore the Label has been deleted in Magento')
+            );
+            $this->deleteLabel->deleteLabelByShipmentId($shipmentId);
         }
 
         return $this->redirectToShipmentView($this->getShipmentId());
