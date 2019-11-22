@@ -107,6 +107,16 @@ class Context
             return $buttonList;
         }
 
+        return $this->getButtonList($shipmentId);
+    }
+
+    /**
+     * @param $shipmentId
+     *
+     * @return mixed
+     */
+    private function getButtonList($shipmentId)
+    {
         $buttonList = $this->buttonList->create();
         $label      = $this->labelRepository->getByShipmentId($shipmentId);
 

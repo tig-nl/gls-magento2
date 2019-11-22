@@ -170,8 +170,11 @@ class GLS extends AbstractCarrier implements CarrierInterface
      */
     public function getCountryOfOrigin()
     {
-        $country = $this->scopeConfig->getValue('general/store_information/country_id',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $country = $this->scopeConfig->getValue(
+            'general/store_information/country_id',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
+
         return $country ?: 'NL';
     }
 

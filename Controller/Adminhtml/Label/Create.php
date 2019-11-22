@@ -33,326 +33,121 @@
 namespace TIG\GLS\Controller\Adminhtml\Label;
 
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Sales\Api\ShipmentRepositoryInterface;
-use Magento\Sales\Api\OrderRepositoryInterface;
-use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
-use TIG\GLS\Api\Shipment\Data\LabelInterface;
 use TIG\GLS\Api\Shipment\Data\LabelInterfaceFactory;
+use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 use TIG\GLS\Controller\Adminhtml\AbstractLabel;
-use TIG\GLS\Model\Config\Provider\Carrier;
-use TIG\GLS\Service\ShippingDate;
-use TIG\GLS\Webservice\Endpoint\Label\Create as CreateLabelEndpoint;
+use TIG\GLS\Service\Label\Create as LabelCreator;
+use TIG\GLS\Service\Label\Save;
 
 class Create extends AbstractLabel
 {
-    const XPATH_CONFIG_TRANS_IDENT_SUPPORT_NAME           = 'trans_email/ident_support/name';
-    const XPATH_CONFIG_TRANS_IDENT_SUPPORT_EMAIL          = 'trans_email/ident_support/email';
-    const XPATH_CONFIG_TRANS_IDENT_GENERAL_NAME           = 'trans_email/ident_support/name';
-    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_NAME     = 'general/store_information/name';
-    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_STREET   = 'general/store_information/street_line1';
-    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_HOUSE_NO = 'general/store_information/street_line2';
-    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_POSTCODE = 'general/store_information/postcode';
-    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_CITY     = 'general/store_information/city';
-    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_COUNTRY  = 'general/store_information/country_id';
-    const GLS_PARCEL_MAX_WEIGHT                           = 31.9;
-
-    /** @var ScopeConfigInterface $scopeConfig */
-    private $scopeConfig;
-
-    /** @var ShipmentRepositoryInterface $shipments */
-    private $shipments;
-
-    /** @var OrderRepositoryInterface $orders */
-    private $orders;
-
-    /** @var $carrierConfig */
-    private $carrierConfig;
-
-    /** @var ShippingDate $shippingDate */
-    private $shippingDate;
-
-    /** @var CreateLabelEndpoint $createLabel */
+    /** @var Create $createLabel */
     private $createLabel;
 
-    /** @var $missingData */
-    private $missingData = null;
+    /**
+     * @var Save $saveLabel
+     */
+    private $saveLabel;
 
     /**
      * Create constructor.
      *
-     * @param Context                     $context
-     * @param ScopeConfigInterface        $scopeConfig
-     * @param ShipmentRepositoryInterface $shipments
-     * @param OrderRepositoryInterface    $orders
-     * @param Carrier                     $carrierConfig
-     * @param LabelRepositoryInterface    $labelRepository
-     * @param LabelInterfaceFactory       $labelInterfaceFactory
-     * @param ShippingDate                $shippingDate
-     * @param CreateLabelEndpoint         $createLabel
+     * @param Context                  $context
+     * @param LabelRepositoryInterface $labelRepository
+     * @param LabelInterfaceFactory    $labelInterface
+     * @param LabelCreator             $createLabel
+     * @param Save                     $saveLabel
      */
     public function __construct(
         Context $context,
-        ScopeConfigInterface $scopeConfig,
-        ShipmentRepositoryInterface $shipments,
-        OrderRepositoryInterface $orders,
-        Carrier $carrierConfig,
         LabelRepositoryInterface $labelRepository,
-        LabelInterfaceFactory $labelInterfaceFactory,
-        ShippingDate $shippingDate,
-        CreateLabelEndpoint $createLabel
+        LabelInterfaceFactory $labelInterface,
+        LabelCreator $createLabel,
+        Save $saveLabel
     ) {
-        parent::__construct(
-            $context,
-            $labelRepository,
-            $labelInterfaceFactory
-        );
-
-        $this->scopeConfig    = $scopeConfig;
-        $this->shipments      = $shipments;
-        $this->orders         = $orders;
-        $this->carrierConfig  = $carrierConfig;
-        $this->shippingDate   = $shippingDate;
-        $this->createLabel    = $createLabel;
+        parent::__construct($context, $labelRepository, $labelInterface);
+        $this->createLabel = $createLabel;
+        $this->saveLabel = $saveLabel;
     }
 
     /**
-     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Redirect|\Magento\Framework\Controller\ResultInterface|void
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Redirect|\Magento\Framework\Controller\ResultInterface
      * @throws \Zend_Http_Client_Exception
      */
     public function execute()
     {
+        $request = $this->getRequest();
+        $controllerModule = $request->getControllerModule();
+        $version = $request->getVersion();
+
+        $this->setErrorMessage('An error occurred while creating the label.');
+        $this->setSuccessMessage('Label created successfully.');
+
         $shipmentId = $this->getShipmentId();
-        $shipment   = $this->shipments->get($shipmentId);
-
-        if (!$shipment) {
-            return;
-        }
-
-        $orderId = $shipment->getOrderId();
-        $order   = $this->orders->get($orderId);
-
-        if (!$order) {
-            return;
-        }
-
-        $data = $this->mapLabelData($shipment, $order);
-
-        if ($this->missingData) {
+        $requestData = $this->createLabel->getRequestData($shipmentId, $controllerModule, $version);
+        if ($this->errorsOccured()) {
             return $this->redirectToShipmentView($shipmentId);
         }
 
-        $this->createLabel->setRequestData($data);
-        $this->setErrorMessage('An error occurred while creating the label.');
-        $this->setSuccessMessage('Label created successfully.');
-        $label = $this->createLabel->call();
-
+        $label = $this->createLabel->createLabel($requestData);
         if ($this->callIsSuccess($label)) {
-            $this->saveLabelData($shipmentId, $label['units']);
+            $this->saveLabel->saveLabel($shipmentId, $label['units']);
         }
 
         return $this->redirectToShipmentView($shipmentId);
     }
 
     /**
-     * @param $shipment
-     * @param $order
-     *
-     * @return array
-     */
-    private function mapLabelData($shipment, $order)
-    {
-        $deliveryOption = json_decode($order->getGlsDeliveryOption());
-
-        $data                      = $this->addShippingInformation();
-        $data["services"]          = $this->mapServices($deliveryOption->details, $deliveryOption->type);
-        $data["trackingLinkType"]  = 'u';
-        $data['labelType']         = $this->carrierConfig->isShopReturnActive() ? 'pdfA6U' : 'pdf';
-        $data['notificationEmail'] = $this->prepareNotificationEmail();
-        $data['returnRoutingData'] = false;
-        $data['addresses']         = [
-            'deliveryAddress' => $deliveryOption->deliveryAddress,
-            'pickupAddress'   => $this->preparePickupAddress()
-        ];
-        $data['shippingDate']      = $this->shippingDate->calculate("Y-m-d", false);
-        $data['units']             = [
-            $this->prepareShippingUnit($shipment)
-        ];
-
-        return $data;
-    }
-
-    /**
-     * @param       $shipmentId
-     * @param array $labelData
-     */
-    private function saveLabelData($shipmentId, array $labelData)
-    {
-        foreach ($labelData as $label) {
-            $createdLabel = $this->createLabelFactory();
-            $createdLabel->setShipmentId($shipmentId);
-            $createdLabel->setUnitId($label['unitId']);
-            $createdLabel->setUnitNo($label['unitNo']);
-            $createdLabel->setUniqueNo($label['uniqueNo']);
-            $createdLabel->setLabel($label['label']);
-            $createdLabel->setUnitNoShopReturn($label['unitNoShopReturn']);
-            $createdLabel->setUnitTrackingLink($label['unitTrackingLink']);
-
-            $this->saveLabel($createdLabel);
-        }
-    }
-
-    /**
-     * When an empty object is returned, the default BusinessParcel product is used
-     * in CreateLabel.
-     *
-     * @param      $details
-     * @param null $type
-     *
-     * @return array|object
-     */
-    private function mapServices($details, $type = null)
-    {
-        $service = [
-            "shopReturnService" => (bool) $this->carrierConfig->isShopReturnActive()
-        ];
-
-        switch ($type) {
-            case Carrier::GLS_DELIVERY_OPTION_PARCEL_SHOP_LABEL:
-                return $service + [
-                        "shopDeliveryParcelShopId" => $details->parcelShopId
-                    ];
-            case Carrier::GLS_DELIVERY_OPTION_EXPRESS_LABEL:
-                return $service + [
-                        $type => $details->service
-                    ];
-            case Carrier::GLS_DELIVERY_OPTION_SATURDAY_LABEL:
-                return $service + [
-                        $type => true
-                    ];
-            default:
-                return $service;
-        }
-    }
-
-    /**
-     * The General Contact is used as
-     *
-     * @return array
-     */
-    private function prepareNotificationEmail()
-    {
-        $email = [
-            "sendMail"           => true,
-            "senderName"         => $this->scopeConfig->getValue(self::XPATH_CONFIG_TRANS_IDENT_GENERAL_NAME),
-            "senderReplyAddress" => $this->scopeConfig->getValue(self::XPATH_CONFIG_TRANS_IDENT_SUPPORT_EMAIL),
-            "senderContactName"  => $this->scopeConfig->getValue(self::XPATH_CONFIG_TRANS_IDENT_SUPPORT_NAME),
-            "EmailSubject"       => __('Your order has been shipped.')
-        ];
-
-        $this->missingData = $this->isDataMissing($email);
-
-        if ($this->missingData) {
-            $this->addErrorMessage(
-                $this->missingData,
-                'General Contact and a Customer Support Contact',
-                'Stores > Configuration > General > Store Email Addresses'
-            );
-
-            return [];
-        }
-
-        return $email;
-    }
-
-    /**
-     * Returns the Pickup Address AKA Sender Address: we're using the information from
-     * Stores > Configuration > General > Store Information.
-     *
-     * @return array
-     */
-    private function preparePickupAddress()
-    {
-        $address = [
-            "name1"       => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_NAME),
-            "street"      => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_STREET),
-            "houseNo"     => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_HOUSE_NO),
-            "zipCode"     => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_POSTCODE),
-            "city"        => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_CITY),
-            "countryCode" => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_COUNTRY)
-        ];
-
-        $this->missingData = $this->isDataMissing($address);
-
-        if ($this->missingData) {
-            $this->addErrorMessage(
-                $this->missingData,
-                'Pickup Address',
-                'Stores > Configuration > General > General > Store Information'
-            );
-
-            return [];
-        }
-
-        return $address;
-    }
-
-    /**
-     * @param $data
-     *
      * @return bool
      */
-    private function isDataMissing($data)
+    private function errorsOccured()
     {
-        $missing = array_search(null, $data);
+        $errors = $this->createLabel->getErrors();
+        if (!empty($errors)) {
+            $this->handleMissingOptions($errors);
+            $this->handleErrors($errors);
 
-        if ($missing) {
-            return $missing;
+            return true;
         }
 
         return false;
     }
 
     /**
-     * @param $missingCode
-     * @param $missingOption
-     * @param $configurationPath
-     *
-     * @return \Magento\Framework\Message\ManagerInterface
+     * @param array $errors
      */
-    private function addErrorMessage($missingCode, $missingOption, $configurationPath)
+    private function handleMissingOptions($errors)
     {
-        return $this->messageManager->addErrorMessage(
-        // @codingStandardsIgnoreLine
-            "Label could not be created, because $missingCode is not configured. Please make sure you've configured a $missingOption in $configurationPath."
-        );
+        if (!isset($errors['missing'])) {
+            return;
+        }
+
+        foreach ($errors['missing'] as $error) {
+            $this->messageManager->addErrorMessage(
+                 // @codingStandardsIgnoreLine
+                __(
+                    "Label could not be created, because %1 is not configured. " .
+                    "Please make sure you've configured a %2 in %3.",
+                    array_values($error)
+                )
+            );
+        }
     }
 
     /**
-     * TODO: getTotalWeight() returns null too often. How to trigger calculation?
-     *
-     * @param $shipment
-     *
-     * @return array
+     * @param array $errors
      */
-    private function prepareShippingUnit($shipment)
+    private function handleErrors($errors)
     {
-        $totalWeight = $shipment->getTotalWeight();
-
-        if ($totalWeight > self::GLS_PARCEL_MAX_WEIGHT) {
-            $this->messageManager->addErrorMessage(
-                "Label could not be created, because the shipment is too heavy."
-            );
-
-            return [];
+        if (!isset($errors['errors'])) {
+            return;
         }
 
-        $weight = $totalWeight != 0 ? $totalWeight : 1;
-
-        return [
-            "unitId"   => $shipment->getIncrementId(),
-            "unitType" => "cO",
-            "weight"   => $weight
-        ];
+        foreach ($errors['errors'] as $error) {
+            $this->messageManager->addErrorMessage(
+                // @codingStandardsIgnoreLine
+                __($error)
+            );
+        }
     }
 }
