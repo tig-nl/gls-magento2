@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="gls_shipping_tablerate" resource="default" engine="innodb" comment="GLS Shipping Tablerate">
+        <column xsi:type="int" name="pk" padding="10" unsigned="true" nullable="false" identity="true"
+                comment="Primary key"/>
+        <column xsi:type="int" name="website_id" padding="11" unsigned="false" nullable="false" identity="false"
+                default="0" comment="Website Id"/>
+        <column xsi:type="varchar" name="dest_country_id" nullable="false" length="4" default="0"
+                comment="Destination coutry ISO/2 or ISO/3 code"/>
+        <column xsi:type="int" name="dest_region_id" padding="11" unsigned="false" nullable="false" identity="false"
+                default="0" comment="Destination Region Id"/>
+        <column xsi:type="varchar" name="dest_zip" nullable="false" length="10" default="*"
+                comment="Destination Post Code (Zip)"/>
+        <column xsi:type="decimal" name="price" scale="4" precision="12" unsigned="false" nullable="false" default="0"
+                comment="Price"/>
+        <column xsi:type="decimal" name="cost" scale="4" precision="12" unsigned="false" nullable="false" default="0"
+                comment="Cost"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="pk"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="UNQ_GLS_SHIPPING_TABLERATE_COLUMN">
+            <column name="website_id"/>
+            <column name="dest_country_id"/>
+            <column name="dest_region_id"/>
+            <column name="dest_zip"/>
+        </constraint>
+    </table>
+</schema>

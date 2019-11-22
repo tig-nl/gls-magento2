@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<!--
+<?php
 /**
  *
  *          ..::..
@@ -30,14 +29,17 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
--->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="TIG_GLS" setup_version="1.2.0">
-        <sequence>
-            <module name="Magento_Backend" />
-            <module name="Magento_Checkout" />
-            <module name="Magento_OfflineShipping" />
-            <module name="Magento_Store" />
-        </sequence>
-    </module>
-</config>
+
+namespace TIG\GLS\Block\Adminhtml\Form\Field;
+
+class Import extends \Magento\Framework\Data\Form\Element\AbstractElement
+{
+    /**
+     * @return void
+     */
+    protected function _construct()
+    {
+        parent::_construct();
+        $this->setType('file');
+    }
+}

@@ -36,5 +36,8 @@
         <route id="gls" frontName="gls">
             <module before="Magento_Backend" name="TIG_GLS" />
         </route>
+        <route id="adminhtml">
+            <module name="TIG_GLS" before="Magento_Backend" />
+        </route>
     </router>
 </config>
