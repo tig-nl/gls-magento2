@@ -128,7 +128,6 @@ class Services extends AbstractDeliveryOptions
         $carrierConfig           = $this->getCarrierConfig();
         $isExpressServicesActive = $carrierConfig->isExpressParcelActive();
         $isSaturdayServiceActive = $carrierConfig->isSaturdayServiceActive();
-
         $options = array_filter(
             $options,
             function ($details) use ($isExpressServicesActive, $isSaturdayServiceActive) {
@@ -142,7 +141,6 @@ class Services extends AbstractDeliveryOptions
                            && ($details['service'] == CarrierConfig::GLS_DELIVERY_OPTION_EXPRESS_LABEL));
             }
         );
-
         $options = array_values($options);
 
         return $options;

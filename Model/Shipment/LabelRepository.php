@@ -146,9 +146,9 @@ class LabelRepository implements LabelRepositoryInterface
      * @param SearchCriteriaInterface $searchCriteria
      * @param Collection              $collection
      */
+    // @codingStandardsIgnoreStart
     private function addFiltersToCollection(SearchCriteriaInterface $searchCriteria, Collection $collection)
     {
-        // @codingStandardsIgnoreStart
         foreach ($searchCriteria->getFilterGroups() as $filterGroup) {
             $fields = $conditions = [];
             foreach ($filterGroup->getFilters() as $filter) {
@@ -157,8 +157,8 @@ class LabelRepository implements LabelRepositoryInterface
             }
             $collection->addFieldToFilter($fields, $conditions);
         }
-        // @codingStandardsIgnoreEnd
     }
+    // @codingStandardsIgnoreEnd
 
     /**
      * @param SearchCriteriaInterface $searchCriteria

@@ -91,6 +91,7 @@ class Delete extends AbstractLabel
             // V032 equals to 'Unit has already been deleted', implying the error
 
             $this->messageManager->addNoticeMessage(
+                // @codingStandardsIgnoreFile
                 __('This label was already deleted at GLS therefore the Label has been deleted in Magento')
             );
             $this->deleteLabel->deleteLabelByShipmentId($shipmentId);

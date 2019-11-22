@@ -85,7 +85,6 @@ class Create extends AbstractLabel
 
         $shipmentId = $this->getShipmentId();
         $requestData = $this->createLabel->getRequestData($shipmentId, $controllerModule, $version);
-
         if ($this->errorsOccured()) {
             return $this->redirectToShipmentView($shipmentId);
         }

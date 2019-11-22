@@ -104,8 +104,6 @@ class Context
             return $buttonList;
         }
 
-
-
         return $this->getButtonList($shipmentId);
     }
 
