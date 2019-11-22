@@ -29,9 +29,6 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 /*global alert*/
-/*ignore jslint start*/
-/*jshint browser:true jquery:true*/
-/*ignore jslint end*/
 define(
     [
         'uiComponent',
