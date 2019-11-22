@@ -29,7 +29,6 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 /*global alert*/
-/*jshint browser:true jquery:true*/
 define([
     'Magento_Checkout/js/model/quote',
     'mage/translate'
@@ -50,7 +49,7 @@ define([
 
                 var shippingAddress = quote.shippingAddress();
 
-                if (shippingAddress['extension_attributes'] === undefined || shippingAddress['extension_attributes']['gls_delivery_option'] === undefined) {
+                if (shippingAddress.extension_attributes === undefined || shippingAddress.extension_attributes.gls_delivery_option === undefined) {
                     this.errorValidationMessage(
                         $t('Please select a GLS delivery option. If no options are visible, please make sure you\'ve entered your address information correctly.')
                     );
@@ -61,5 +60,5 @@ define([
                 return originalResult;
             }
         });
-    }
+    };
 });

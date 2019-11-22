@@ -28,6 +28,8 @@
  *
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ *
+ * @codingStandardsIgnoreFile
  */
 
 namespace TIG\GLS\Model\Shipment;
@@ -37,5 +39,5 @@ use TIG\GLS\Api\Shipment\Data\LabelSearchResultsInterface;
 
 class LabelSearchResults extends SearchResults implements LabelSearchResultsInterface
 {
-    
+
 }

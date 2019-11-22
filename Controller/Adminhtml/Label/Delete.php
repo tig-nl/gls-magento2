@@ -36,7 +36,6 @@ use Magento\Framework\App\Action\Context;
 use TIG\GLS\Api\Shipment\Data\LabelInterfaceFactory;
 use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 use TIG\GLS\Controller\Adminhtml\AbstractLabel;
-use TIG\GLS\Model\Shipment\Label as ShipmentLabel;
 use TIG\GLS\Service\Label;
 
 class Delete extends AbstractLabel
@@ -66,24 +65,36 @@ class Delete extends AbstractLabel
         $request = $this->getRequest();
         $controllerModule = $request->getControllerModule();
         $version = $request->getVersion();
-        $shipmentId = $request->getParam(ShipmentLabel::GLS_SHIPMENT_LABEL_SHIPMENT_ID);
+        $shipmentId = $this->getShipmentId();
 
         $this->setErrorMessage('Label could not be deleted.');
         $this->setSuccessMessage('Label succesfully deleted.');
 
         $deleteCall = $this->deleteLabel->deleteLabel($shipmentId, $controllerModule, $version);
 
+        $this->deleteLabel($deleteCall, $shipmentId);
+
+        return $this->redirectToShipmentView($shipmentId);
+    }
+
+    /**
+     * @param array $deleteCall
+     * @param int $shipmentId
+     */
+    private function deleteLabel($deleteCall, $shipmentId)
+    {
         if ($this->callIsSuccess($deleteCall)) {
             $this->deleteLabel->deleteLabelByShipmentId($shipmentId);
-        } elseif (strpos($deleteCall['message'], 'V032') !== false) {
+        }
+
+        if (!$this->callIsSuccess($deleteCall) && strpos($deleteCall['message'], 'V032') !== false) {
             // V032 equals to 'Unit has already been deleted', implying the error
 
             $this->messageManager->addNoticeMessage(
+                // @codingStandardsIgnoreFile
                 __('This label was already deleted at GLS therefore the Label has been deleted in Magento')
             );
             $this->deleteLabel->deleteLabelByShipmentId($shipmentId);
         }
-
-        return $this->redirectToShipmentView($this->getShipmentId());
     }
 }
