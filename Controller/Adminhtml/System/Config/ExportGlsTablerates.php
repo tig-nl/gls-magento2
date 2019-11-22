@@ -41,7 +41,8 @@ class ExportGlsTablerates extends \Magento\Config\Controller\Adminhtml\System\Ab
     /**
      * @var \Magento\Framework\App\Response\Http\FileFactory
      */
-    protected $_fileFactory;
+    // @codingStandardsIgnoreLine
+    private $fileFactory;
 
     /**
      * ExportGlsTablerates constructor.
@@ -57,7 +58,7 @@ class ExportGlsTablerates extends \Magento\Config\Controller\Adminhtml\System\Ab
         ConfigSectionChecker $sectionChecker,
         \Magento\Framework\App\Response\Http\FileFactory $fileFactory
     ) {
-        $this->_fileFactory = $fileFactory;
+        $this->fileFactory = $fileFactory;
         parent::__construct(
             $context,
             $configStructure,
@@ -76,12 +77,13 @@ class ExportGlsTablerates extends \Magento\Config\Controller\Adminhtml\System\Ab
         $fileName = 'gls_tablerates.csv';
 
         /** @var $gridBlock \TIG\GLS\Block\Adminhtml\Carrier\GLS\Grid */
+        // @codingStandardsIgnoreLine
         $gridBlock = $this->_view->getLayout()->createBlock(
             \TIG\GLS\Block\Adminhtml\Carrier\GLS\Grid::class
         );
 
         $content = $gridBlock->getCsvFile();
 
-        return $this->_fileFactory->create($fileName, $content, DirectoryList::VAR_DIR);
+        return $this->fileFactory->create($fileName, $content, DirectoryList::VAR_DIR);
     }
 }

@@ -32,27 +32,30 @@
 
 namespace TIG\GLS\Model\ResourceModel\Carrier\GLS;
 
-class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
+use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+
+class Collection extends AbstractCollection
 {
     /**
      * Directory/country table name
      *
      * @var string
      */
-    protected $_countryTable;
+    private $countryTable;
 
     /**
      * Directory/country_region table name
      *
      * @var string
      */
-    protected $_regionTable;
+    private $regionTable;
 
     /**
      * Define resource model and item
      *
      * @return void
      */
+    // @codingStandardsIgnoreLine
     protected function _construct()
     {
         $this->_init(
@@ -60,8 +63,8 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
             \TIG\GLS\Model\ResourceModel\Carrier\GLS::class
         );
 
-        $this->_countryTable = $this->getTable('directory_country');
-        $this->_regionTable  = $this->getTable('directory_country_region');
+        $this->countryTable = $this->getTable('directory_country');
+        $this->regionTable  = $this->getTable('directory_country_region');
     }
 
     /**
@@ -74,11 +77,11 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         parent::_initSelect();
 
         $this->_select->joinLeft(
-            ['country_table' => $this->_countryTable],
+            ['country_table' => $this->countryTable],
             'country_table.country_id = main_table.dest_country_id',
             ['dest_country' => 'iso3_code']
         )->joinLeft(
-            ['region_table' => $this->_regionTable],
+            ['region_table' => $this->regionTable],
             'region_table.region_id = main_table.dest_region_id',
             ['dest_region' => 'code']
         );

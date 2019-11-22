@@ -32,6 +32,7 @@
 
 namespace TIG\GLS\Model\ResourceModel\Carrier\GLS;
 
+use Magento\Framework\DB\Select;
 use Magento\Quote\Model\Quote\Address\RateRequest;
 
 /**
@@ -63,44 +64,43 @@ class RateQuery extends \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tab
     }
 
     /**
-     * Prepare select
+     * @param Select $select
      *
-     * @param \Magento\Framework\DB\Select $select
-     *
-     * @return \Magento\Framework\DB\Select
+     * @return Select
      */
-    public function prepareSelect(\Magento\Framework\DB\Select $select)
+    // @codingStandardsIgnoreLine
+    public function prepareSelect(Select $select)
     {
         $select->where(
             'website_id = :website_id'
-        )->order(
+        );
+        $select->order(
             [
                 'dest_country_id DESC',
                 'dest_region_id DESC',
                 'dest_zip DESC'
             ]
-        )->limit(
+        );
+        $select->limit(
             1
         );
 
-        // Render destination condition
-        $orWhere = '(' . implode(
-                ') OR (',
-                [
-                    "dest_country_id = :country_id AND dest_region_id = :region_id AND dest_zip = :postcode",
-                    "dest_country_id = :country_id AND dest_region_id = :region_id AND dest_zip = :postcode_prefix",
-                    "dest_country_id = :country_id AND dest_region_id = :region_id AND dest_zip = ''",
+        $wheres = [
+            "dest_country_id = :country_id AND dest_region_id = :region_id AND dest_zip = :postcode",
+            "dest_country_id = :country_id AND dest_region_id = :region_id AND dest_zip = :postcode_prefix",
+            "dest_country_id = :country_id AND dest_region_id = :region_id AND dest_zip = ''",
+            // Handle asterisk in dest_zip field
+            "dest_country_id = :country_id AND dest_region_id = :region_id AND dest_zip = '*'",
+            "dest_country_id = :country_id AND dest_region_id = 0 AND dest_zip = '*'",
+            "dest_country_id = '0' AND dest_region_id = :region_id AND dest_zip = '*'",
+            "dest_country_id = '0' AND dest_region_id = 0 AND dest_zip = '*'",
+            "dest_country_id = :country_id AND dest_region_id = 0 AND dest_zip = ''",
+            "dest_country_id = :country_id AND dest_region_id = 0 AND dest_zip = :postcode",
+            "dest_country_id = :country_id AND dest_region_id = 0 AND dest_zip = :postcode_prefix"
+        ];
 
-                    // Handle asterisk in dest_zip field
-                    "dest_country_id = :country_id AND dest_region_id = :region_id AND dest_zip = '*'",
-                    "dest_country_id = :country_id AND dest_region_id = 0 AND dest_zip = '*'",
-                    "dest_country_id = '0' AND dest_region_id = :region_id AND dest_zip = '*'",
-                    "dest_country_id = '0' AND dest_region_id = 0 AND dest_zip = '*'",
-                    "dest_country_id = :country_id AND dest_region_id = 0 AND dest_zip = ''",
-                    "dest_country_id = :country_id AND dest_region_id = 0 AND dest_zip = :postcode",
-                    "dest_country_id = :country_id AND dest_region_id = 0 AND dest_zip = :postcode_prefix"
-                ]
-            ) . ')';
+        // Render destination condition
+        $orWhere = '(' . implode(') OR (', $wheres) . ')';
         $select->where($orWhere);
 
         return $select;

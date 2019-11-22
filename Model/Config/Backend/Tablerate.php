@@ -37,7 +37,7 @@ use TIG\GLS\Model\ResourceModel\Carrier\GLSFactory;
 class Tablerate extends \Magento\Framework\App\Config\Value
 {
     /** @var GLSFactory $glsFactory */
-    protected $glsFactory;
+    private $glsFactory;
 
     /**
      * Tablerate constructor.

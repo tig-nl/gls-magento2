@@ -43,10 +43,10 @@ namespace TIG\GLS\Block\Adminhtml\Carrier\GLS;
 class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
 {
     /** @var \TIG\GLS\Model\Carrier\GLS $glsCarrier */
-    protected $glsCarrier;
+    private $glsCarrier;
 
     /** @var \TIG\GLS\Model\ResourceModel\Carrier\GLS\CollectionFactory */
-    protected $_collectionFactory;
+    private $collectionFactory;
 
     /**
      * Grid constructor.
@@ -64,8 +64,8 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         \TIG\GLS\Model\Carrier\GLS $glsCarrier,
         array $data = []
     ) {
-        $this->_collectionFactory = $collectionFactory;
-        $this->glsCarrier         = $glsCarrier;
+        $this->collectionFactory = $collectionFactory;
+        $this->glsCarrier        = $glsCarrier;
         parent::__construct($context, $backendHelper, $data);
     }
 
@@ -74,6 +74,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      *
      * @return void
      */
+    // @codingStandardsIgnoreLine
     protected function _construct()
     {
         parent::_construct();
@@ -84,10 +85,11 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * @return \Magento\Backend\Block\Widget\Grid\Extended
      */
+    // @codingStandardsIgnoreLine
     protected function _prepareCollection()
     {
         /** @var $collection \TIG\GLS\Model\ResourceModel\Carrier\GLS\Collection */
-        $collection = $this->_collectionFactory->create();
+        $collection = $this->collectionFactory->create();
 
         $this->setCollection($collection);
 
@@ -98,6 +100,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @return \Magento\Backend\Block\Widget\Grid\Extended
      * @throws \Exception
      */
+    // @codingStandardsIgnoreLine
     protected function _prepareColumns()
     {
         $this->addColumn(

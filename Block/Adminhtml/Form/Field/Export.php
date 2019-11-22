@@ -37,7 +37,7 @@ class Export extends \Magento\Framework\Data\Form\Element\AbstractElement
     /**
      * @var \Magento\Backend\Model\UrlInterface
      */
-    protected $_backendUrl;
+    private $backendUrl;
 
     /**
      * @param \Magento\Framework\Data\Form\Element\Factory           $factoryElement
@@ -54,7 +54,7 @@ class Export extends \Magento\Framework\Data\Form\Element\AbstractElement
         array $data = []
     ) {
         parent::__construct($factoryElement, $factoryCollection, $escaper, $data);
-        $this->_backendUrl = $backendUrl;
+        $this->backendUrl = $backendUrl;
     }
 
     /**
@@ -63,12 +63,13 @@ class Export extends \Magento\Framework\Data\Form\Element\AbstractElement
     public function getElementHtml()
     {
         /** @var \Magento\Backend\Block\Widget\Button $buttonBlock */
+        // @codingStandardsIgnoreLine
         $buttonBlock = $this->getForm()->getParent()->getLayout()->createBlock(
             \Magento\Backend\Block\Widget\Button::class
         );
 
         $params = ['website' => $buttonBlock->getRequest()->getParam('website')];
-        $url    = $this->_backendUrl->getUrl("*/*/exportGlsTablerates", $params);
+        $url    = $this->backendUrl->getUrl("*/*/exportGlsTablerates", $params);
         $data   = [
             'label'   => __('Export CSV'),
             'onclick' => "setLocation('$url" . "gls_tablerates.csv')",

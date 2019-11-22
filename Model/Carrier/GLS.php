@@ -45,15 +45,21 @@ use TIG\GLS\Model\Config\Provider\Account;
 use TIG\GLS\Model\ResourceModel\Carrier\GLS as GLSCarrier;
 use TIG\GLS\Model\ResourceModel\Carrier\GLSFactory;
 
+/**
+ * Class GLS
+ * @package TIG\GLS\Model\Carrier
+ *
+ * All properties are needed, and some need to be compatible with its parent.
+ */
+// @codingStandardsIgnoreFile
 class GLS extends AbstractCarrier implements CarrierInterface
 {
     const GLS_CARRIER_METHOD = 'tig_gls';
 
-    // @codingStandardsIgnoreLine
+    /** @var string $_code */
     protected $_code = 'tig_gls';
 
     /** @var string $_defaultConditionName -- We'll only use Price vs. Destination */
-    // @codingStandardsIgnoreLine
     protected $_defaultConditionName = 'package_value_with_discount';
 
     /** @var Account $accountConfigProvider */
@@ -145,7 +151,9 @@ class GLS extends AbstractCarrier implements CarrierInterface
      */
     public function getRate(\Magento\Quote\Model\Quote\Address\RateRequest $request)
     {
-        return $this->glsFactory->create()->getRate($request);
+        $glsFactory = $this->glsFactory->create();
+
+        return $glsFactory->getRate($request);
     }
 
     /**

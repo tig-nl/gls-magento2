@@ -37,6 +37,7 @@ class Import extends \Magento\Framework\Data\Form\Element\AbstractElement
     /**
      * @return void
      */
+    // @codingStandardsIgnoreLine
     protected function _construct()
     {
         parent::_construct();
