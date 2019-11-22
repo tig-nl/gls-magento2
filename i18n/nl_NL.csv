@@ -68,3 +68,5 @@ ShopReturnService,ShopReturnService
 "Configure an additional handling fee for specific shipping methods. The additional handling fee is added to or subtracted from the base handling fee.","Configureer extra kosten voor specifieke verzendmethoden. De extra kosten worden toegevoegd aan of afgetrokken van de basisverwerkingskosten."
 "Version & Support","Versie en ondersteuning"
 "Easily integrate GLS shipping services into Magento 2.","Integreer GLS-verzenddiensten eenvoudig in Magento 2."
+"Package Number", "Pakket Nummer"
+"Shipping Label", "Verzendlabel"

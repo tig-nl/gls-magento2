@@ -39,7 +39,8 @@ class PrintPDF extends AbstractLabel
     /**
      * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|void
      */
-    public function execute() {
+    public function execute()
+    {
         $label = $this->getLabelByShipmentId();
         $pdf   = base64_decode($label->getLabel());
 
