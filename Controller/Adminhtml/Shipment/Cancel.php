@@ -32,17 +32,14 @@
 namespace TIG\GLS\Controller\Adminhtml\Shipment;
 
 use Magento\Backend\App\Action;
-use Magento\Framework\Registry;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\ShipmentRepositoryInterface;
-use Magento\Sales\Model\Order;
 use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
-use TIG\GLS\Controller\Adminhtml\Label\Delete;
+use TIG\GLS\Service\Label\Delete;
+use TIG\GLS\Service\Shipment\DeleteShipment;
 
 class Cancel extends Action
 {
-    const ADMIN_ORDER_ORDER_VIEW_URI = 'sales/order/view';
-
     /**
      * @var ShipmentRepositoryInterface
      */
@@ -52,11 +49,6 @@ class Cancel extends Action
      * @var OrderRepositoryInterface
      */
     private $orders;
-
-    /**
-     * @var Registry
-     */
-    private $registry;
 
     /**
      * @var Delete
@@ -69,68 +61,56 @@ class Cancel extends Action
     private $labelRepository;
 
     /**
+     * @var DeleteShipment
+     */
+    private $shipmentService;
+
+    /**
      * Cancel constructor.
      *
      * @param Action\Context              $context
      * @param ShipmentRepositoryInterface $shipment
      * @param OrderRepositoryInterface    $orders
-     * @param Registry                    $registry
      * @param Delete                      $deleteLabel
      * @param LabelRepositoryInterface    $labelRepository
+     * @param DeleteShipment              $shipmentService
      */
     public function __construct(
         Action\Context $context,
         ShipmentRepositoryInterface $shipment,
         OrderRepositoryInterface $orders,
-        Registry $registry,
         Delete $deleteLabel,
-        LabelRepositoryInterface $labelRepository
+        LabelRepositoryInterface $labelRepository,
+        DeleteShipment $shipmentService
     ) {
         $this->shipment = $shipment;
         $this->orders = $orders;
-        $this->registry = $registry;
         $this->deleteLabel = $deleteLabel;
         $this->labelRepository = $labelRepository;
+        $this->shipmentService = $shipmentService;
 
         parent::__construct($context);
     }
 
     /**
      * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Redirect|\Magento\Framework\Controller\ResultInterface
+     * @throws \Zend_Http_Client_Exception
      */
     public function execute()
     {
         $shipment = $this->getShipment();
         $order = $this->getOrder($shipment);
-
-        if ($this->registry->registry('isSecureArea')) {
-            $this->registry->unregister('isSecureArea');
-        }
-
-        $this->registry->register('isSecureArea', true);
+        $request = $this->getRequest();
+        $controllerModule = $request->getControllerModule();
+        $version = $request->getVersion();
 
         $label = $this->labelRepository->getByShipmentId($shipment->getId());
 
-        if (!$label) {
-            $this->cancelShipment($order);
-            return $this->cancelShipment($order);
+        if ($label) {
+            $this->deleteLabel->deleteLabel($shipment->getId(), $controllerModule, $version);
         }
 
-        $this->deleteLabel->deleteLabel($label);
-
-        return $this->cancelShipment($order);
-    }
-
-    /**
-     * @param $orderId
-     *
-     * @return \Magento\Framework\Controller\Result\Redirect
-     */
-    public function redirectToOrderView($orderId)
-    {
-        $result = $this->resultRedirectFactory->create();
-
-        return $result->setPath(self::ADMIN_ORDER_ORDER_VIEW_URI, ['order_id' => $orderId]);
+        return $this->shipmentService->cancelShipment($order, $shipment);
     }
 
     /**
@@ -155,44 +135,5 @@ class Cancel extends Action
         $orderId = $shipment->getOrderId();
 
         return $this->orders->get($orderId);
-    }
-
-    /**
-     * @param $order
-     */
-    public function deleteShipments($order)
-    {
-        $shipments = $order->getShipmentsCollection();
-
-        foreach ($shipments as $shipment) {
-            $shipment->delete();
-        }
-    }
-
-    /**
-     * @param $items
-     */
-    public function resetItems($items)
-    {
-        foreach ($items as $item) {
-            $item->setQtyShipped(0);
-            $item->save();
-        }
-    }
-
-    /**
-     * @param $order
-     *
-     * @return \Magento\Framework\Controller\Result\Redirect
-     */
-    public function cancelShipment($order)
-    {
-        $this->deleteShipments($order);
-        $this->resetItems($order->getItems());
-
-        $order->setState(Order::STATE_PROCESSING);
-        $order->save();
-
-        return $this->redirectToOrderView($order->getId());
     }
 }

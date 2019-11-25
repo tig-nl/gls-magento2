@@ -42,18 +42,18 @@ use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 
 class Context
 {
-    const GLS_ADMIN_LABEL_CREATE_BUTTON             = 'gls_label_create';
-    const GLS_ADMIN_LABEL_CREATE_LABEL              = 'GLS - Create Label';
-    const GLS_ADMIN_LABEL_CREATE_URI                = 'gls/label/create';
-    const GLS_ADMIN_LABEL_PRINT_BUTTON              = 'gls_label_print';
-    const GLS_ADMIN_LABEL_PRINT_LABEL               = 'GLS - Print Label';
-    const GLS_ADMIN_LABEL_PRINT_URI                 = 'gls/label/printPdf';
-    const GLS_ADMIN_LABEL_DELETE_BUTTON             = 'gls_label_delete';
-    const GLS_ADMIN_LABEL_DELETE_LABEL              = 'GLS - Delete Label';
-    const GLS_ADMIN_LABEL_DELETE_URI                = 'gls/label/delete';
-    const GLS_ADMIN_LABEL_CANCEL_SHIPMENT_BUTTON    = 'gls_label_delete_shipment';
-    const GLS_ADMIN_LABEL_CANCEL_SHIPMENT_LABEL     = 'GLS - Cancel Shipment';
-    const GLS_ADMIN_LABEL_CANCEL_SHIPMENT_URI       = 'gls/shipment/cancel';
+    const GLS_ADMIN_LABEL_CREATE_BUTTON          = 'gls_label_create';
+    const GLS_ADMIN_LABEL_CREATE_LABEL           = 'GLS - Create Label';
+    const GLS_ADMIN_LABEL_CREATE_URI             = 'gls/label/create';
+    const GLS_ADMIN_LABEL_PRINT_BUTTON           = 'gls_label_print';
+    const GLS_ADMIN_LABEL_PRINT_LABEL            = 'GLS - Print Label';
+    const GLS_ADMIN_LABEL_PRINT_URI              = 'gls/label/printPdf';
+    const GLS_ADMIN_LABEL_DELETE_BUTTON          = 'gls_label_delete';
+    const GLS_ADMIN_LABEL_DELETE_LABEL           = 'GLS - Delete Label';
+    const GLS_ADMIN_LABEL_DELETE_URI             = 'gls/label/delete';
+    const GLS_ADMIN_LABEL_CANCEL_SHIPMENT_BUTTON = 'gls_label_delete_shipment';
+    const GLS_ADMIN_LABEL_CANCEL_SHIPMENT_LABEL  = 'GLS - Cancel Shipment';
+    const GLS_ADMIN_LABEL_CANCEL_SHIPMENT_URI    = 'gls/shipment/cancel';
 
     /** @var BackendTemplate $template */
     private $template;
