@@ -32,31 +32,20 @@
  */
 namespace TIG\GLS\Service\Label;
 
-use TIG\GLS\Webservice\Endpoint\Label\Create;
-
-class Label
+class ShippingInformation
 {
-    /** @var Create $createLabel */
-    private $createLabel;
-
     /**
-     * @param Create $createLabel
-     */
-    public function __construct(Create $createLabel)
-    {
-        $this->createLabel = $createLabel;
-    }
-
-    /**
-     * @param $requestData
+     * @param $controllerModule
+     * @param $version
      *
-     * @return mixed
-     * @throws \Zend_Http_Client_Exception
+     * @return array
      */
-    public function createLabel($requestData)
+    public function addShippingInformation($controllerModule, $version)
     {
-        $this->createLabel->setRequestData($requestData);
-
-        return $this->createLabel->call();
+        return [
+            "shippingSystemName"    => $controllerModule,
+            "shippingSystemVersion" => $version,
+            "shiptype"              => "p"
+        ];
     }
 }
