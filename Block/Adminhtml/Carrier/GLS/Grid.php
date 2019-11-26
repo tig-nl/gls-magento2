@@ -106,6 +106,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->addColumn(
             'dest_country',
             [
+                // @codingStandardsIgnoreLine
                 'header'  => __('Country'),
                 'index'   => 'dest_country',
                 'default' => '*'

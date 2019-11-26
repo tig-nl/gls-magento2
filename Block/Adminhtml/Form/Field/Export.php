@@ -67,7 +67,7 @@ class Export extends \Magento\Framework\Data\Form\Element\AbstractElement
         $buttonBlock = $this->getForm()->getParent()->getLayout()->createBlock(
             \Magento\Backend\Block\Widget\Button::class
         );
-
+        // @codingStandardsIgnoreLine
         $params = ['website' => $buttonBlock->getRequest()->getParam('website')];
         $url    = $this->backendUrl->getUrl("*/*/exportGlsTablerates", $params);
         $data   = [
@@ -75,8 +75,8 @@ class Export extends \Magento\Framework\Data\Form\Element\AbstractElement
             'onclick' => "setLocation('$url" . "gls_tablerates.csv')",
             'class'   => '',
         ];
-        $html   = $buttonBlock->setData($data)->toHtml();
+        $buttonBlock->setData($data);
 
-        return $html;
+        return $buttonBlock->toHtml();
     }
 }
