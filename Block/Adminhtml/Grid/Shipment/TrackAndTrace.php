@@ -68,7 +68,7 @@ class TrackAndTrace extends AbstractGrid
      *
      * @return string
      */
-    protected function getCellContents($item)
+    public function getCellContents($item)
     {
         if (!isset($item['entity_id'])) {
             return '';

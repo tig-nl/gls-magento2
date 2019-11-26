@@ -86,5 +86,5 @@ abstract class AbstractGrid extends Column
      * @return string
      */
     // @codingStandardsIgnoreLine
-    abstract protected function getCellContents($item);
+    abstract public function getCellContents($item);
 }
