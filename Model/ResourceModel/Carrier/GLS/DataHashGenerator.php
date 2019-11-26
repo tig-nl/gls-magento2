@@ -28,16 +28,23 @@
  *
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
- *
- * @codingStandardsIgnoreFile
  */
 
-namespace TIG\GLS\Model\Shipment;
+namespace TIG\GLS\Model\ResourceModel\Carrier\GLS;
 
-use Magento\Framework\Api\SearchResults;
-use TIG\GLS\Api\Shipment\Data\LabelSearchResultsInterface;
-
-class LabelSearchResults extends SearchResults implements LabelSearchResultsInterface
+class DataHashGenerator
 {
+    /**
+     * @param array $data
+     *
+     * @return string
+     */
+    public function getHash(array $data)
+    {
+        $countryId = $data['dest_country_id'];
+        $regionId  = $data['dest_region_id'];
+        $zipCode   = $data['dest_zip'];
 
+        return sprintf("%s-%d-%s", $countryId, $regionId, $zipCode);
+    }
 }

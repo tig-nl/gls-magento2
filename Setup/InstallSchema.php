@@ -43,6 +43,7 @@ use TIG\GLS\Model\Shipment\Label;
 // @codingStandardsIgnoreFile
 class InstallSchema implements InstallSchemaInterface
 {
+    const DEFAULT_BLOB_LENGTH                = 16777216;
     const GLS_DELIVERY_OPTION                = 'gls_delivery_option';
     const GLS_DELIVERY_OPTION_LABEL          = 'GLS Delivery Option';
     const GLS_DELIVERY_OPTION_COLUMN         = [
@@ -116,7 +117,7 @@ class InstallSchema implements InstallSchemaInterface
         $this->addText($table, Label::GLS_SHIPMENT_LABEL_UNIT_NO_SHOP_RETURN, 50, 'Shop Return Unit Number');
         $this->addText($table, Label::GLS_SHIPMENT_LABEL_UNIQUE_NO, 50, 'Unique Number');
         $this->addBool($table, Label::GLS_SHIPMENT_LABEL_CONFIRMED, 'Is Confirmed?');
-        $this->addBlob($table, Label::GLS_SHIPMENT_LABEL_LABEL, MediumBlob::DEFAULT_BLOB_LENGTH, 'GLS Label (Base64 encoded)');
+        $this->addBlob($table, Label::GLS_SHIPMENT_LABEL_LABEL, self::DEFAULT_BLOB_LENGTH, 'GLS Label (Base64 encoded)');
         $this->addText($table, Label::GLS_SHIPMENT_LABEL_UNIT_TRACKING_LINK, 256, 'GLS Tracking Link');
 
         $connection->createTable($table);

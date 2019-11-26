@@ -32,19 +32,48 @@
 
 namespace TIG\GLS\Controller\Adminhtml\Label;
 
+use Magento\Backend\App\Action;
+use TIG\GLS\Api\Shipment\Data\LabelInterfaceFactory;
+use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 use TIG\GLS\Controller\Adminhtml\AbstractLabel;
+use TIG\GLS\Service\Label\GetPDF;
 
 class PrintPDF extends AbstractLabel
 {
     /**
-     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|void
+     * @var GetPDF
+     */
+    private $getPDF;
+
+    /**
+     * PrintPDF constructor.
+     *
+     * @param Action\Context           $context
+     * @param LabelRepositoryInterface $labelRepository
+     * @param LabelInterfaceFactory    $labelInterface
+     * @param GetPDF                   $getPDF
+     */
+    public function __construct(
+        Action\Context $context,
+        LabelRepositoryInterface $labelRepository,
+        LabelInterfaceFactory $labelInterface,
+        GetPDF $getPDF
+    ) {
+        parent::__construct($context, $labelRepository, $labelInterface);
+        $this->getPDF = $getPDF;
+    }
+
+    /**
+     * @return void
      */
     public function execute()
     {
-        $label = $this->getLabelByShipmentId();
-        $pdf   = base64_decode($label->getLabel());
+        $pdf = $this->getPDF->getPdf($this->getShipmentId());
 
-        header('Content-Type: application/pdf');
-        echo $pdf;
+        $resultPage = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_RAW);
+        $resultPage->setHeader('Content-Type', 'application/pdf');
+        $resultPage->setContents($pdf);
+
+        return $resultPage;
     }
 }

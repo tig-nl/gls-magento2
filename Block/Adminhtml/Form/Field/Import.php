@@ -28,16 +28,19 @@
  *
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
- *
- * @codingStandardsIgnoreFile
  */
 
-namespace TIG\GLS\Model\Shipment;
+namespace TIG\GLS\Block\Adminhtml\Form\Field;
 
-use Magento\Framework\Api\SearchResults;
-use TIG\GLS\Api\Shipment\Data\LabelSearchResultsInterface;
-
-class LabelSearchResults extends SearchResults implements LabelSearchResultsInterface
+class Import extends \Magento\Framework\Data\Form\Element\AbstractElement
 {
-
+    /**
+     * @return void
+     */
+    // @codingStandardsIgnoreLine
+    protected function _construct()
+    {
+        parent::_construct();
+        $this->setType('file');
+    }
 }

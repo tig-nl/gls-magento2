@@ -45,11 +45,11 @@ use TIG\GLS\Api\Shipment\Data\LabelInterface;
 interface LabelRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param int $entityId
      *
      * @return \TIG\GLS\Api\Shipment\Data\LabelInterface;
      */
-    public function getById($id);
+    public function getById($entityId);
 
     /**
      * @param int $shipmentId

@@ -1,3 +1,8 @@
+Country,Country
+Region/State,Region/State
+"Zip/Postal Code","Zip/Postal Code"
+"Shipping Price","Shipping Price"
+"Export CSV","Export CSV"
 "Add Additional Handling Fee","Add Additional Handling Fee"
 "Shipping Method","Shipping Method"
 "Additional Fee","Additional Fee"
@@ -10,6 +15,17 @@ Matrix,Matrix
 .,.
 Live,Live
 Test,Test
+"Unable to import data","Unable to import data"
+"Something went wrong while importing GLS rates.","Something went wrong while importing GLS rates."
+"We couldn't import this file because of these errors: %1","We couldn't import this file because of these errors: %1"
+"Requested column ""%1"" cannot be resolved","Requested column ""%1"" cannot be resolved"
+"Column ""%1"" not found","Column ""%1"" not found"
+"The GLS Table Rates File Format is incorrect in row number ""%1"". Verify the format and try again.","The GLS Table Rates File Format is incorrect in row number ""%1"". Verify the format and try again."
+"The ""%1"" country in row number ""%2"" is incorrect. Verify the country and try again.","The ""%1"" country in row number ""%2"" is incorrect. Verify the country and try again."
+"The ""%1"" region or state in row number ""%2"" is incorrect. Verify the region or state and try again.","The ""%1"" region or state in row number ""%2"" is incorrect. Verify the region or state and try again."
+"The ""%1"" shipping price in row number ""%2"" is incorrect. Verify the shipping price and try again.","The ""%1"" shipping price in row number ""%2"" is incorrect. Verify the shipping price and try again."
+"Duplicate Row #%1 (duplicates row #%2)","Duplicate Row #%1 (duplicates row #%2)"
+"The GLS Rates File Format is incorrect. Verify the format and try again.","The GLS Rates File Format is incorrect. Verify the format and try again."
 "%1 : Zend Http Client exception","%1 : Zend Http Client exception"
 "Validating API credentials","Validating API credentials"
 "API credentials are incorrect","API credentials are incorrect"
@@ -35,8 +51,10 @@ Title,Title
 "Method Name","Method Name"
 "Handling Fee","Handling Fee"
 "The base handling fee used for all allowed services.","The base handling fee used for all allowed services."
-"International Additional Handling Fee","International Additional Handling Fee"
-"Configure an additional handling fee or discount for International Shipments (e.g. 2 or -1.95). The additional handling fee is added to or subtracted from the base handling fee.","Configure an additional handling fee or discount for International Shipments (e.g. 2 or -1.95). The additional handling fee is added to or subtracted from the base handling fee."
+"Import Rates","Import Rates"
+"Use a CSV to define different Handling Fees for different countries. Each rate defined in the CSV is added to the above Handling Fee for the specified country.","Use a CSV to define different Handling Fees for different countries. Each rate defined in the CSV is added to the above Handling Fee for the specified country."
+"Export Rates","Export Rates"
+"Make an external backup of the CSV file or use it as a template for further editing.","Make an external backup of the CSV file or use it as a template for further editing."
 "Cut-off Time","Cut-off Time"
 "Deadline at which an order can be placed in order to be processed.","Deadline at which an order can be placed in order to be processed."
 "Processing Time","Processing Time"

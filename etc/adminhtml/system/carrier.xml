@@ -39,35 +39,45 @@
                 <label>Enabled</label>
                 <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
             </field>
+
             <field id="title" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                 <label>Title</label>
             </field>
+
             <field id="name" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                 <label>Method Name</label>
             </field>
-            <field id="handling_fee" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+
+            <field id="handling_fee" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
                 <label>Handling Fee</label>
                 <validate>validate-number validate-zero-or-greater</validate>
                 <comment><![CDATA[The base handling fee used for all allowed services.]]></comment>
             </field>
 
-            <field id="international_handling_fee" translate="label comment" type="text" sortOrder="45" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                <label>International Additional Handling Fee</label>
-                <validate>validate-number validate-zero-or-greater</validate>
-                <comment><![CDATA[Configure an additional handling fee or discount for International Shipments (e.g. 2 or -1.95). The additional handling fee is added to or subtracted from the base handling fee.]]></comment>
+            <field id="import" translate="label comment" type="TIG\GLS\Block\Adminhtml\Form\Field\Import" sortOrder="50" showInDefault="0" showInWebsite="1" showInStore="0">
+                <label>Import Rates</label>
+                <backend_model>TIG\GLS\Model\Config\Backend\Tablerate</backend_model>
+                <comment><![CDATA[Use a CSV to define different Handling Fees for different countries. Each rate defined in the CSV is added to the above Handling Fee for the specified country.]]></comment>
             </field>
 
-            <field id="cut_off_time" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+            <field id="export" translate="label comment" type="TIG\GLS\Block\Adminhtml\Form\Field\Export" sortOrder="60" showInDefault="0" showInWebsite="1" showInStore="0">
+                <label>Export Rates</label>
+                <comment><![CDATA[Make an external backup of the CSV file or use it as a template for further editing.]]></comment>
+            </field>
+
+            <field id="cut_off_time" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                 <label>Cut-off Time</label>
                 <comment><![CDATA[Deadline at which an order can be placed in order to be processed.]]></comment>
                 <source_model>TIG\GLS\Model\Config\Source\Carrier\CutOffTime</source_model>
             </field>
-            <field id="processing_time" translate="label comment" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+
+            <field id="processing_time" translate="label comment" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                 <label>Processing Time</label>
                 <validate>validate-number validate-zero-or-greater</validate>
                 <comment><![CDATA[The time (in days) it takes to process and package an order before it's shipped.]]></comment>
             </field>
-            <field id="express_parcel_active" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+
+            <field id="express_parcel_active" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                 <label>Express Delivery Services</label>
                 <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
             </field>
@@ -76,27 +86,31 @@
 
             <include path="TIG_GLS::system/services/express_parcel.xml" />
 
-            <field id="sallowspecific" translate="label" type="select" sortOrder="125" showInDefault="1" showInWebsite="1" showInStore="0">
+            <field id="sallowspecific" translate="label" type="select" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="0">
                 <label>Ship to Applicable Countries</label>
                 <frontend_class>shipping-applicable-country</frontend_class>
                 <source_model>Magento\Shipping\Model\Config\Source\Allspecificcountries</source_model>
             </field>
-            <field id="specificcountry" translate="label" type="multiselect" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+
+            <field id="specificcountry" translate="label" type="multiselect" sortOrder="510" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
                 <label>Ship to Specific Countries</label>
                 <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                 <can_be_empty>1</can_be_empty>
             </field>
-            <field id="showmethod" translate="label" type="select" sortOrder="175" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+
+            <field id="showmethod" translate="label" type="select" sortOrder="520" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
                 <label>Show Method if Not Applicable</label>
                 <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
             </field>
-            <field id="specificerrmsg" translate="label" type="textarea" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+
+            <field id="specificerrmsg" translate="label" type="textarea" sortOrder="530" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                 <label>Displayed Error Message</label>
                 <depends>
                     <field id="showmethod">1</field>
                 </depends>
             </field>
-            <field id="sort_order" translate="label" type="text" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="0">
+
+            <field id="sort_order" translate="label" type="text" sortOrder="540" showInDefault="1" showInWebsite="1" showInStore="0">
                 <label>Sort Order</label>
             </field>
         </group>
