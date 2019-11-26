@@ -33,6 +33,8 @@ namespace TIG\GLS\Service\Shipment;
 
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\Result\RedirectFactory;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Message\ManagerInterface;
 use Magento\Sales\Model\Order;
 
 class DeleteShipment
@@ -45,26 +47,22 @@ class DeleteShipment
     private $redirectFactory;
 
     /**
-     * Delete constructor.
-     *
-     * @param RedirectFactory $redirectFactory
+     * @var ManagerInterface
      */
-    public function __construct(
-        RedirectFactory $redirectFactory
-    ) {
-        $this->redirectFactory = $redirectFactory;
-    }
+    private $messageManager;
 
     /**
-     * @param $order
+     * Delete constructor.
+     *
+     * @param RedirectFactory  $redirectFactory
+     * @param ManagerInterface $messageManager
      */
-    public function deleteShipments($order)
-    {
-        $shipments = $order->getShipmentsCollection();
-
-        foreach ($shipments as $shipment) {
-            $shipment->delete();
-        }
+    public function __construct(
+        RedirectFactory $redirectFactory,
+        ManagerInterface $messageManager
+    ) {
+        $this->redirectFactory = $redirectFactory;
+        $this->messageManager = $messageManager;
     }
 
     /**
@@ -72,28 +70,55 @@ class DeleteShipment
      *
      * @param $shipment
      *
-     * @return Redirect
+     * @return void
+     * @throws LocalizedException
      */
     public function cancelShipment($order, $shipment)
     {
-        $this->deleteShipments($order);
-        $this->resetItems($shipment->getItems());
+        $this->updateItemQty($order, $shipment);
 
-        $order->setState(Order::STATE_PROCESSING);
-        $order->save();
+        try {
+            $shipment->delete();
+        } catch (LocalizedException $exception) {
+            throw new LocalizedException(__('Could not delete shipment' . $exception));
+        }
 
-        return $this->redirectToOrderView($order->getId());
+        $this->messageManager->addSuccessMessage(__('Shipment deleted successfully'));
     }
 
     /**
-     * @param $items
+     * @param $order
+     * @param $shipment
      */
-    public function resetItems($items)
+    public function updateItemQty($order, $shipment)
     {
-        foreach ($items as $item) {
-            $item->setQtyShipped(0);
-            $item->save();
+        $shipmentQty = $this->getShipmentQtyToShip($shipment);
+
+        foreach ($shipmentQty as $key => $item) {
+            $orderItem = $order->getItemById($key);
+            $newQtyToShip = $orderItem->getQtyShipped() - $item;
+            $orderItem->setQtyShipped($newQtyToShip);
         }
+
+        $order->setState(Order::STATE_PROCESSING);
+        $order->save();
+    }
+
+    /**
+     * @param $shipment
+     *
+     * @return array
+     */
+    public function getShipmentQtyToShip($shipment)
+    {
+        $qty = [];
+
+        foreach ($shipment->getItems() as $item) {
+            $itemId = $item->getOrderItemId();
+            $qty[$itemId] = $item->getQty();
+        }
+
+        return $qty;
     }
 
     /**

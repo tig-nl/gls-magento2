@@ -40,6 +40,7 @@ use Magento\Framework\App\Request\Http as Request;
 use Magento\Sales\Api\ShipmentRepositoryInterface;
 use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 
+//@codingStandardsIgnoreFile
 class Context
 {
     const GLS_ADMIN_LABEL_CREATE_BUTTON          = 'gls_label_create';
