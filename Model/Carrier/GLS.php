@@ -35,7 +35,6 @@ namespace TIG\GLS\Model\Carrier;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Quote\Model\Quote\Address\RateRequest;
 use Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory;
-use Magento\Quote\Model\Quote\Address\RateResult\Method;
 use Magento\Quote\Model\Quote\Address\RateResult\MethodFactory;
 use Magento\Shipping\Model\Carrier\AbstractCarrier;
 use Magento\Shipping\Model\Carrier\CarrierInterface;
@@ -43,13 +42,25 @@ use Magento\Shipping\Model\Rate\Result;
 use Magento\Shipping\Model\Rate\ResultFactory;
 use Psr\Log\LoggerInterface;
 use TIG\GLS\Model\Config\Provider\Account;
+use TIG\GLS\Model\ResourceModel\Carrier\GLS as GLSCarrier;
+use TIG\GLS\Model\ResourceModel\Carrier\GLSFactory;
 
+/**
+ * Class GLS
+ * @package TIG\GLS\Model\Carrier
+ *
+ * All properties are needed, and some need to be compatible with its parent.
+ */
+// @codingStandardsIgnoreFile
 class GLS extends AbstractCarrier implements CarrierInterface
 {
     const GLS_CARRIER_METHOD = 'tig_gls';
 
-    // @codingStandardsIgnoreLine
+    /** @var string $_code */
     protected $_code = 'tig_gls';
+
+    /** @var string $_defaultConditionName -- We'll only use Price vs. Destination */
+    protected $_defaultConditionName = 'package_value_with_discount';
 
     /** @var Account $accountConfigProvider */
     private $accountConfigProvider;
@@ -60,11 +71,11 @@ class GLS extends AbstractCarrier implements CarrierInterface
     /** @var MethodFactory $rateMethodFactory */
     private $rateMethodFactory;
 
-    /** @var RateRequest $request */
-    private $request;
-
-    /** @var ScopeConfigInterface|\TIG\GLS\Model\Carrier\ScopeConfigInterface */
+    /** @var ScopeConfigInterface */
     private $scopeConfig;
+
+    /** @var GLSCarrier $glsFactory */
+    private $glsFactory;
 
     /**
      * GLS constructor.
@@ -84,14 +95,21 @@ class GLS extends AbstractCarrier implements CarrierInterface
         Account $accountConfigProvider,
         ResultFactory $rateResultFactory,
         MethodFactory $rateMethodFactory,
+        GLSFactory $glsFactory,
         array $data = []
     ) {
-        parent::__construct($scopeConfig, $rateErrorFactory, $logger, $data);
+        parent::__construct(
+            $scopeConfig,
+            $rateErrorFactory,
+            $logger,
+            $data
+        );
 
         $this->accountConfigProvider = $accountConfigProvider;
-        $this->rateResultFactory = $rateResultFactory;
-        $this->rateMethodFactory = $rateMethodFactory;
-        $this->scopeConfig = $scopeConfig;
+        $this->rateResultFactory     = $rateResultFactory;
+        $this->rateMethodFactory     = $rateMethodFactory;
+        $this->glsFactory            = $glsFactory;
+        $this->scopeConfig           = $scopeConfig;
     }
 
     /**
@@ -105,77 +123,62 @@ class GLS extends AbstractCarrier implements CarrierInterface
     // @codingStandardsIgnoreLine
     public function collectRates(RateRequest $request)
     {
-        if (!$this->accountConfigProvider->isValidatedSuccesfully()) {
-            return false;
-        }
-
         if (!$this->getConfigFlag('active')) {
             return false;
         }
 
-        /** @var RateRequest $request */
-        $this->request = $request;
+        if (!$this->accountConfigProvider->isValidatedSuccesfully()) {
+            return false;
+        }
 
         /** @var \Magento\Shipping\Model\Rate\Result $result */
         $result = $this->rateResultFactory->create();
+        $rate   = $this->getRate($request);
 
-        $method = $this->getMethod();
-
+        $shippingPrice = $this->getFinalPriceWithHandlingFee($rate['price']);
+        $method        = $this->createShippingMethod($shippingPrice, $rate['cost']);
         $result->append($method);
 
         return $result;
     }
 
     /**
-     * @return Method
+     * Get rate.
+     *
+     * @param \Magento\Quote\Model\Quote\Address\RateRequest $request
+     *
+     * @return array|bool
      */
-    private function getMethod()
+    public function getRate(\Magento\Quote\Model\Quote\Address\RateRequest $request)
     {
-        /** @var Method $method */
+        $glsFactory = $this->glsFactory->create();
+
+        return $glsFactory->getRate($request);
+    }
+
+    /**
+     * Get the method object based on the shipping price and cost
+     *
+     * @param float $shippingPrice
+     * @param float $cost
+     *
+     * @return \Magento\Quote\Model\Quote\Address\RateResult\Method
+     */
+    private function createShippingMethod($shippingPrice, $cost)
+    {
+        /** @var  \Magento\Quote\Model\Quote\Address\RateResult\Method $method */
         $method = $this->rateMethodFactory->create();
-        $amount = $this->getShippingPrice();
 
         $method->setCarrier(self::GLS_CARRIER_METHOD);
         $method->setCarrierTitle($this->getConfigData('title'));
+
         $method->setMethod($this->_code);
         $method->setMethodTitle($this->getConfigData('name'));
-        $method->setCost($amount);
-        $method->setPrice($amount);
+
+        $method->setPrice($shippingPrice);
+        $method->setCost($cost);
 
         return $method;
-    }
-
-    /**
-     * @return float
-     */
-    private function getShippingPrice()
-    {
-        $configPrice = $this->getConfigData('price');
-
-        $countryOfOrigin = $this->getCountryOfOrigin();
-
-        if ($this->request->getDestCountryId() != $countryOfOrigin) {
-            $configPriceInternational = $this->getConfigData('international_handling_fee');
-            $configPrice += $configPriceInternational;
-        }
-
-        $shippingPrice = $this->getFinalPriceWithHandlingFee($configPrice);
-
-        return $shippingPrice;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getCountryOfOrigin()
-    {
-        $country = $this->scopeConfig->getValue(
-            'general/store_information/country_id',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
-
-        return $country ?: 'NL';
     }
 
     /**
