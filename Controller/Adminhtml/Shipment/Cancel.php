@@ -33,15 +33,19 @@ namespace TIG\GLS\Controller\Adminhtml\Shipment;
 
 use Magento\Backend\App\Action;
 use Magento\CatalogInventory\Model\Indexer;
+use Magento\Framework\Controller\Result\Redirect;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\ShipmentRepositoryInterface;
 use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 use TIG\GLS\Service\Label\Delete;
 use TIG\GLS\Service\Shipment\DeleteShipment;
+use Magento\Framework\Controller\Result\RedirectFactory;
 
 //@codingStandardsIgnoreFile
 class Cancel extends Action
 {
+    const ADMIN_ORDER_ORDER_VIEW_URI = 'sales/order/view';
+
     /**
      * @var ShipmentRepositoryInterface
      */
@@ -73,6 +77,11 @@ class Cancel extends Action
     private $indexer;
 
     /**
+     * @var RedirectFactory
+     */
+    private $redirectFactory;
+
+    /**
      * Cancel constructor.
      *
      * @param Action\Context              $context
@@ -82,6 +91,7 @@ class Cancel extends Action
      * @param LabelRepositoryInterface    $labelRepository
      * @param DeleteShipment              $shipmentService
      * @param Indexer\Stock               $indexer
+     * @param RedirectFactory             $redirectFactory
      */
     public function __construct(
         Action\Context $context,
@@ -90,7 +100,8 @@ class Cancel extends Action
         Delete $deleteLabel,
         LabelRepositoryInterface $labelRepository,
         DeleteShipment $shipmentService,
-        Indexer\Stock $indexer
+        Indexer\Stock $indexer,
+        RedirectFactory $redirectFactory
     ) {
         $this->shipment = $shipment;
         $this->orders = $orders;
@@ -98,6 +109,7 @@ class Cancel extends Action
         $this->labelRepository = $labelRepository;
         $this->shipmentService = $shipmentService;
         $this->indexer = $indexer;
+        $this->redirectFactory = $redirectFactory;
 
         parent::__construct($context);
     }
@@ -125,7 +137,7 @@ class Cancel extends Action
 
         $this->shipmentService->cancelShipment($order, $shipment);
 
-        return $this->shipmentService->redirectToOrderView($order->getId());
+        return $this->redirectToOrderView($order->getId());
     }
 
     /**
@@ -150,5 +162,17 @@ class Cancel extends Action
         $orderId = $shipment->getOrderId();
 
         return $this->orders->get($orderId);
+    }
+
+    /**
+     * @param $orderId
+     *
+     * @return Redirect
+     */
+    private function redirectToOrderView($orderId)
+    {
+        $result = $this->redirectFactory->create();
+
+        return $result->setPath(self::ADMIN_ORDER_ORDER_VIEW_URI, ['order_id' => $orderId]);
     }
 }

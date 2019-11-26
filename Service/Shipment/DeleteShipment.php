@@ -31,21 +31,12 @@
  */
 namespace TIG\GLS\Service\Shipment;
 
-use Magento\Framework\Controller\Result\Redirect;
-use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Sales\Model\Order;
 
 class DeleteShipment
 {
-    const ADMIN_ORDER_ORDER_VIEW_URI = 'sales/order/view';
-
-    /**
-     * @var RedirectFactory
-     */
-    private $redirectFactory;
-
     /**
      * @var ManagerInterface
      */
@@ -54,14 +45,11 @@ class DeleteShipment
     /**
      * Delete constructor.
      *
-     * @param RedirectFactory  $redirectFactory
      * @param ManagerInterface $messageManager
      */
     public function __construct(
-        RedirectFactory $redirectFactory,
         ManagerInterface $messageManager
     ) {
-        $this->redirectFactory = $redirectFactory;
         $this->messageManager = $messageManager;
     }
 
@@ -90,7 +78,7 @@ class DeleteShipment
      * @param $order
      * @param $shipment
      */
-    public function updateItemQty($order, $shipment)
+    private function updateItemQty($order, $shipment)
     {
         $shipmentQty = $this->getShipmentQtyToShip($shipment);
 
@@ -109,7 +97,7 @@ class DeleteShipment
      *
      * @return array
      */
-    public function getShipmentQtyToShip($shipment)
+    private function getShipmentQtyToShip($shipment)
     {
         $qty = [];
 
@@ -119,17 +107,5 @@ class DeleteShipment
         }
 
         return $qty;
-    }
-
-    /**
-     * @param $orderId
-     *
-     * @return Redirect
-     */
-    public function redirectToOrderView($orderId)
-    {
-        $result = $this->redirectFactory->create();
-
-        return $result->setPath(self::ADMIN_ORDER_ORDER_VIEW_URI, ['order_id' => $orderId]);
     }
 }
