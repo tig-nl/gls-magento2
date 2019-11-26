@@ -33,10 +33,8 @@
 namespace TIG\GLS\Controller\Adminhtml;
 
 use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
 use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 use TIG\GLS\Api\Shipment\Data\LabelInterface;
-use TIG\GLS\Api\Shipment\Data\LabelInterfaceFactory;
 use TIG\GLS\Model\Shipment\Label;
 
 abstract class AbstractLabel extends Action
@@ -54,24 +52,6 @@ abstract class AbstractLabel extends Action
 
     /** @var $successMessage */
     private $successMessage;
-
-    /**
-     * AbstractLabel constructor.
-     *
-     * @param Context                  $context
-     * @param LabelRepositoryInterface $labelRepository
-     * @param LabelInterfaceFactory    $labelInterface
-     */
-    public function __construct(
-        Context $context,
-        LabelRepositoryInterface $labelRepository,
-        LabelInterfaceFactory $labelInterface
-    ) {
-        parent::__construct($context);
-
-        $this->labelRepository = $labelRepository;
-        $this->labelInterface  = $labelInterface;
-    }
 
     /**
      * @return int
@@ -132,5 +112,59 @@ abstract class AbstractLabel extends Action
     public function setSuccessMessage($message)
     {
         $this->successMessage = $message;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function errorsOccured($errors)
+    {
+        if (!empty($errors)) {
+            $this->handleMissingOptions($errors);
+            $this->handleErrors($errors);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array $errors
+     */
+    public function handleMissingOptions($errors)
+    {
+        if (!isset($errors['missing'])) {
+            return;
+        }
+
+        foreach ($errors['missing'] as $error) {
+            $this->messageManager->addErrorMessage(
+            // @codingStandardsIgnoreLine
+                __(
+                    "Label could not be created, because %1 is not configured. " .
+                    "Please make sure you've configured a %2 in %3.",
+                    array_values($error)
+                )
+            );
+        }
+    }
+
+    /**
+     * @param array $errors
+     */
+    public function handleErrors($errors)
+    {
+        if (!isset($errors['errors'])) {
+            return;
+        }
+
+        foreach ($errors['errors'] as $error) {
+            $this->messageManager->addErrorMessage(
+            // @codingStandardsIgnoreLine
+                __($error)
+            );
+        }
     }
 }
