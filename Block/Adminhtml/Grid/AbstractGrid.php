@@ -76,7 +76,7 @@ abstract class AbstractGrid extends Column
     protected function handleItems()
     {
         foreach ($this->items as $index => $item) {
-            $this->items[$index][$this->getData('name')] = $this->getCellContents($item);
+            $this->items[$index][$this->getName()] = $this->getCellContents($item);
         }
     }
 

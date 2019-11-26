@@ -39,17 +39,17 @@
                     <item name="filter" xsi:type="string">text</item>
                     <item name="label" xsi:type="string" translate="true">Shipping Label</item>
                     <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
-                    <item name="fieldClass" xsi:type="string">gls_package_number</item>
+                    <item name="fieldClass" xsi:type="string">gls_shipping_label</item>
                 </item>
             </argument>
         </column>
-        <column name="tig_gls_package_number" class="TIG\GLS\Block\Adminhtml\Grid\Shipment\TrackAndTrace">
+        <column name="tig_gls_track_id" class="TIG\GLS\Block\Adminhtml\Grid\Shipment\TrackAndTrace">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="filter" xsi:type="string">text</item>
-                    <item name="label" xsi:type="string" translate="true">Package Number</item>
+                    <item name="label" xsi:type="string" translate="true">Track ID</item>
                     <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
-                    <item name="fieldClass" xsi:type="string">gls_package_number</item>
+                    <item name="fieldClass" xsi:type="string">gls_track_id</item>
                 </item>
             </argument>
         </column>

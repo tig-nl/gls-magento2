@@ -86,5 +86,5 @@ ShopReturnService,ShopReturnService
 "Configure an additional handling fee for specific shipping methods. The additional handling fee is added to or subtracted from the base handling fee.","Configure an additional handling fee for specific shipping methods. The additional handling fee is added to or subtracted from the base handling fee."
 "Version & Support","Version & Support"
 "Easily integrate GLS shipping services into Magento 2.","Easily integrate GLS shipping services into Magento 2."
-"Package Number", "Package Number"
+"Track ID", "Track ID"
 "Shipping Label", "Shipping Label"

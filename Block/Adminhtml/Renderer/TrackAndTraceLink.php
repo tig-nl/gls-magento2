@@ -76,6 +76,6 @@ class TrackAndTraceLink
     private function addJavascript()
     {
         //@codingStandardsIgnoreLine
-        return "<script type='text/javascript'>jQuery('.gls_package_number').unbind('click');</script>";
+        return "<script type='text/javascript'>jQuery('.gls_track_id').unbind('click');</script>";
     }
 }
