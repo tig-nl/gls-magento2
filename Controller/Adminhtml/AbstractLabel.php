@@ -33,19 +33,12 @@
 namespace TIG\GLS\Controller\Adminhtml;
 
 use Magento\Framework\App\Action\Action;
-use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
-use TIG\GLS\Api\Shipment\Data\LabelInterface;
 use TIG\GLS\Model\Shipment\Label;
 
 abstract class AbstractLabel extends Action
 {
     const ADMIN_ORDER_SHIPMENT_VIEW_URI = 'adminhtml/order_shipment/view';
-
-    /** @var LabelRepositoryInterface $labelRepository */
-    private $labelRepository;
-
-    /** @var LabelInterface $labelInterface */
-    private $labelInterface;
+    const ADMIN_ORDER_GRID_VIEW_URI = 'sales/order/index';
 
     /** @var $errorMessage */
     private $errorMessage;
@@ -71,6 +64,18 @@ abstract class AbstractLabel extends Action
         $result = $this->resultRedirectFactory->create();
 
         return $result->setPath(self::ADMIN_ORDER_SHIPMENT_VIEW_URI, ['shipment_id' => $shipmentId]);
+    }
+
+    /**
+     * @param $shipmentId
+     *
+     * @return \Magento\Framework\Controller\Result\Redirect
+     */
+    public function redirectToOrderGrid()
+    {
+        $result = $this->resultRedirectFactory->create();
+
+        return $result->setPath(self::ADMIN_ORDER_GRID_VIEW_URI);
     }
 
     /**
@@ -114,6 +119,16 @@ abstract class AbstractLabel extends Action
         $this->successMessage = $message;
     }
 
+    /**
+     * @param $notice
+     */
+    public function handleNotice($notice)
+    {
+        $this->messageManager->addNoticeMessage(
+        // @codingStandardsIgnoreLine
+            __($notice)
+        );
+    }
 
     /**
      * @return bool

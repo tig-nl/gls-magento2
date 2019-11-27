@@ -28,13 +28,20 @@
  *
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ *
+ * @codingStandardsIgnoreFile
  */
 
 namespace TIG\GLS\Controller\Adminhtml\Massaction;
 
 use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Sales\Model\ResourceModel\Order\Collection;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Ui\Component\MassAction\Filter;
+use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 use TIG\GLS\Controller\Adminhtml\AbstractLabel;
 use TIG\GLS\Service\Label\Create as LabelCreate;
 use TIG\GLS\Service\Label\GetPDF as LabelPrint;
@@ -79,15 +86,21 @@ class CreateAndPrint extends AbstractLabel
     private $labelSaver;
 
     /**
+     * @var LabelRepositoryInterface
+     */
+    private $labelRepository;
+
+    /**
      * CreateAndPrint constructor.
      *
-     * @param Context           $context
-     * @param Filter            $filter
-     * @param CollectionFactory $collectionFactory
-     * @param ShipmentCreate    $shipmentCreate
-     * @param LabelCreate       $labelGenerator
-     * @param LabelPrint        $labelPrinter
-     * @param LabelSave         $labelSaver
+     * @param Context                  $context
+     * @param Filter                   $filter
+     * @param CollectionFactory        $collectionFactory
+     * @param ShipmentCreate           $shipmentCreate
+     * @param LabelCreate              $labelGenerator
+     * @param LabelPrint               $labelPrinter
+     * @param LabelSave                $labelSaver
+     * @param LabelRepositoryInterface $labelRepository
      */
     public function __construct(
         Context $context,
@@ -96,7 +109,8 @@ class CreateAndPrint extends AbstractLabel
         ShipmentCreate $shipmentCreate,
         LabelCreate $labelGenerator,
         LabelPrint $labelPrinter,
-        LabelSave $labelSaver
+        LabelSave $labelSaver,
+        LabelRepositoryInterface $labelRepository
     ) {
         parent::__construct($context);
 
@@ -106,10 +120,11 @@ class CreateAndPrint extends AbstractLabel
         $this->labelGenerator = $labelGenerator;
         $this->labelPrinter = $labelPrinter;
         $this->labelSaver = $labelSaver;
+        $this->labelRepository = $labelRepository;
     }
 
     /**
-     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
+     * @return ResponseInterface|Redirect|ResultInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      * @throws \Zend_Http_Client_Exception
      * @throws \Zend_Pdf_Exception
@@ -118,13 +133,15 @@ class CreateAndPrint extends AbstractLabel
     {
         $collection = $this->collectionFactory->create();
         $collection = $this->filter->getCollection($collection);
+        $collection = $this->removeNonGLSMethods($collection);
 
-        $this->massCreateShipment($collection->getItems());
-
-        foreach ($collection->getItems() as $order) {
-            $this->getShipmentIds($order);
+        if (empty($collection->getItems())) {
+            return $this->redirectToOrderGrid();
         }
 
+        $this->setSuccessMessage('Label(s) succesfully created and printed.');
+
+        $this->massCreateShipment($collection->getItems());
         $this->massCreateLabels();
         $massLabel = $this->massPrintLabel();
 
@@ -136,13 +153,22 @@ class CreateAndPrint extends AbstractLabel
     }
 
     /**
-     * @param $order
+     * @param $collection
+     *
+     * @return Collection
      */
-    private function getShipmentIds($order)
+    private function removeNonGLSMethods($collection)
     {
-        foreach ($order->getShipmentsCollection() as $shipment) {
-            $this->shipmentIds[] = $shipment->getId();
+        $nonGLS = clone $collection;
+        $nonGLS->addFieldToFilter('shipping_method', ['neq' => 'tig_gls_tig_gls']);
+
+        foreach ($nonGLS as $order) {
+            $this->handleNotice(
+                'Order ' . $order->getIncrementId() . ' was skipped because the shipping method is not GLS.'
+            );
         }
+
+        return $collection->addFieldToFilter('shipping_method', 'tig_gls_tig_gls');
     }
 
     /**
@@ -155,6 +181,8 @@ class CreateAndPrint extends AbstractLabel
         foreach ($orders as $order) {
             $this->shipmentCreate->createShipment($order);
         }
+
+        $this->shipmentIds = $this->shipmentCreate->getShipmentIds();
     }
 
     /**
@@ -162,13 +190,8 @@ class CreateAndPrint extends AbstractLabel
      */
     private function massCreateLabels()
     {
-        $request = $this->getRequest();
-        $controllerModule = $request->getControllerModule();
-        $version = $request->getVersion();
-
         foreach ($this->shipmentIds as $shipmentId) {
-            $requestData = $this->labelGenerator->getRequestData($shipmentId, $controllerModule, $version);
-            $this->createLabel($shipmentId, $requestData);
+            $this->createLabel($shipmentId);
         }
 
         $this->errorsOccured($this->labelGenerator->getErrors());
@@ -176,13 +199,22 @@ class CreateAndPrint extends AbstractLabel
 
     /**
      * @param $shipmentId
-     * @param $requestData
      *
-     * @return \Magento\Framework\Controller\Result\Redirect
      * @throws \Zend_Http_Client_Exception
      */
-    private function createLabel($shipmentId, $requestData)
+    private function createLabel($shipmentId)
     {
+        // Don't create a label when the shipment already contains one.
+        if ($this->labelRepository->getByShipmentId($shipmentId)) {
+            return;
+        }
+
+        $request = $this->getRequest();
+        $controllerModule = $request->getControllerModule();
+        $version = $request->getVersion();
+
+        $requestData = $this->labelGenerator->getRequestData($shipmentId, $controllerModule, $version);
+
         $label = $this->labelGenerator->createLabel($requestData);
         if ($this->callIsSuccess($label)) {
             $this->labelSaver->saveLabel($shipmentId, $label['units']);
