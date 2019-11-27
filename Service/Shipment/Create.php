@@ -51,7 +51,7 @@ class Create
     /**
      * @var array
      */
-    private $errors = [];
+    private $data = ['shipmentIds' => [], 'errors' => []];
 
     /**
      * @var LoggerInterface
@@ -76,23 +76,48 @@ class Create
     }
 
     /**
-     * @param $order
+     * Only creates a shipment when the order doesn't already contain one
      *
-     * @throws LocalizedException
+     * @param $order
      */
     public function createShipment($order)
     {
+        $shipmentsCollection = $order->getShipmentsCollection();
+        if ($shipmentsCollection->getSize() > 0) {
+            $this->setShipmentIds($order);
+
+            return;
+        }
+
         try {
             $this->orderCanShip($order);
-
             $shipment = $this->convertOrder->toShipment($order);
             $this->addShippingItems($order, $shipment);
-
             $this->saveShipment($order, $shipment);
+
+            $this->data['shipmentIds'][] = $shipment->getEntityId();
         } catch (LocalizedException $exception) {
-            $this->errors[$order->getId()] = $exception->getMessage();
+            $this->data['errors'][$order->getId()] = $exception->getMessage();
             $this->logger->critical($exception->getMessage());
         }
+    }
+
+    /**
+     * @param $order
+     */
+    private function setShipmentIds($order)
+    {
+        foreach ($order->getShipmentsCollection() as $shipment) {
+            $this->data['shipmentIds'][] = $shipment->getId();
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getShipmentIds()
+    {
+        return $this->data['shipmentIds'];
     }
 
     /**
@@ -127,7 +152,7 @@ class Create
      */
     public function getErrors()
     {
-        return $this->errors;
+        return $this->data['errors'];
     }
 
     /**
