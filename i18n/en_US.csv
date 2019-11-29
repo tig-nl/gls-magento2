@@ -6,7 +6,8 @@ Region/State,Region/State
 "Add Additional Handling Fee","Add Additional Handling Fee"
 "Shipping Method","Shipping Method"
 "Additional Fee","Additional Fee"
-"Your order has been shipped.","Your order has been shipped."
+"Label could not be created, because %1 is not configured. Please make sure you've configured a %2 in %3.","Label could not be created, because %1 is not configured. Please make sure you've configured a %2 in %3."
+"This label was already deleted at GLS therefore the Label has been deleted in Magento","This label was already deleted at GLS therefore the Label has been deleted in Magento"
 ". ':00'",". ':00'"
 ". ':30'",". ':30'"
 Flat,Flat
@@ -26,6 +27,10 @@ Test,Test
 "The ""%1"" shipping price in row number ""%2"" is incorrect. Verify the shipping price and try again.","The ""%1"" shipping price in row number ""%2"" is incorrect. Verify the shipping price and try again."
 "Duplicate Row #%1 (duplicates row #%2)","Duplicate Row #%1 (duplicates row #%2)"
 "The GLS Rates File Format is incorrect. Verify the format and try again.","The GLS Rates File Format is incorrect. Verify the format and try again."
+"Your order has been shipped.","Your order has been shipped."
+"Unable to create shipment of order %s","Unable to create shipment of order %s"
+"'Could not delete shipment' .","'Could not delete shipment' ."
+"Shipment deleted successfully","Shipment deleted successfully"
 "%1 : Zend Http Client exception","%1 : Zend Http Client exception"
 "Validating API credentials","Validating API credentials"
 "API credentials are incorrect","API credentials are incorrect"
@@ -46,6 +51,7 @@ Close,Close
 "ParcelShop Address:","ParcelShop Address:"
 "Please select a GLS delivery option. If no options are visible, please make sure you've entered your address information correctly.","Please select a GLS delivery option. If no options are visible, please make sure you've entered your address information correctly."
 GLS,GLS
+"Enter the house number (and addition) in the Street Address Line 2 field.","Enter the house number (and addition) in the Street Address Line 2 field."
 Enabled,Enabled
 Title,Title
 "Method Name","Method Name"
@@ -86,5 +92,6 @@ ShopReturnService,ShopReturnService
 "Configure an additional handling fee for specific shipping methods. The additional handling fee is added to or subtracted from the base handling fee.","Configure an additional handling fee for specific shipping methods. The additional handling fee is added to or subtracted from the base handling fee."
 "Version & Support","Version & Support"
 "Easily integrate GLS shipping services into Magento 2.","Easily integrate GLS shipping services into Magento 2."
-"Track ID", "Track ID"
-"Shipping Label", "Shipping Label"
+"GLS - Create and Print Labels","GLS - Create and Print Labels"
+"Shipping Label","Shipping Label"
+"Track ID","Track ID"

@@ -1,6 +1,13 @@
+Country,Land
+Region/State,Provincie/Staat
+"Zip/Postal Code","Postcode"
+"Shipping Price","Verzendtarief"
+"Export CSV","Exporteer CSV"
 "Add Additional Handling Fee","Voeg extra verwerkingskosten toe"
 "Shipping Method","Verzendmethode"
 "Additional Fee","Extra kosten"
+"Label could not be created, because %1 is not configured. Please make sure you've configured a %2 in %3.","Label kan niet worden gemaakt, omdat %1 niet is geconfigureerd. Zorg ervoor dat u %2 in %3 hebt geconfigureerd."
+"This label was already deleted at GLS therefore the Label has been deleted in Magento","Dit label is al verwijderd bij GLS, daarom is het label verwijderd in Magento"
 "Your order has been shipped.","Jouw order is verzonden."
 ". ':00'",". ':00'"
 ". ':30'",". ':30'"
@@ -21,6 +28,10 @@ Test,Test
 "The ""%1"" shipping price in row number ""%2"" is incorrect. Verify the shipping price and try again.","De ""%1"" verzendprijs in rijnummer ""%2"" is niet correct. Controleer de verzendprijs and probeer het opnieuw."
 "Duplicate Row #%1 (duplicates row #%2)","Dubbele rij #%1 (duplicaat van #%2)"
 "The GLS Rates File Format is incorrect. Verify the format and try again.","De bestandsindeling van het GLS Rates bestand is niet correct. Controleer de indeling en probeer het opnieuw."
+"Your order has been shipped.","Jouw bestelling is verzonden."
+"Unable to create shipment of order %s","Er kon geen verzending voor order %s aangemaakt worden"
+"'Could not delete shipment' .","'Verzending kon niet verwijderd worden' ."
+"Shipment deleted successfully","Verzending verwijderd"
 "%1 : Zend Http Client exception","%1 : Zend Http Client exception"
 "Validating API credentials","API-inloggegevens valideren"
 "API credentials are incorrect","API-inloggegevens zijn onjuist"
@@ -41,6 +52,7 @@ Close,Sluiten
 "ParcelShop Address:","ParcelShop-adres:"
 "Please select a GLS delivery option. If no options are visible, please make sure you've entered your address information correctly.","Selecteer een GLS bezorgoptie. Indien er geen opties zichtbaar zijn, controleer dan uw ingevoerde adresgegevens."
 GLS,GLS
+"Enter the house number (and addition) in the Street Address Line 2 field.","Vul het huisnummer (en evt. toevoeging) in het tweede adres veld in."
 Enabled,Ingeschakeld
 Title,Titel
 "Method Name","Naam van Verzendmethode"
@@ -81,4 +93,6 @@ ShopReturnService,ShopReturnService
 "Configure an additional handling fee for specific shipping methods. The additional handling fee is added to or subtracted from the base handling fee.","Configureer extra kosten voor specifieke verzendmethoden. De extra kosten worden toegevoegd aan of afgetrokken van de basisverwerkingskosten."
 "Version & Support","Versie en ondersteuning"
 "Easily integrate GLS shipping services into Magento 2.","Integreer GLS-verzenddiensten eenvoudig in Magento 2."
+"GLS - Create and Print Labels","GLS - Creëer en Print Labels"
 "Shipping Label", "Verzendlabel"
+"Track ID","Track ID"
