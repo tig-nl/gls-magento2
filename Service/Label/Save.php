@@ -66,13 +66,16 @@ class Save
      */
     public function saveLabel($shipmentId, array $labelData)
     {
-        foreach ($labelData as $label) {
+        $labelUnits = $labelData['units'];
+
+        foreach ($labelUnits as $label) {
             $createdLabel = $this->labelFactory->create();
             $createdLabel->setShipmentId($shipmentId);
             $createdLabel->setUnitId($label['unitId']);
             $createdLabel->setUnitNo($label['unitNo']);
             $createdLabel->setUniqueNo($label['uniqueNo']);
-            $createdLabel->setLabel($label['label']);
+            !isset($labelData['labels']) ?: $createdLabel->setLabel($labelData['labels']); //pdf2A4, pdf4A4,pdfA6S
+            !isset($label['label']) ?: $createdLabel->setLabel($label['label']); //pdfA6U
             !isset($label['unitNoShopReturn']) ?: $createdLabel->setUnitNoShopReturn($label['unitNoShopReturn']);
             $createdLabel->setUnitTrackingLink($label['unitTrackingLink']);
             // @codingStandardsIgnoreFile

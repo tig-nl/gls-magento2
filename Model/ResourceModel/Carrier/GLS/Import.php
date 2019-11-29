@@ -190,7 +190,7 @@ class Import extends \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tabler
     private function getHeaders(ReadInterface $file)
     {
         $headers = $file->readCsv();
-        if ($headers === false || count($headers) < 5) {
+        if ($headers === false || count($headers) < 4) {
             throw new LocalizedException(
                 __('The GLS Rates File Format is incorrect. Verify the format and try again.')
             );
