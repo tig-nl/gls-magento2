@@ -217,7 +217,7 @@ class CreateAndPrint extends AbstractLabel
 
         $label = $this->labelGenerator->createLabel($requestData);
         if ($this->callIsSuccess($label)) {
-            $this->labelSaver->saveLabel($shipmentId, $label['units']);
+            $this->labelSaver->saveLabel($shipmentId, $label);
         }
     }
 

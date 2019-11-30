@@ -44,7 +44,7 @@ class LabelType implements ArrayInterface
     {
         // @codingStandardsIgnoreStart
         $options = [
-            ['value' => 'pdfA6U', 'label' => __('PDF (A6)')],
+            ['value' => 'pdfA6S', 'label' => __('PDF (A6)')],
             ['value' => 'pdf2A4', 'label' => __('PDF (A4, 2 labels per page)')],
             ['value' => 'pdf4A4', 'label' => __('PDF (A4, 4 labels per page)')]
         ];
