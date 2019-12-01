@@ -107,7 +107,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
             'dest_country',
             [
                 // @codingStandardsIgnoreLine
-                'header'  => __('Country'),
+                'header'  => 'Country',
                 'index'   => 'dest_country',
                 'default' => '*'
             ]
@@ -116,7 +116,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->addColumn(
             'dest_region',
             [
-                'header'  => __('Region/State'),
+                'header'  => 'Region/State',
                 'index'   => 'dest_region',
                 'default' => '*'
             ]
@@ -125,7 +125,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->addColumn(
             'dest_zip',
             [
-                'header'  => __('Zip/Postal Code'),
+                'header'  => 'Zip/Postal Code',
                 'index'   => 'dest_zip',
                 'default' => '*'
             ]
@@ -134,7 +134,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->addColumn(
             'price',
             [
-                'header' => __('Shipping Price'),
+                'header' => 'Shipping Price',
                 'index'  => 'price'
             ]
         );

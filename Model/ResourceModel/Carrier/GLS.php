@@ -32,6 +32,9 @@
 
 namespace TIG\GLS\Model\ResourceModel\Carrier;
 
+use Magento\Framework\App\Config\Value;
+use Magento\Framework\DataObject;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate;
 use TIG\GLS\Model\ResourceModel\Carrier\GLS\Import;
 use TIG\GLS\Model\ResourceModel\Carrier\GLS\RateQuery;
@@ -170,6 +173,23 @@ class GLS extends Tablerate
     }
 
     /**
+     * @param DataObject|Value $object
+     *
+     * @throws LocalizedException
+     */
+    private function deleteByCondition(DataObject $object)
+    {
+        $website = $this->storeManager->getWebsite($object->getScopeId());
+        $websiteId = $website->getId();
+        $condition = ['website_id = ?' => $websiteId];
+
+        $connection = $this->getConnection();
+        $connection->beginTransaction();
+        $connection->delete($this->getMainTable(), $condition);
+        $connection->commit();
+    }
+
+    /**
      * Upload table rate file and import data from it
      *
      * @param \Magento\Framework\DataObject $object
@@ -192,6 +212,8 @@ class GLS extends Tablerate
         $file      = $this->getCsvFile($filePath);
 
         try {
+            $this->deleteByCondition($object);
+
             $columns = $this->import->getColumns();
 
             foreach ($this->import->_getData($file, $websiteId) as $bunch) {
