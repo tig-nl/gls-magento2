@@ -88,13 +88,10 @@ class GetPDF
         foreach ($shipmentIds as $shipmentId) {
             $label = $this->getPdf($shipmentId);
 
-            if (!$label) {
-                continue;
-            }
             // @codingStandardsIgnoreLine
             // TODO - Remove this line when GLS removes whitespaces from PDF output
             $content = substr($label, 0, strpos($label, 'EOF')) . 'EOF';
-            $labels[] = $content;
+            !$label ?: array_push($labels, $content);
         }
 
         return $this->labelGenerator->combineLabelsPdf($labels);

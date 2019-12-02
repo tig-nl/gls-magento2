@@ -68,10 +68,10 @@ class DeleteShipment
         try {
             $shipment->delete();
         } catch (LocalizedException $exception) {
-            throw new LocalizedException(__('Could not delete shipment' . $exception));
+            throw new LocalizedException(__('Could not cancel shipment' . $exception));
         }
 
-        $this->messageManager->addSuccessMessage(__('Shipment deleted successfully'));
+        $this->messageManager->addSuccessMessage(__('Shipment canceled successfully'));
     }
 
     /**

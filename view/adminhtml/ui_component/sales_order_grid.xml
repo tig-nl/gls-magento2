@@ -38,7 +38,7 @@
                 <argument name="data" xsi:type="array">
                     <item name="config" xsi:type="array">
                         <item name="type" xsi:type="string">gls_create_and_print_labels</item>
-                        <item name="label" xsi:type="string" translate="true">GLS - Create and Print Labels</item>
+                        <item name="label" xsi:type="string" translate="true">GLS - Create Shipments and Print Labels</item>
                         <item name="url" xsi:type="url" path="gls/massaction/CreateAndPrint"/>
                     </item>
                 </argument>
