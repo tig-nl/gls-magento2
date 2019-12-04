@@ -29,7 +29,7 @@ Test,Test
 "The GLS Rates File Format is incorrect. Verify the format and try again.","The GLS Rates File Format is incorrect. Verify the format and try again."
 "Your order has been shipped.","Your order has been shipped."
 "Unable to create shipment of order %s","Unable to create shipment of order %s"
-"'Could not cancel shipment' .","'Could not cancel shipment' ."
+"Could not cancel shipment","Could not cancel shipment"
 "Shipment canceled successfully","Shipment canceled successfully"
 "%1 : Zend Http Client exception","%1 : Zend Http Client exception"
 "Validating API credentials","Validating API credentials"
@@ -95,3 +95,4 @@ ShopReturnService,ShopReturnService
 "GLS - Create Shipments and Print Labels","GLS - Create Shipments and Print Labels"
 "Shipping Label","Shipping Label"
 "Track ID","Track ID"
+"Shipment labels successfully deleted","Shipment labels successfully deleted"

@@ -30,7 +30,7 @@ Test,Test
 "The GLS Rates File Format is incorrect. Verify the format and try again.","De bestandsindeling van het GLS Rates bestand is niet correct. Controleer de indeling en probeer het opnieuw."
 "Your order has been shipped.","Jouw bestelling is verzonden."
 "Unable to create shipment of order %s","Er kon geen verzending voor order %s aangemaakt worden"
-"'Could not cancel shipment' .","'Verzending kon niet geannuleerd worden' ."
+"Could not cancel shipment","Verzending kon niet geannuleerd worden"
 "Shipment canceled successfully","Verzending geannuleerd"
 "%1 : Zend Http Client exception","%1 : Zend Http Client exception"
 "Validating API credentials","API-inloggegevens valideren"
@@ -96,3 +96,4 @@ ShopReturnService,ShopReturnService
 "GLS - Create Shipments and Print Labels","GLS - Creëer Zendingen en Print Labels"
 "Shipping Label", "Verzendlabel"
 "Track ID","Track ID"
+"Shipment labels successfully deleted","Verzendlabels succesvol verwijderd"

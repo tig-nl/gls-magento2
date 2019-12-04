@@ -133,6 +133,7 @@ class Cancel extends Action
 
         if ($label) {
             $this->deleteLabel->deleteLabel($shipment->getId(), $controllerModule, $version);
+            $this->messageManager->addSuccessMessage(__('Shipment labels successfully deleted'));
         }
 
         $this->shipmentService->cancelShipment($order, $shipment);
