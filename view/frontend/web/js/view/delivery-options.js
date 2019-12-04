@@ -81,6 +81,12 @@ define([
                     return;
                 }
 
+                // Reset information before triggering new calls.
+                this.toggleTab('.gls-tab-pickup', '.gls-tab-delivery', '.gls-parcel-shop', '.gls-delivery-service');
+                this.deliveryFee(null);
+                this.pickupFee(null);
+                parcelShop().parcelShopAddress(null);
+
                 this.getAvailableServices(address.postcode, address.country);
                 this.getParcelShops(address.postcode, address.country);
             }.bind(this));
