@@ -93,12 +93,13 @@ define([
          */
         getAvailableServices: function (postcode, country) {
             $.ajax({
-                method : 'GET',
-                url    : '/gls/deliveryoptions/services',
-                type   : 'jsonp',
-                data   : {
+                method    : 'GET',
+                url       : '/gls/deliveryoptions/services',
+                type      : 'jsonp',
+                showLoader: true,
+                data      : {
                     postcode: postcode,
-                    country: country
+                    country : country
                 }
             }).done(function (services) {
                 this.availableServices(services);
@@ -138,10 +139,11 @@ define([
             }
 
             $.ajax({
-                method : 'GET',
-                url    : '/gls/deliveryoptions/parcelshops',
-                type   : 'jsonp',
-                data   : {
+                method    : 'GET',
+                url       : '/gls/deliveryoptions/parcelshops',
+                type      : 'jsonp',
+                showLoader: true,
+                data      : {
                     postcode: postcode
                 }
             }).done(function (data) {
