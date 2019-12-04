@@ -30,9 +30,11 @@
  */
 /*global alert*/
 define([
+    'jquery',
     'Magento_Checkout/js/model/quote',
     'mage/translate'
 ], function (
+    $,
     quote,
     $t
 ) {
@@ -48,8 +50,10 @@ define([
                 }
 
                 var shippingAddress = quote.shippingAddress();
+                // Returns undefined if no option is checked.
+                var checkedOption   = $('input[name="gls_delivery_option"]:checked').val();
 
-                if (shippingAddress.extension_attributes === undefined || shippingAddress.extension_attributes.gls_delivery_option === undefined) {
+                if (checkedOption === undefined || shippingAddress.extension_attributes === undefined || shippingAddress.extension_attributes.gls_delivery_option === undefined) {
                     this.errorValidationMessage(
                         $t('Please select a GLS delivery option. If no options are visible, please make sure you\'ve entered your address information correctly.')
                     );
