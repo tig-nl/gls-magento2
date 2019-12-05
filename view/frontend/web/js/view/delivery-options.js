@@ -32,17 +32,17 @@ define([
     'jquery',
     'uiComponent',
     'ko',
+    'Magento_Catalog/js/price-utils',
     'Magento_Checkout/js/model/quote',
     'TIG_GLS/js/helper/address-finder',
-    'Magento_Catalog/js/price-utils',
     'TIG_GLS/js/view/checkout/shipping-information/parcel-shop'
 ], function (
     $,
     Component,
     ko,
+    priceUtils,
     quote,
     AddressFinder,
-    priceUtils,
     parcelShop
 ) {
     'use strict';
@@ -81,11 +81,10 @@ define([
                     return;
                 }
 
-                // Reset information before triggering new calls.
+                // Reset frontend storage before triggering any new calls.
                 this.toggleTab('.gls-tab-pickup', '.gls-tab-delivery', '.gls-parcel-shop', '.gls-delivery-service');
                 this.deliveryFee(null);
                 this.pickupFee(null);
-                parcelShop().parcelShopAddress(null);
 
                 this.getAvailableServices(address.postcode, address.country);
                 this.getParcelShops(address.postcode, address.country);
