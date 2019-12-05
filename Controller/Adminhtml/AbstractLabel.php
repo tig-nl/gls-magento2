@@ -95,6 +95,14 @@ abstract class AbstractLabel extends Action
             return false;
         }
 
+        if (!isset($response['units'])) {
+            $this->messageManager->addErrorMessage(
+                __($this->errorMessage)
+            );
+
+            return false;
+        }
+
         $this->messageManager->addSuccessMessage(
             // @codingStandardsIgnoreLine
             __($this->successMessage)
