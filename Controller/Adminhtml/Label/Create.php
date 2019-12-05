@@ -86,7 +86,7 @@ class Create extends AbstractLabel
         }
 
         $label = $this->createLabel->createLabel($requestData);
-        if ($this->callIsSuccess($label)) {
+        if ($this->callIsSuccess($label) && $this->callHasLabel($label)) {
             $this->saveLabel->saveLabel($shipmentId, $label);
         }
 

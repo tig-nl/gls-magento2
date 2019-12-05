@@ -216,7 +216,7 @@ class CreateAndPrint extends AbstractLabel
         $requestData = $this->labelGenerator->getRequestData($shipmentId, $controllerModule, $version);
 
         $label = $this->labelGenerator->createLabel($requestData);
-        if ($this->callIsSuccess($label)) {
+        if ($this->callIsSuccess($label) && $this->callHasLabel($label)) {
             $this->labelSaver->saveLabel($shipmentId, $label);
         }
     }

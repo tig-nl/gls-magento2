@@ -101,8 +101,8 @@ class QuoteManagement
         return (object) [
             'name1'         => $shipping->getName(),
             'street'        => $shipping->getStreetLine(1),
-            'houseNo'       => $shipping->getStreetLine(2),
-            'houseNoExt'    => $shipping->getStreetLine(3),
+            'name2'         => $shipping->getStreetLine(2),
+            'name3'         => $shipping->getStreetLine(3),
             'countryCode'   => $shipping->getCountryId(),
             'zipCode'       => $shipping->getPostcode(),
             'city'          => $shipping->getCity(),

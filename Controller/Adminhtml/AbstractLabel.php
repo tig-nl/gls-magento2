@@ -33,6 +33,7 @@
 namespace TIG\GLS\Controller\Adminhtml;
 
 use Magento\Framework\App\Action\Action;
+use Magento\Framework\Message\MessageInterface;
 use TIG\GLS\Model\Shipment\Label;
 
 abstract class AbstractLabel extends Action
@@ -95,18 +96,29 @@ abstract class AbstractLabel extends Action
             return false;
         }
 
+        if ($this->messageManager->getMessages()->getCountByType(MessageInterface::TYPE_SUCCESS) == 0) {
+            $this->messageManager->addSuccessMessage(
+            // @codingStandardsIgnoreLine
+                __($this->successMessage)
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $response
+     * @return bool
+     */
+    public function callHasLabel($response)
+    {
         if (!isset($response['units'])) {
             $this->messageManager->addErrorMessage(
-                __($this->errorMessage)
+                __($this->errorMessage . " GLS API didn't return label units")
             );
 
             return false;
         }
-
-        $this->messageManager->addSuccessMessage(
-            // @codingStandardsIgnoreLine
-            __($this->successMessage)
-        );
 
         return true;
     }
