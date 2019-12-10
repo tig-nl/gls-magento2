@@ -43,8 +43,10 @@ define([
     return function (Component) {
         return Component.extend({
             validateShippingInformation: function () {
+                var originalResult = this._super();
+
                 if (quote.shippingMethod().carrier_code !== 'tig_gls') {
-                    return this._super();
+                    return originalResult;
                 }
 
                 var shippingAddress = quote.shippingAddress();
@@ -59,7 +61,7 @@ define([
                     return false;
                 }
 
-                return this._super();
+                return originalResult;
             }
         });
     };
