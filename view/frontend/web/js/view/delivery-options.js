@@ -170,15 +170,9 @@ define([
                 details: details
             };
 
-            var shippingAddress = quote.shippingAddress();
-
+            var checkoutConfig = window.checkoutConfig;
             // Do not refactor this.
-            if (shippingAddress['extension_attributes'] === undefined) {
-                shippingAddress['extension_attributes'] = {};
-            }
-
-            // Do not refactor this.
-            shippingAddress['extension_attributes']['gls_delivery_option'] = JSON.stringify(deliveryOption);
+            checkoutConfig.quoteData.gls_delivery_option = JSON.stringify(deliveryOption);
 
             $('.gls-delivery-options input[name="gls_delivery_option"]').parents().removeClass('active');
             $('.gls-delivery-options input[name="gls_delivery_option"]:checked').parents().addClass('active');
