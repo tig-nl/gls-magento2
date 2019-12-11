@@ -36,6 +36,7 @@ use Magento\Framework\App\Action\Action;
 use Magento\Framework\Message\MessageInterface;
 use TIG\GLS\Model\Shipment\Label;
 
+// @codingStandardsIgnoreFile
 abstract class AbstractLabel extends Action
 {
     const ADMIN_ORDER_SHIPMENT_VIEW_URI = 'adminhtml/order_shipment/view';
@@ -90,6 +91,7 @@ abstract class AbstractLabel extends Action
             $status  = $response['status'];
             $message = $response['message'];
             $this->messageManager->addErrorMessage(
+            // @codingStandardsIgnoreLine
                 __($this->errorMessage) . " $message [Status: $status]"
             );
 
@@ -114,7 +116,8 @@ abstract class AbstractLabel extends Action
     {
         if (!isset($response['units'])) {
             $this->messageManager->addErrorMessage(
-                __($this->errorMessage . " GLS API didn't return label units")
+            // @codingStandardsIgnoreLine
+                __($this->errorMessage) . " GLS API didn't return label units"
             );
 
             return false;
