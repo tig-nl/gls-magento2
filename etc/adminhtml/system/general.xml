@@ -76,5 +76,27 @@
         <group id="validate_details" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
             <frontend_model>TIG\GLS\Block\Adminhtml\Config\Form\Field\Validate</frontend_model>
         </group>
+        <field id="label_type" translate="label comment" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Label Format</label>
+            <comment>Select your preferred label format</comment>
+            <source_model>TIG\GLS\Model\Config\Source\General\LabelType</source_model>
+            <config_path>tig_gls/general/label_type</config_path>
+        </field>
+        <field id="label_margin_top_a4" translate="label comment" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+            <label>Label top margin in mm</label>
+            <comment>Configure the label margin from the top in mm (e.g. 10 or 25)</comment>
+            <validate>validate-number</validate>
+            <depends>
+                <field id="label_type" separator=",">pdf2A4,pdf4A4</field>
+            </depends>
+        </field>
+        <field id="label_margin_left_a4" translate="label comment" type="text" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+            <label>Label left margin in mm</label>
+            <comment>Configure the label margin from the left in mm (e.g. 10 or 25)</comment>
+            <validate>validate-number</validate>
+            <depends>
+                <field id="label_type" separator=",">pdf2A4,pdf4A4</field>
+            </depends>
+        </field>
     </group>
 </include>

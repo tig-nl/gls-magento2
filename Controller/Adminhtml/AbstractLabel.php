@@ -33,84 +33,20 @@
 namespace TIG\GLS\Controller\Adminhtml;
 
 use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Request\Http as Request;
-use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
-use TIG\GLS\Api\Shipment\Data\LabelInterface;
-use TIG\GLS\Api\Shipment\Data\LabelInterfaceFactory;
+use Magento\Framework\Message\MessageInterface;
 use TIG\GLS\Model\Shipment\Label;
 
+// @codingStandardsIgnoreFile
 abstract class AbstractLabel extends Action
 {
     const ADMIN_ORDER_SHIPMENT_VIEW_URI = 'adminhtml/order_shipment/view';
-
-    /** @var LabelRepositoryInterface $labelRepository */
-    private $labelRepository;
-
-    /** @var LabelInterface $labelInterface */
-    private $labelInterface;
+    const ADMIN_ORDER_GRID_VIEW_URI = 'sales/order/index';
 
     /** @var $errorMessage */
     private $errorMessage;
 
     /** @var $successMessage */
     private $successMessage;
-
-    /**
-     * AbstractLabel constructor.
-     *
-     * @param Context                  $context
-     * @param LabelRepositoryInterface $labelRepository
-     * @param LabelInterfaceFactory    $labelInterface
-     */
-    public function __construct(
-        Context $context,
-        LabelRepositoryInterface $labelRepository,
-        LabelInterfaceFactory $labelInterface
-    ) {
-        parent::__construct($context);
-
-        $this->labelRepository = $labelRepository;
-        $this->labelInterface  = $labelInterface;
-    }
-
-    /**
-     * @return LabelInterface
-     */
-    public function createLabelFactory()
-    {
-        return $this->labelInterface->create();
-    }
-
-    /**
-     * @param LabelInterface $label
-     *
-     * @return LabelInterface
-     */
-    public function saveLabel(LabelInterface $label)
-    {
-        return $this->labelRepository->save($label);
-    }
-
-    /**
-     * @param LabelInterface $label
-     *
-     * @return LabelInterface
-     */
-    public function deleteLabel(LabelInterface $label)
-    {
-        return $this->labelRepository->delete($label);
-    }
-
-    /**
-     * @return LabelInterface
-     */
-    public function getLabelByShipmentId()
-    {
-        $shipmentId = $this->getShipmentId();
-
-        return $this->labelRepository->getByShipmentId($shipmentId);
-    }
 
     /**
      * @return int
@@ -133,6 +69,18 @@ abstract class AbstractLabel extends Action
     }
 
     /**
+     * @param $shipmentId
+     *
+     * @return \Magento\Framework\Controller\Result\Redirect
+     */
+    public function redirectToOrderGrid()
+    {
+        $result = $this->resultRedirectFactory->create();
+
+        return $result->setPath(self::ADMIN_ORDER_GRID_VIEW_URI);
+    }
+
+    /**
      * @param $response
      *
      * @return bool
@@ -143,15 +91,37 @@ abstract class AbstractLabel extends Action
             $status  = $response['status'];
             $message = $response['message'];
             $this->messageManager->addErrorMessage(
+            // @codingStandardsIgnoreLine
                 __($this->errorMessage) . " $message [Status: $status]"
             );
 
             return false;
         }
 
-        $this->messageManager->addSuccessMessage(
-            __($this->successMessage)
-        );
+        if ($this->messageManager->getMessages()->getCountByType(MessageInterface::TYPE_SUCCESS) == 0) {
+            $this->messageManager->addSuccessMessage(
+            // @codingStandardsIgnoreLine
+                __($this->successMessage)
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $response
+     * @return bool
+     */
+    public function callHasLabel($response)
+    {
+        if (!isset($response['units'])) {
+            $this->messageManager->addErrorMessage(
+            // @codingStandardsIgnoreLine
+                __($this->errorMessage) . " GLS API didn't return label units"
+            );
+
+            return false;
+        }
 
         return true;
     }
@@ -173,17 +143,66 @@ abstract class AbstractLabel extends Action
     }
 
     /**
-     * @return array
+     * @param $notice
      */
-    public function addShippingInformation()
+    public function handleNotice($notice)
     {
-        /** @var Request $request */
-        $request = $this->getRequest();
+        $this->messageManager->addNoticeMessage(
+        // @codingStandardsIgnoreLine
+            __($notice)
+        );
+    }
 
-        return [
-            "shippingSystemName"    => $request->getControllerModule(),
-            "shippingSystemVersion" => $request->getVersion(),
-            "shiptype"              => "p"
-        ];
+    /**
+     * @return bool
+     */
+    public function errorsOccured($errors)
+    {
+        if (!empty($errors)) {
+            $this->handleMissingOptions($errors);
+            $this->handleErrors($errors);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array $errors
+     */
+    public function handleMissingOptions($errors)
+    {
+        if (!isset($errors['missing'])) {
+            return;
+        }
+
+        foreach ($errors['missing'] as $error) {
+            $this->messageManager->addErrorMessage(
+            // @codingStandardsIgnoreLine
+                __(
+                    "Label could not be created, because %1 is not configured. " .
+                    "Please make sure you've configured a %2 in %3.",
+                    array_values($error)
+                )
+            );
+        }
+    }
+
+    /**
+     * @param array $errors
+     */
+    public function handleErrors($errors)
+    {
+        if (!isset($errors['errors'])) {
+            return;
+        }
+
+        foreach ($errors['errors'] as $error) {
+            $this->messageManager->addErrorMessage(
+            // @codingStandardsIgnoreLine
+                __($error)
+            );
+        }
     }
 }

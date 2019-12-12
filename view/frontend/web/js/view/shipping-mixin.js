@@ -29,11 +29,12 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 /*global alert*/
-/*jshint browser:true jquery:true*/
 define([
+    'jquery',
     'Magento_Checkout/js/model/quote',
     'mage/translate'
 ], function (
+    $,
     quote,
     $t
 ) {
@@ -48,9 +49,11 @@ define([
                     return originalResult;
                 }
 
-                var shippingAddress = quote.shippingAddress();
+                var checkoutConfig = window.checkoutConfig;
+                // Returns undefined if no option is checked.
+                var checkedOption   = $('input[name="gls_delivery_option"]:checked').val();
 
-                if (shippingAddress['extension_attributes'] === undefined || shippingAddress['extension_attributes']['gls_delivery_option'] === undefined) {
+                if (checkedOption === undefined || checkoutConfig.quoteData.gls_delivery_option === undefined) {
                     this.errorValidationMessage(
                         $t('Please select a GLS delivery option. If no options are visible, please make sure you\'ve entered your address information correctly.')
                     );
@@ -58,8 +61,16 @@ define([
                     return false;
                 }
 
+                var shippingAddress = quote.shippingAddress();
+
+                if (shippingAddress.extension_attributes === undefined) {
+                    shippingAddress.extension_attributes = {};
+                }
+
+                shippingAddress.extension_attributes.gls_delivery_option = checkoutConfig.quoteData.gls_delivery_option;
+
                 return originalResult;
             }
         });
-    }
+    };
 });

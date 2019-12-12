@@ -1,5 +1,4 @@
 <?php
-
 /**
  *
  *          ..::..
@@ -30,33 +29,48 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\GLS\Service\Label;
+namespace TIG\GLS\Service\Shipment;
 
-use TIG\GLS\Webservice\Endpoint\Label\Create;
+use Magento\Sales\Model\Order\ShipmentFactory;
 
-class Label
+class InventorySource
 {
-    /** @var Create $createLabel */
-    private $createLabel;
+    /**
+     * @var ShipmentFactory
+     */
+    private $shipmentFactory;
 
     /**
-     * @param Create $createLabel
+     * InventorySource constructor.
+     *
+     * @param ShipmentFactory $shipmentFactory
      */
-    public function __construct(Create $createLabel)
-    {
-        $this->createLabel = $createLabel;
+    public function __construct(
+        ShipmentFactory $shipmentFactory
+    ) {
+        $this->shipmentFactory = $shipmentFactory;
     }
 
     /**
-     * @param $requestData
+     * Magento uses an afterCreate plugin on the shipmentFactory to set the SourceCode. In the default flow Magento
+     * runs this code when you open the Create Shipment page. This behaviour doesn't occur in this flow, so we force
+     * that flow to happen here.
      *
-     * @return mixed
-     * @throws \Zend_Http_Client_Exception
+     * @param $order
+     * @param $shipmentItems
+     *
+     * @return Shipment
      */
-    public function createLabel($requestData)
+    public function getSource($order, $shipmentItems)
     {
-        $this->createLabel->setRequestData($requestData);
+        /** @var Shipment $shipment */
+        $shipment = $this->shipmentFactory->create(
+            $order,
+            $shipmentItems
+        );
 
-        return $this->createLabel->call();
+        $extensionAttributes = $shipment->getExtensionAttributes();
+
+        return $extensionAttributes->getSourceCode();
     }
 }

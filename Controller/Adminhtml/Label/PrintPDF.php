@@ -32,18 +32,42 @@
 
 namespace TIG\GLS\Controller\Adminhtml\Label;
 
+use Magento\Backend\App\Action;
 use TIG\GLS\Controller\Adminhtml\AbstractLabel;
+use TIG\GLS\Service\Label\GetPDF;
 
 class PrintPDF extends AbstractLabel
 {
     /**
-     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|void
+     * @var GetPDF
      */
-    public function execute() {
-        $label = $this->getLabelByShipmentId();
-        $pdf   = base64_decode($label->getLabel());
+    private $getPDF;
 
-        header('Content-Type: application/pdf');
-        echo $pdf;
+    /**
+     * PrintPDF constructor.
+     *
+     * @param Action\Context $context
+     * @param GetPDF         $getPDF
+     */
+    public function __construct(
+        Action\Context $context,
+        GetPDF $getPDF
+    ) {
+        parent::__construct($context);
+        $this->getPDF = $getPDF;
+    }
+
+    /**
+     * @return void
+     */
+    public function execute()
+    {
+        $pdf = $this->getPDF->getPdf($this->getShipmentId());
+
+        $resultPage = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_RAW);
+        $resultPage->setHeader('Content-Type', 'application/pdf');
+        $resultPage->setContents($pdf);
+
+        return $resultPage;
     }
 }

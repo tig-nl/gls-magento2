@@ -77,7 +77,7 @@ class ShippingAddressManagement
 
         $extensionAttributes = $address->getExtensionAttributes();
 
-        if (!$extensionAttributes) {
+        if (!$extensionAttributes || !$extensionAttributes->getGlsDeliveryOption()) {
             return $result;
         }
 
