@@ -50,5 +50,12 @@
             <include path="TIG_GLS::system/support.xml" />
             <include path="TIG_GLS::system/general.xml" />
         </section>
+        <section id="general">
+            <group id="store_information">
+                <field id="street_line1" translate="label comment">
+                    <comment>Enter the house number (and addition) in the Street Address Line 2 field.</comment>
+                </field>
+            </group>
+        </section>
     </system>
 </config>

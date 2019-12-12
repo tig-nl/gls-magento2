@@ -33,8 +33,6 @@
 namespace TIG\GLS\Controller\Adminhtml\Label;
 
 use Magento\Framework\App\Action\Context;
-use TIG\GLS\Api\Shipment\Data\LabelInterfaceFactory;
-use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 use TIG\GLS\Controller\Adminhtml\AbstractLabel;
 use TIG\GLS\Service\Label;
 
@@ -45,13 +43,17 @@ class Delete extends AbstractLabel
      */
     private $deleteLabel;
 
+    /**
+     * Delete constructor.
+     *
+     * @param Context      $context
+     * @param Label\Delete $deleteLabel
+     */
     public function __construct(
         Context $context,
-        LabelRepositoryInterface $labelRepository,
-        LabelInterfaceFactory $labelInterface,
         Label\Delete $deleteLabel
     ) {
-        parent::__construct($context, $labelRepository, $labelInterface);
+        parent::__construct($context);
 
         $this->deleteLabel = $deleteLabel;
     }

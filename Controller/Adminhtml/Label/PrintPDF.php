@@ -33,8 +33,6 @@
 namespace TIG\GLS\Controller\Adminhtml\Label;
 
 use Magento\Backend\App\Action;
-use TIG\GLS\Api\Shipment\Data\LabelInterfaceFactory;
-use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 use TIG\GLS\Controller\Adminhtml\AbstractLabel;
 use TIG\GLS\Service\Label\GetPDF;
 
@@ -48,18 +46,14 @@ class PrintPDF extends AbstractLabel
     /**
      * PrintPDF constructor.
      *
-     * @param Action\Context           $context
-     * @param LabelRepositoryInterface $labelRepository
-     * @param LabelInterfaceFactory    $labelInterface
-     * @param GetPDF                   $getPDF
+     * @param Action\Context $context
+     * @param GetPDF         $getPDF
      */
     public function __construct(
         Action\Context $context,
-        LabelRepositoryInterface $labelRepository,
-        LabelInterfaceFactory $labelInterface,
         GetPDF $getPDF
     ) {
-        parent::__construct($context, $labelRepository, $labelInterface);
+        parent::__construct($context);
         $this->getPDF = $getPDF;
     }
 

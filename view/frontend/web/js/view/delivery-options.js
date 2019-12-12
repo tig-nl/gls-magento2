@@ -32,17 +32,17 @@ define([
     'jquery',
     'uiComponent',
     'ko',
+    'Magento_Catalog/js/price-utils',
     'Magento_Checkout/js/model/quote',
     'TIG_GLS/js/helper/address-finder',
-    'Magento_Catalog/js/price-utils',
     'TIG_GLS/js/view/checkout/shipping-information/parcel-shop'
 ], function (
     $,
     Component,
     ko,
+    priceUtils,
     quote,
     AddressFinder,
-    priceUtils,
     parcelShop
 ) {
     'use strict';
@@ -81,6 +81,11 @@ define([
                     return;
                 }
 
+                // Reset frontend storage before triggering any new calls.
+                this.toggleTab('.gls-tab-pickup', '.gls-tab-delivery', '.gls-parcel-shop', '.gls-delivery-service');
+                this.deliveryFee(null);
+                this.pickupFee(null);
+
                 this.getAvailableServices(address.postcode, address.country);
                 this.getParcelShops(address.postcode, address.country);
             }.bind(this));
@@ -93,12 +98,13 @@ define([
          */
         getAvailableServices: function (postcode, country) {
             $.ajax({
-                method : 'GET',
-                url    : '/gls/deliveryoptions/services',
-                type   : 'jsonp',
-                data   : {
+                method    : 'GET',
+                url       : '/gls/deliveryoptions/services',
+                type      : 'jsonp',
+                showLoader: true,
+                data      : {
                     postcode: postcode,
-                    country: country
+                    country : country
                 }
             }).done(function (services) {
                 this.availableServices(services);
@@ -138,10 +144,11 @@ define([
             }
 
             $.ajax({
-                method : 'GET',
-                url    : '/gls/deliveryoptions/parcelshops',
-                type   : 'jsonp',
-                data   : {
+                method    : 'GET',
+                url       : '/gls/deliveryoptions/parcelshops',
+                type      : 'jsonp',
+                showLoader: true,
+                data      : {
                     postcode: postcode
                 }
             }).done(function (data) {
@@ -163,13 +170,9 @@ define([
                 details: details
             };
 
-            var shippingAddress = quote.shippingAddress();
-
-            if (shippingAddress.extension_attributes === undefined) {
-                shippingAddress.extension_attributes = {};
-            }
-
-            shippingAddress.extension_attributes.gls_delivery_option = JSON.stringify(deliveryOption);
+            var checkoutConfig = window.checkoutConfig;
+            // Do not refactor this.
+            checkoutConfig.quoteData.gls_delivery_option = JSON.stringify(deliveryOption);
 
             $('.gls-delivery-options input[name="gls_delivery_option"]').parents().removeClass('active');
             $('.gls-delivery-options input[name="gls_delivery_option"]:checked').parents().addClass('active');

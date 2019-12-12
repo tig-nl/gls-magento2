@@ -1,6 +1,13 @@
+Country,Land
+Region/State,Provincie/Staat
+"Zip/Postal Code","Postcode"
+"Shipping Price","Verzendtarief"
+"Export CSV","Exporteer CSV"
 "Add Additional Handling Fee","Voeg extra verwerkingskosten toe"
 "Shipping Method","Verzendmethode"
 "Additional Fee","Extra kosten"
+"Label could not be created, because %1 is not configured. Please make sure you've configured a %2 in %3.","Label kan niet worden gemaakt, omdat %1 niet is geconfigureerd. Zorg ervoor dat u %2 in %3 hebt geconfigureerd."
+"This label was already deleted at GLS therefore the Label has been deleted in Magento","Dit label is al verwijderd bij GLS, daarom is het label verwijderd in Magento"
 "Your order has been shipped.","Jouw order is verzonden."
 ". ':00'",". ':00'"
 ". ':30'",". ':30'"
@@ -10,6 +17,21 @@ Matrix,Matrix
 .,.
 Live,Live
 Test,Test
+"Unable to import data","Kan data niet importeren"
+"Something went wrong while importing GLS rates.","Er ging iets mis tijdens het importeren van de GLS tarieven."
+"We couldn't import this file because of these errors: %1","Dit bestand kon geïmporteerd worden, vanwege deze foutmeldingen: %1"
+"Requested column ""%1"" cannot be resolved","De kolom ""%1"" kan niet worden gevonden"
+"Column ""%1"" not found","Kolom ""%1"" niet gevonden"
+"The GLS Table Rates File Format is incorrect in row number ""%1"". Verify the format and try again.","Het bestandsindeling van het GLS Table Rates bestand is niet correct in rijnummer ""%1"". Controleer de indeling en probeer het opnieuw."
+"The ""%1"" country in row number ""%2"" is incorrect. Verify the country and try again.","Het ""%1"" land in rijnummer ""%2"" is niet correct. Controleer het land en probeer het opnieuw."
+"The ""%1"" region or state in row number ""%2"" is incorrect. Verify the region or state and try again.","De ""%1"" regio of staat in rijnummer ""%2"" is niet correct. Controleer de regio of staat en probeer het opnieuw."
+"The ""%1"" shipping price in row number ""%2"" is incorrect. Verify the shipping price and try again.","De ""%1"" verzendprijs in rijnummer ""%2"" is niet correct. Controleer de verzendprijs and probeer het opnieuw."
+"Duplicate Row #%1 (duplicates row #%2)","Dubbele rij #%1 (duplicaat van #%2)"
+"The GLS Rates File Format is incorrect. Verify the format and try again.","De bestandsindeling van het GLS Rates bestand is niet correct. Controleer de indeling en probeer het opnieuw."
+"Your order has been shipped.","Jouw bestelling is verzonden."
+"Unable to create shipment of order %s","Er kon geen verzending voor order %s aangemaakt worden"
+"Could not cancel shipment","Verzending kon niet geannuleerd worden"
+"Shipment canceled successfully","Verzending geannuleerd"
 "%1 : Zend Http Client exception","%1 : Zend Http Client exception"
 "Validating API credentials","API-inloggegevens valideren"
 "API credentials are incorrect","API-inloggegevens zijn onjuist"
@@ -30,13 +52,16 @@ Close,Sluiten
 "ParcelShop Address:","ParcelShop-adres:"
 "Please select a GLS delivery option. If no options are visible, please make sure you've entered your address information correctly.","Selecteer een GLS bezorgoptie. Indien er geen opties zichtbaar zijn, controleer dan uw ingevoerde adresgegevens."
 GLS,GLS
+"Enter the house number (and addition) in the Street Address Line 2 field.","Vul het huisnummer (en evt. toevoeging) in het tweede adres veld in."
 Enabled,Ingeschakeld
 Title,Titel
 "Method Name","Naam van Verzendmethode"
 "Handling Fee","Verzendkosten"
 "The base handling fee used for all allowed services.","De basisverwerkingskosten die worden gebruikt voor alle toegestane services."
-"International Additional Handling Fee","Extra kosten voor Internationale bezorging"
-"Configure an additional handling fee or discount for International Shipments (e.g. 2 or -1.95). The additional handling fee is added to or subtracted from the base handling fee.","Configureer extra kosten of korting voor Internationale Bezorging (bijv. 2 or -1.95). De extra kosten worden toegevoegd aan of afgetrokken van de basisverwerkingskosten."
+"Import Rates","Importeer tarieven"
+"Use a CSV to define different Handling Fees for different countries. Each rate defined in the CSV is added to the above Handling Fee for the specified country.","Gebruik een CSV-bestand om verschillende verzendkosten te hanteren voor verschillende landen. Ieder tarief in de CSV wordt opgeteld bij de hierboven gedefinieerde verzendkosten."
+"Export Rates","Exporteer tarieven"
+"Make an external backup of the CSV file or use it as a template for further editing.","Maak een externe backup van het CSV bestand of gebruik het als een template om vervolgens verder te bewerken."
 "Cut-off Time","Cut-off Time"
 "Deadline at which an order can be placed in order to be processed.","Deadline waarop een bestelling kan worden geplaatst om te worden verwerkt."
 "Processing Time","Verwerkingsduur"
@@ -68,3 +93,8 @@ ShopReturnService,ShopReturnService
 "Configure an additional handling fee for specific shipping methods. The additional handling fee is added to or subtracted from the base handling fee.","Configureer extra kosten voor specifieke verzendmethoden. De extra kosten worden toegevoegd aan of afgetrokken van de basisverwerkingskosten."
 "Version & Support","Versie en ondersteuning"
 "Easily integrate GLS shipping services into Magento 2.","Integreer GLS-verzenddiensten eenvoudig in Magento 2."
+"GLS - Create Shipments and Print Labels","GLS - Creëer Zendingen en Print Labels"
+"Shipping Label", "Verzendlabel"
+"Track ID","Track ID"
+"Shipment labels successfully deleted","Verzendlabels succesvol verwijderd"
+"Importing Table Rates (Handling Fees for different countries) is possible on configuration scope: website","Het importeren van tarieven voor buitenlandse bestemmingen is mogelijk op configuratie niveau: website"

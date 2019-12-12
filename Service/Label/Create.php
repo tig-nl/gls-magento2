@@ -34,11 +34,16 @@
 namespace TIG\GLS\Service\Label;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Sales\Api\ShipmentRepositoryInterface;
 use TIG\GLS\Model\Config\Provider\Carrier;
 use TIG\GLS\Service\ShippingDate;
 use TIG\GLS\Webservice\Endpoint\Label\Create as EndpointLabelCreate;
 
+/**
+ * Class Create
+ * @package TIG\GLS\Service\Label
+ */
 class Create extends ShippingInformation
 {
     const XPATH_CONFIG_TRANS_IDENT_SUPPORT_NAME           = 'trans_email/ident_support/name';
@@ -50,6 +55,9 @@ class Create extends ShippingInformation
     const XPATH_CONFIG_GENERAL_STORE_INFORMATION_POSTCODE = 'general/store_information/postcode';
     const XPATH_CONFIG_GENERAL_STORE_INFORMATION_CITY     = 'general/store_information/city';
     const XPATH_CONFIG_GENERAL_STORE_INFORMATION_COUNTRY  = 'general/store_information/country_id';
+    const XPATH_CONFIG_TIG_GLS_GENERAL_LABEL_TYPE         = 'tig_gls/general/label_type';
+    const XPATH_CONFIG_TIG_GLS_GENERAL_LABEL_MARGIN_TOP   = 'tig_gls/general/label_margin_top_a4';
+    const XPATH_CONFIG_TIG_GLS_GENERAL_LABEL_MARGIN_LEFT  = 'tig_gls/general/label_margin_left_a4';
     const GLS_PARCEL_MAX_WEIGHT                           = 31.9;
 
     /**
@@ -143,17 +151,19 @@ class Create extends ShippingInformation
      */
     private function mapLabelData($shipment, $controllerModule, $version)
     {
-        $order = $shipment->getOrder();
-        $deliveryOption = json_decode($order->getGlsDeliveryOption());
+        $order           = $shipment->getOrder();
+        $deliveryOption  = json_decode($order->getGlsDeliveryOption());
+        $deliveryAddress = $deliveryOption->deliveryAddress;
+        $labelType       = $this->getLabelType();
 
         $data                      = $this->addShippingInformation($controllerModule, $version);
-        $data["services"]          = $this->mapServices($deliveryOption->details, $deliveryOption->type);
+        $data["services"]          = $this->mapServices($deliveryOption->details, $deliveryOption->type, $deliveryAddress->countryCode);
         $data["trackingLinkType"]  = 'u';
-        $data['labelType']         = $this->carrierConfig->isShopReturnActive() ? 'pdfA6U' : 'pdf';
+        $data['labelType']         = $labelType;
         $data['notificationEmail'] = $this->prepareNotificationEmail();
         $data['returnRoutingData'] = false;
         $data['addresses']         = [
-            'deliveryAddress' => $deliveryOption->deliveryAddress,
+            'deliveryAddress' => $deliveryAddress,
             'pickupAddress'   => $this->preparePickupAddress()
         ];
         $data['shippingDate']      = $this->shippingDate->calculate("Y-m-d", false);
@@ -161,7 +171,36 @@ class Create extends ShippingInformation
             $this->prepareShippingUnit($shipment)
         ];
 
+        if (in_array($labelType, ['pdf2A4','pdf4A4'])) {
+            $data['labelA4MoveYMm'] = $this->getLabelMarginTop();
+            $data['labelA4MoveXMm'] = $this->getLabelMarginLeft();
+        }
+
         return $data;
+    }
+
+    /**
+     * @return mixed|string
+     */
+    private function getLabelType()
+    {
+        return $this->scopeConfig->getValue(self::XPATH_CONFIG_TIG_GLS_GENERAL_LABEL_TYPE) ?? 'pdfA6S';
+    }
+
+    /**
+     * @return int|mixed
+     */
+    private function getLabelMarginTop()
+    {
+        return $this->scopeConfig->getValue(self::XPATH_CONFIG_TIG_GLS_GENERAL_LABEL_MARGIN_TOP) ?? 0;
+    }
+
+    /**
+     * @return int|mixed
+     */
+    private function getLabelMarginLeft()
+    {
+        return $this->scopeConfig->getValue(self::XPATH_CONFIG_TIG_GLS_GENERAL_LABEL_MARGIN_LEFT) ?? 0;
     }
 
     /**
@@ -234,10 +273,10 @@ class Create extends ShippingInformation
      *
      * @return array|object
      */
-    private function mapServices($details, $type = null)
+    private function mapServices($details, $type = null, $countryCode = 'NL')
     {
         $service = [
-            "shopReturnService" => (bool) $this->carrierConfig->isShopReturnActive()
+            "shopReturnService" => (bool) ($this->carrierConfig->isShopReturnActive() && $countryCode == 'NL')
         ];
 
         switch ($type) {

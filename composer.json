@@ -2,13 +2,14 @@
     "name": "tig/gls-magento2",
     "description": "TIG Magento 2 GLS extension",
     "require": {
-        "php": "~7.1|~7.2",
-        "magento/framework": ">=101.0.0,<=101.0.9|>=102.0.0,<=102.0.2",
+        "php": "~7.1|~7.2|~7.3",
+        "magento/framework": "~101.0|~102.0",
         "ext-json": "*"
     },
     "type": "magento2-module",
     "license": "CC-BY-NC-ND-3.0",
-    "version": "1.1.1-RC1",
+    "version": "1.2.0",
+    "minimum-stability": "stable",
     "authors": [
         {
             "name": "TIG",

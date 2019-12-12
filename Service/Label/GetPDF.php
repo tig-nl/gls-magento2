@@ -68,6 +68,11 @@ class GetPDF
     public function getPdf($shipmentId)
     {
         $label = $this->labelRepository->getByShipmentId($shipmentId);
+
+        if (!$label) {
+            return null;
+        }
+
         // @codingStandardsIgnoreLine
         return base64_decode($label->getLabel());
     }
@@ -82,10 +87,11 @@ class GetPDF
         $labels = [];
         foreach ($shipmentIds as $shipmentId) {
             $label = $this->getPdf($shipmentId);
+
             // @codingStandardsIgnoreLine
             // TODO - Remove this line when GLS removes whitespaces from PDF output
             $content = substr($label, 0, strpos($label, 'EOF')) . 'EOF';
-            $labels[] = $content;
+            !$label ?: array_push($labels, $content);
         }
 
         return $this->labelGenerator->combineLabelsPdf($labels);
