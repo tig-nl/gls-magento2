@@ -151,19 +151,19 @@ class Create extends ShippingInformation
      */
     private function mapLabelData($shipment, $controllerModule, $version)
     {
-        $order = $shipment->getOrder();
-        $deliveryOption = json_decode($order->getGlsDeliveryOption());
-
-        $labelType = $this->getLabelType();
+        $order           = $shipment->getOrder();
+        $deliveryOption  = json_decode($order->getGlsDeliveryOption());
+        $deliveryAddress = $deliveryOption->deliveryAddress;
+        $labelType       = $this->getLabelType();
 
         $data                      = $this->addShippingInformation($controllerModule, $version);
-        $data["services"]          = $this->mapServices($deliveryOption->details, $deliveryOption->type);
+        $data["services"]          = $this->mapServices($deliveryOption->details, $deliveryOption->type, $deliveryAddress->countryCode);
         $data["trackingLinkType"]  = 'u';
         $data['labelType']         = $labelType;
         $data['notificationEmail'] = $this->prepareNotificationEmail();
         $data['returnRoutingData'] = false;
         $data['addresses']         = [
-            'deliveryAddress' => $deliveryOption->deliveryAddress,
+            'deliveryAddress' => $deliveryAddress,
             'pickupAddress'   => $this->preparePickupAddress()
         ];
         $data['shippingDate']      = $this->shippingDate->calculate("Y-m-d", false);
@@ -273,10 +273,10 @@ class Create extends ShippingInformation
      *
      * @return array|object
      */
-    private function mapServices($details, $type = null)
+    private function mapServices($details, $type = null, $countryCode = 'NL')
     {
         $service = [
-            "shopReturnService" => (bool) $this->carrierConfig->isShopReturnActive()
+            "shopReturnService" => (bool) ($this->carrierConfig->isShopReturnActive() && $countryCode == 'NL')
         ];
 
         switch ($type) {
