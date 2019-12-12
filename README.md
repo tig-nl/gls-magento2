@@ -37,3 +37,19 @@ To use this module you need API credentials provided by GLS. These can be entere
 
 ### Shipping Method  
 To configure the shipping method's handling fees, available services, etc. go to _Stores / Configuration / Sales / Shipping Methods / GLS_.
+
+### Store Address and E-mail addresses
+You need to configure your store address. This can be done by: _Configuration > General > General > Store Information_. Make sure you type your houseNo in the _Street Address Line 2_ field.
+
+GLS will notify your customers with emails about the delivery time. The sender name and sender email are from the Magento configuration located at _Configuration > Store Email Addresses > Customer Support_. 
+
+### Table Rates (price vs destination)
+To configure different handling fees for different countries you setup table rates within the GLS extension. This can be done at configuration scope: website.
+
+You can start with exporting the .csv-file to have a template with the following fields:
+* Country = (2 or 3 lettered) country codes according to Magento standards.
+* Region/State = You can specify the region or state. Keep in mind this field is optional in the checkout for some countries. Wildcard = *
+* Zip/Postal Code = This should the the exact postal code. For example for the Netherlands and without postal code validation you should have 2 lines in your .csv-file per postal code: 1014BA and 1014 BA. Wildcard = *
+* Shipping Price = 9.95 (period as delimiter) this price is added to the amount in the Base Handling Fee field.  
+
+

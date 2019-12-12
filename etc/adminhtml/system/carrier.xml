@@ -54,6 +54,11 @@
                 <comment><![CDATA[The base handling fee used for all allowed services.]]></comment>
             </field>
 
+            <field id="getting_started" type="note" translate="label" sortOrder="41" showInDefault="1" showInWebsite="0" showInStore="1">
+                <label>Import Rates</label>
+                <comment><![CDATA[Importing Table Rates (Handling Fees for different countries) is possible on configuration scope: website]]></comment>
+            </field>
+
             <field id="import" translate="label comment" type="TIG\GLS\Block\Adminhtml\Form\Field\Import" sortOrder="50" showInDefault="0" showInWebsite="1" showInStore="0">
                 <label>Import Rates</label>
                 <backend_model>TIG\GLS\Model\Config\Backend\Tablerate</backend_model>

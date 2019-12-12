@@ -35,7 +35,7 @@
         <carriers>
             <tig_gls>
                 <active>0</active>
-                <title>Ship with GLS</title>
+                <title>Verzenden via GLS</title>
                 <name>GLS</name>
                 <model>TIG\GLS\Model\Carrier\GLS</model>
                 <handling_fee>4.95</handling_fee>
