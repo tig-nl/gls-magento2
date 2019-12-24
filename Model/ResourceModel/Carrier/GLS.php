@@ -36,6 +36,7 @@ use Magento\Framework\App\Config\Value;
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate;
+use Magento\Framework\App\Request\Http;
 use TIG\GLS\Model\ResourceModel\Carrier\GLS\Import;
 use TIG\GLS\Model\ResourceModel\Carrier\GLS\RateQuery;
 use TIG\GLS\Model\ResourceModel\Carrier\GLS\RateQueryFactory;
@@ -58,6 +59,11 @@ class GLS extends Tablerate
     private $rateQueryFactory;
 
     /**
+     * @var Http
+     */
+    private $request;
+
+    /**
      * GLS constructor.
      *
      * @param \Magento\Framework\Model\ResourceModel\Db\Context  $context
@@ -71,6 +77,7 @@ class GLS extends Tablerate
      * @param RateQueryFactory                                   $rateQueryFactory
      * @param Import                                             $import
      * @param null                                               $connectionName
+     * @param Http                                               $request
      */
     public function __construct(
         \Magento\Framework\Model\ResourceModel\Db\Context $context,
@@ -84,10 +91,12 @@ class GLS extends Tablerate
         RateQueryFactory $rateQueryFactory,
         Import $import,
 
-        $connectionName = null
+        $connectionName = null,
+        Http $request
     ) {
         $this->import           = $import;
         $this->rateQueryFactory = $rateQueryFactory;
+        $this->request          = $request;
 
         parent::__construct(
             $context,
@@ -204,10 +213,10 @@ class GLS extends Tablerate
         /**
          * @var \Magento\Framework\App\Config\Value $object
          */
-        if (empty($_FILES['groups']['tmp_name']['tig_gls']['fields']['import']['value'])) {
+        if ($this->request->getFiles() && empty($this->request->getFiles()['groups']['tig_gls']['fields']['import']['value']['tmp_name'])) {
             return $this;
         }
-        $filePath  = $_FILES['groups']['tmp_name']['tig_gls']['fields']['import']['value'];
+        $filePath  = $this->request->getFiles()['groups']['tig_gls']['fields']['import']['value']['tmp_name'];
         $websiteId = $this->storeManager->getWebsite($object->getScopeId())->getId();
         $file      = $this->getCsvFile($filePath);
 
