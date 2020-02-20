@@ -7,6 +7,7 @@
             "dest_region_id": true,
             "dest_zip": true,
             "price": true,
+            "condition_value": true,
             "cost": true
         },
         "constraint": {

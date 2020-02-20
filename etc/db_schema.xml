@@ -18,6 +18,8 @@
                 default="0" comment="Destination Region Id"/>
         <column xsi:type="varchar" name="dest_zip" nullable="false" length="10" default="*"
                 comment="Destination Post Code (Zip)"/>
+        <column xsi:type="decimal" name="condition_value" scale="4" precision="12" unsigned="false" nullable="false"
+                default="0" comment="Rate condition value"/>
         <column xsi:type="decimal" name="price" scale="4" precision="12" unsigned="false" nullable="false" default="0"
                 comment="Price"/>
         <column xsi:type="decimal" name="cost" scale="4" precision="12" unsigned="false" nullable="false" default="0"
@@ -30,6 +32,7 @@
             <column name="dest_country_id"/>
             <column name="dest_region_id"/>
             <column name="dest_zip"/>
+            <column name="condition_value"/>
         </constraint>
     </table>
 </schema>
