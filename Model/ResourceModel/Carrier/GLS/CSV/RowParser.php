@@ -76,26 +76,29 @@ class RowParser
             'dest_country_id',
             'dest_region_id',
             'dest_zip',
+            'condition_value',
             'price',
         ];
     }
 
     /**
-     * Parse provided row data.
-     *
-     * @param array          $rowData
-     * @param int            $rowNumber
-     * @param int            $websiteId
-     * @param string         $conditionShortName
-     * @param string         $conditionFullName
-     * @param ColumnResolver $columnResolver
+     * @param array                                                       $rowData
+     * @param                                                             $rowNumber
+     * @param                                                             $websiteId
+     * @param                                                             $conditionFullName
+     * @param \TIG\GLS\Model\ResourceModel\Carrier\GLS\CSV\ColumnResolver $columnResolver
      *
      * @return array
      * @throws ColumnNotFoundException
      * @throws RowException
      */
-    public function parse(array $rowData, $rowNumber, $websiteId, ColumnResolver $columnResolver)
-    {
+    public function parse(
+        array $rowData,
+        $rowNumber,
+        $websiteId,
+        $conditionFullName,
+        ColumnResolver $columnResolver
+    ) {
         if (count($rowData) < 4) {
             throw new RowException(
                 __(
@@ -105,10 +108,11 @@ class RowParser
             );
         }
 
-        $countryId = $this->getCountryId($rowData, $rowNumber, $columnResolver);
-        $regionIds = $this->getRegionIds($rowData, $rowNumber, $columnResolver, $countryId);
-        $zipCode   = $this->getZipCode($rowData, $columnResolver);
-        $price     = $this->getPrice($rowData, $rowNumber, $columnResolver);
+        $countryId      = $this->getCountryId($rowData, $rowNumber, $columnResolver);
+        $regionIds      = $this->getRegionIds($rowData, $rowNumber, $columnResolver, $countryId);
+        $zipCode        = $this->getZipCode($rowData, $columnResolver);
+        $conditionValue = $this->getConditionValue($rowData, $rowNumber, $conditionFullName, $columnResolver);
+        $price          = $this->getPrice($rowData, $rowNumber, $columnResolver);
 
         $rates = [];
         foreach ($regionIds as $regionId) {
@@ -117,7 +121,8 @@ class RowParser
                 'dest_country_id' => $countryId,
                 'dest_region_id'  => $regionId,
                 'dest_zip'        => $zipCode,
-                'price'           => $price,
+                'condition_value' => $conditionValue,
+                'price'           => $price
             ];
         }
 
@@ -206,6 +211,36 @@ class RowParser
         }
 
         return $zipCode;
+    }
+
+    /**
+     * @param array                                                       $rowData
+     * @param                                                             $rowNumber
+     * @param                                                             $conditionFullName
+     * @param \TIG\GLS\Model\ResourceModel\Carrier\GLS\CSV\ColumnResolver $columnResolver
+     *
+     * @return bool|float
+     * @throws ColumnNotFoundException
+     * @throws RowException
+     */
+    private function getConditionValue(array $rowData, $rowNumber, $conditionFullName, ColumnResolver $columnResolver)
+    {
+        // validate condition value.
+        $conditionValue = $columnResolver->getColumnValue($conditionFullName, $rowData);
+        $value          = $this->_parseDecimalValue($conditionValue);
+
+        if ($value === false) {
+            throw new RowException(
+                __(
+                    'Please correct %1 "%2" in the Row #%3.',
+                    $conditionFullName,
+                    $conditionValue,
+                    $rowNumber
+                )
+            );
+        }
+
+        return $value;
     }
 
     /**

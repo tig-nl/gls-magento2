@@ -173,20 +173,18 @@ class GLS extends Tablerate
     }
 
     /**
-     * @param DataObject|Value $object
+     * @param array $condition
      *
+     * @return $this|Tablerate
      * @throws LocalizedException
      */
-    private function deleteByCondition(DataObject $object)
+    private function deleteByCondition($condition)
     {
-        $website = $this->storeManager->getWebsite($object->getScopeId());
-        $websiteId = $website->getId();
-        $condition = ['website_id = ?' => $websiteId];
-
         $connection = $this->getConnection();
         $connection->beginTransaction();
         $connection->delete($this->getMainTable(), $condition);
         $connection->commit();
+        return $this;
     }
 
     /**
@@ -208,15 +206,20 @@ class GLS extends Tablerate
             return $this;
         }
         $filePath  = $_FILES['groups']['tmp_name']['tig_gls']['fields']['import']['value'];
-        $websiteId = $this->storeManager->getWebsite($object->getScopeId())->getId();
-        $file      = $this->getCsvFile($filePath);
 
+        $websiteId     = $this->storeManager->getWebsite($object->getScopeId())->getId();
+        $conditionName = $this->getConditionName($object);
+
+        $file          = $this->getCsvFile($filePath);
         try {
-            $this->deleteByCondition($object);
+            $condition = [
+                'website_id = ?' => $websiteId
+            ];
+            $this->deleteByCondition($condition);
 
             $columns = $this->import->getColumns();
-
-            foreach ($this->import->_getData($file, $websiteId) as $bunch) {
+            $conditionFullName = $this->_getConditionFullName($conditionName);
+            foreach ($this->import->_getData($file, $websiteId, $conditionName, $conditionFullName) as $bunch) {
                 $this->importData($columns, $bunch);
             }
         } catch (\Exception $e) {

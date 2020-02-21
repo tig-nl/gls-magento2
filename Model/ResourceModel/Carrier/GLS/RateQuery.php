@@ -78,7 +78,8 @@ class RateQuery extends \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tab
             [
                 'dest_country_id DESC',
                 'dest_region_id DESC',
-                'dest_zip DESC'
+                'dest_zip DESC',
+                'condition_value DESC'
             ]
         );
         $select->limit(
@@ -89,6 +90,7 @@ class RateQuery extends \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tab
             "dest_country_id = :country_id AND dest_region_id = :region_id AND dest_zip = :postcode",
             "dest_country_id = :country_id AND dest_region_id = :region_id AND dest_zip = :postcode_prefix",
             "dest_country_id = :country_id AND dest_region_id = :region_id AND dest_zip = ''",
+
             // Handle asterisk in dest_zip field
             "dest_country_id = :country_id AND dest_region_id = :region_id AND dest_zip = '*'",
             "dest_country_id = :country_id AND dest_region_id = 0 AND dest_zip = '*'",
