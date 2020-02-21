@@ -13,7 +13,7 @@
         <column xsi:type="int" name="website_id" padding="11" unsigned="false" nullable="false" identity="false"
                 default="0" comment="Website Id"/>
         <column xsi:type="varchar" name="dest_country_id" nullable="false" length="4" default="0"
-                comment="Destination coutry ISO/2 or ISO/3 code"/>
+                comment="Destination country ISO/2 or ISO/3 code"/>
         <column xsi:type="int" name="dest_region_id" padding="11" unsigned="false" nullable="false" identity="false"
                 default="0" comment="Destination Region Id"/>
         <column xsi:type="varchar" name="dest_zip" nullable="false" length="10" default="*"
@@ -27,7 +27,7 @@
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="pk"/>
         </constraint>
-        <constraint xsi:type="unique" referenceId="UNQ_GLS_SHIPPING_TABLERATE_COLUMN">
+        <constraint xsi:type="unique" referenceId="GLS_SHIPPING_TABLERATE_WEBSITE_ID_DEST_COUNTRY_ID_DEST_REGION_ID_DEST_ZIP_CONDITION_VALUE">
             <column name="website_id"/>
             <column name="dest_country_id"/>
             <column name="dest_region_id"/>
