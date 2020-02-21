@@ -30,7 +30,7 @@ After installation, run `bin/magento setup:upgrade` to make the needed database 
 After installation, run:
 1. `bin/magento setup:upgrade`
 2. `bin/magento setup:di:compile`
-3. `bin/magento setup:static-content:deploy [locale-codes, e.g. nl_NL en_US`
+3. `bin/magento setup:static-content:deploy [locale-codes, e.g. nl_NL en_US]`
 4. `bin/magento cache:fluche`
 
 Done!
