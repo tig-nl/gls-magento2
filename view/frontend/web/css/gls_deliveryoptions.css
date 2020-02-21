@@ -331,3 +331,16 @@ border-blue:    #D4D9E3;
     border-radius: 50%;
     box-sizing: border-box;
 }
+
+.dayofweek {
+    width: 60px;
+    display: inline-block;
+}
+
+.openclosetime {
+    width: 90px;
+}
+
+.hours {
+    margin-left: 5px;
+}

@@ -98,3 +98,4 @@ ShopReturnService,ShopReturnService
 "Track ID","Track ID"
 "Shipment labels successfully deleted","Verzendlabels succesvol verwijderd"
 "Importing Table Rates (Handling Fees for different countries) is possible on configuration scope: website","Het importeren van tarieven voor buitenlandse bestemmingen is mogelijk op configuratie niveau: website"
+"hour","uur"
