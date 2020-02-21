@@ -45,8 +45,8 @@ Support,Ondersteuning
 "This extension is developed by <a href=""https://tig.nl"" target=""_BLANK"">TIG</a>","Deze extensie is ontwikkeld door <a href=""https://tig.nl"" target=""_BLANK"">TIG</a>"
 "Extension basic configuration and account information","Basisconfiguratie en accountinformatie voor extensie"
 "Please contact:","Neem contact op met:"
-Delivery,Bezorging
-"Pick up","Afhalen"
+"Delivery","Thuis bezorgen", module, TIG_GLS
+"Pick up","PakketShop"
 "Show business hours","Toon openingstijden"
 Close,Sluiten
 "ParcelShop Address:","ParcelShop-adres:"
