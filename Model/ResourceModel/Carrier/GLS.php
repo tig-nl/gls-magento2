@@ -45,8 +45,8 @@ use TIG\GLS\Model\ResourceModel\Carrier\GLS\RateQueryFactory;
  *
  * Class GLS
  * @package TIG\GLS\Model\ResourceModel\Carrier
- * @version Magento 2.3.3
- * @since   1.2.0
+ * @version Magento 2.3.4
+ * @since   1.3.0
  */
 // @codingStandardsIgnoreFile
 class GLS extends Tablerate

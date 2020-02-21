@@ -40,8 +40,8 @@ use Magento\Quote\Model\Quote\Address\RateRequest;
  *
  * Class RateQuery
  * @package TIG\GLS\Model\ResourceModel\Carrier\GLS
- * @version Magento 2.3.3
- * @since   1.2.0
+ * @version Magento 2.3.4
+ * @since   1.3.0
  */
 class RateQuery extends \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\RateQuery
 {
@@ -105,38 +105,9 @@ class RateQuery extends \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tab
         $orWhere = '(' . implode(') OR (', $wheres) . ')';
         $select->where($orWhere);
 
+        // condition_name is always package_value_with_discount, that's why we only need to filter by condition_value.
+        $select->where('condition_value <= :condition_value');
+
         return $select;
-    }
-
-    /**
-     * Returns query bindings
-     *
-     * @return array
-     */
-    public function getBindings()
-    {
-        $bind = [
-            ':website_id'      => (int) $this->request->getWebsiteId(),
-            ':country_id'      => $this->request->getDestCountryId(),
-            ':region_id'       => (int) $this->request->getDestRegionId(),
-            ':postcode'        => $this->request->getDestPostcode(),
-            ':postcode_prefix' => $this->getDestPostcodePrefix()
-        ];
-
-        return $bind;
-    }
-
-    /**
-     * Returns the entire postcode if it contains no dash or the part of it prior to the dash in the other case
-     *
-     * @return string
-     */
-    private function getDestPostcodePrefix()
-    {
-        if (!preg_match("/^(.+)-(.+)$/", $this->request->getDestPostcode(), $zipParts)) {
-            return $this->request->getDestPostcode();
-        }
-
-        return $zipParts[1];
     }
 }
