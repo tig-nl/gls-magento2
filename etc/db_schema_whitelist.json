@@ -7,11 +7,13 @@
             "dest_region_id": true,
             "dest_zip": true,
             "price": true,
+            "condition_value": true,
             "cost": true
         },
         "constraint": {
             "PRIMARY": true,
-            "UNQ_GLS_SHIPPING_TABLERATE_COLUMN": true
+            "UNQ_GLS_SHIPPING_TABLERATE_COLUMN": false,
+            "GLS_SHIPPING_TABLERATE_WEBSITE_ID_DEST_COUNTRY_ID_DEST_REGION_ID_DEST_ZIP_CONDITION_VALUE": true
         }
     }
 }

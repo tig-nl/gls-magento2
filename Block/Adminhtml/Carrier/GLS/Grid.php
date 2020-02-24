@@ -37,7 +37,7 @@ namespace TIG\GLS\Block\Adminhtml\Carrier\GLS;
  *
  * Class Grid
  * @package TIG\GLS\Block\Adminhtml\Carrier\GLS
- * @version Magento 2.3.3
+ * @version Magento 2.3.4
  * @since   1.2.0
  */
 class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
@@ -130,6 +130,9 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
                 'default' => '*'
             ]
         );
+
+        $label = $this->glsCarrier->getCode('condition_name_short');
+        $this->addColumn('condition_value', ['header' => $label, 'index' => 'condition_value']);
 
         $this->addColumn(
             'price',

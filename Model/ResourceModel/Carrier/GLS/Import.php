@@ -128,7 +128,7 @@ class Import extends \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tabler
      * @throws LocalizedException
      * @throws \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\CSV\ColumnNotFoundException
      */
-    public function _getData(ReadInterface $file, $websiteId, $bunchSize = 5000)
+    public function _getData(ReadInterface $file, $websiteId, $conditionShortName, $conditionFullName, $bunchSize = 5000)
     {
         $this->errors = [];
 
@@ -145,7 +145,13 @@ class Import extends \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tabler
                 if (empty($csvLine)) {
                     continue;
                 }
-                $rowsData = $this->rowParser->parse($csvLine, $rowNumber, $websiteId, $columnResolver);
+                $rowsData = $this->rowParser->parse(
+                    $csvLine,
+                    $rowNumber,
+                    $websiteId,
+                    $conditionFullName,
+                    $columnResolver
+                );
 
                 foreach ($rowsData as $rowData) {
                     // protect from duplicate
