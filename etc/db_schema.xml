@@ -27,8 +27,7 @@
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="pk"/>
         </constraint>
-        <constraint xsi:type="unique" referenceId="GLS_SHPP_TABLERATE_WS_ID_DEST_COUNTRY_ID_DEST_REGION_ID_DEST_ZIP" disabled="true" />
-        <constraint xsi:type="unique" referenceId="UNQ_GLS_SHPP_TABLERATE_WS_ID_DEST_COUNTRY_ID_DEST_REGION_ID_DEST_ZIP_CONDITION_VALUE">
+        <constraint xsi:type="unique" referenceId="GLS_SHPP_TABLERATE_WS_ID_DEST_COUNTRY_ID_DEST_REGION_ID_DEST_ZIP_CONDITION_VALUE">
             <column name="website_id"/>
             <column name="dest_country_id"/>
             <column name="dest_region_id"/>
