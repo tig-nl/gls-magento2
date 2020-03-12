@@ -62,8 +62,10 @@ class RemoveUniqueConstraint implements DataPatchInterface, NonTransactionableIn
         $this->moduleDataSetup = $moduleDataSetup;
     }
 
-    /*
+    /**
+     * Drop constraint from gls_shipping_tablerate.
      *
+     * @return DataPatchInterface|void
      */
     public function apply()
     {
