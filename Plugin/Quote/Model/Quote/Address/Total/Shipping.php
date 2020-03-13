@@ -128,7 +128,7 @@ class Shipping
             return $ratePrice;
         }
 
-        return $ratePrice + $additionalFee;
+        return $ratePrice + $additionalFee > 0 ?: 0;
     }
 
     /**
