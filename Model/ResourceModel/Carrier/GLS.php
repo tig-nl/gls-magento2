@@ -32,8 +32,7 @@
 
 namespace TIG\GLS\Model\ResourceModel\Carrier;
 
-use Magento\Framework\App\Config\Value;
-use Magento\Framework\DataObject;
+use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate;
 use TIG\GLS\Model\ResourceModel\Carrier\GLS\Import;
@@ -41,7 +40,10 @@ use TIG\GLS\Model\ResourceModel\Carrier\GLS\RateQuery;
 use TIG\GLS\Model\ResourceModel\Carrier\GLS\RateQueryFactory;
 
 /**
- * This is a stripped version of \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate
+ * This is a stripped version of
+ * \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate including a
+ * fix for a bug that causes Magento 2 to lose its quote while fetching the
+ * shipping rates.
  *
  * Class GLS
  * @package TIG\GLS\Model\ResourceModel\Carrier
@@ -51,6 +53,9 @@ use TIG\GLS\Model\ResourceModel\Carrier\GLS\RateQueryFactory;
 // @codingStandardsIgnoreFile
 class GLS extends Tablerate
 {
+    /** @var CartRepositoryInterface $cartRepository */
+    private $cartRepository;
+
     /** @var Import $import */
     private $import;
 
@@ -70,6 +75,7 @@ class GLS extends Tablerate
      * @param Tablerate\RateQueryFactory                         $magentoRateQueryFactory
      * @param RateQueryFactory                                   $rateQueryFactory
      * @param Import                                             $import
+     * @param CartRepositoryInterface                            $cartRepository
      * @param null                                               $connectionName
      */
     public function __construct(
@@ -83,11 +89,12 @@ class GLS extends Tablerate
         \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\RateQueryFactory $magentoRateQueryFactory,
         RateQueryFactory $rateQueryFactory,
         Import $import,
-
+        CartRepositoryInterface $cartRepository,
         $connectionName = null
     ) {
         $this->import           = $import;
         $this->rateQueryFactory = $rateQueryFactory;
+        $this->cartRepository   = $cartRepository;
 
         parent::__construct(
             $context,
@@ -115,9 +122,11 @@ class GLS extends Tablerate
     /**
      * Return table rate array or false by rate request
      *
-     * @param \Magento\Quote\Model\Quote\Address\RateRequest $request
+     * @param Quote\Address\RateRequest $request
      *
      * @return array|bool
+     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getRate(\Magento\Quote\Model\Quote\Address\RateRequest $request)
     {
@@ -130,6 +139,12 @@ class GLS extends Tablerate
         $rateQuery->prepareSelect($select);
         $bindings = $rateQuery->getBindings();
 
+        // If quote is lost these values are empty, causing table rates to return the wrong shipping rate.
+        if ($bindings[':condition_name'] == null && $bindings[':condition_value'] == 0.0) {
+            $bindings[':condition_name']  = 'package_value_with_discount';
+            $bindings[':condition_value'] = $this->getSubtotalFromQuote($request->getAllItems());
+        }
+
         $result = $connection->fetchRow($select, $bindings);
 
         // Normalize destination zip code
@@ -138,6 +153,46 @@ class GLS extends Tablerate
         }
 
         return $result;
+    }
+
+    /**
+     * Fetch the subtotal from a fresh quote to make sure the right shipping rate
+     * is loaded, when GLS Table Rates is used.
+     *
+     * @param $items
+     *
+     * @return float
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    private function getSubtotalFromQuote($items)
+    {
+        $quote = $this->reloadQuote($items);
+
+        return (float) $quote->getSubtotal();
+    }
+
+    /**
+     * Sometimes Magento Checkout loses its quote. That's why we load it again
+     * here.
+     *
+     * @param $items
+     *
+     * @return \Magento\Quote\Api\Data\CartInterface
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    private function reloadQuote($items)
+    {
+        $quoteId = 0;
+
+        foreach ($items as $item) {
+            if ($quoteId == 0) {
+                $quoteId = $item->getQuoteId();
+
+                break;
+            }
+        }
+
+        return $this->cartRepository->get($quoteId);
     }
 
     /**
