@@ -120,7 +120,7 @@ class Shipping
      * @param $ratePrice
      * @param $additionalFee
      *
-     * @return mixed
+     * @return float|int
      */
     private function calculateFee($ratePrice, $additionalFee)
     {
@@ -128,7 +128,9 @@ class Shipping
             return $ratePrice;
         }
 
-        return $ratePrice + $additionalFee > 0 ?: 0;
+        $fee = $ratePrice + $additionalFee < 0 ? 0 : $ratePrice + $additionalFee;
+
+        return $fee;
     }
 
     /**
