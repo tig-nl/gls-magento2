@@ -87,10 +87,6 @@ class Collection extends AbstractCollection
         );
 
         $this->addOrder('pk', self::SORT_ORDER_ASC);
-        $this->addOrder('dest_country', self::SORT_ORDER_ASC);
-        $this->addOrder('dest_region', self::SORT_ORDER_ASC);
-        $this->addOrder('dest_zip', self::SORT_ORDER_ASC);
-        $this->addOrder('condition_value', self::SORT_ORDER_ASC);
     }
 
     /**
