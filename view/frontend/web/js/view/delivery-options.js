@@ -189,7 +189,17 @@ define([
             this.setGlsDeliveryOption('ParcelShop', selectedAddress);
             parcelShop().parcelShopAddress(selectedAddress);
 
-            this.pickupFee(this.formatAdditionalFee(selectedAddress.fee));
+            /**
+             * Don't display additional fee in Parcel Shop tab if shipping method is free and a
+             * discount for Parcel Shops is given.
+             */
+            let parcelShopFee = selectedAddress.fee;
+
+            if (quote.shippingMethod().amount === 0 && parcelShopFee < 0) {
+                return true;
+            }
+
+            this.pickupFee(this.formatAdditionalFee(parcelShopFee.fee));
 
             return true;
         },
