@@ -199,7 +199,7 @@ define([
                 return true;
             }
 
-            this.pickupFee(this.formatAdditionalFee(parcelShopFee.fee));
+            this.pickupFee(this.formatAdditionalFee(parcelShopFee));
 
             return true;
         },
