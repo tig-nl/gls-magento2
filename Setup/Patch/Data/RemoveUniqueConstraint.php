@@ -46,6 +46,7 @@ use Magento\Framework\Setup\Patch\NonTransactionableInterface;
 class RemoveUniqueConstraint implements DataPatchInterface, NonTransactionableInterface
 {
     const TABLE_GLS_SHIPPING_TABLERATE                = 'gls_shipping_tablerate';
+    // @codingStandardsIgnoreLine
     const TABLE_GLS_SHIPPING_TABLERATE_CONSTRAINT_KEY = 'GLS_SHPP_TABLERATE_WS_ID_DEST_COUNTRY_ID_DEST_REGION_ID_DEST_ZIP';
 
     /** @var $moduleDataSetup $patchVersion */
