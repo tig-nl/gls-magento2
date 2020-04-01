@@ -30,32 +30,41 @@
  */
 define([
     'uiComponent',
-    'ko'
+    'ko',
+    'Magento_Checkout/js/model/quote'
 ], function (
     Component,
-    ko
+    ko,
+    quote
 ) {
     return Component.extend({
         defaults: {
             template: 'TIG_GLS/shipping-information/parcel-shop',
             parcelShopAddress: ko.observable()
         },
-        
+
         initObservable: function () {
+            this.selectedMethod = ko.computed(function () {
+                var method = quote.shippingMethod();
+                var selectedMethod = method != null ? method.carrier_code + '_' + method.method_code : null;
+
+                return selectedMethod;
+            }, this);
+
             var self = this;
-            
+
             this.isSelected = ko.computed(function () {
                 var isSelected = false;
-                
+
                 if (self.parcelShopAddress() !== null) {
                     isSelected = true;
                 }
-                
+
                 return isSelected;
             }, this);
-    
+
             this._super();
-            
+
             return this;
         }
     });

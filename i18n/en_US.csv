@@ -44,7 +44,7 @@ Support,Support
 "This extension is developed by <a href=""https://tig.nl"" target=""_BLANK"">TIG</a>","This extension is developed by <a href=""https://tig.nl"" target=""_BLANK"">TIG</a>"
 "Extension basic configuration and account information","Extension basic configuration and account information"
 "Please contact:","Please contact:"
-Delivery,Delivery
+"Delivery","Delivery"
 "Pick up","Pick up"
 "Show business hours","Show business hours"
 Close,Close
@@ -97,3 +97,4 @@ ShopReturnService,ShopReturnService
 "Track ID","Track ID"
 "Shipment labels successfully deleted","Shipment labels successfully deleted"
 "Importing Table Rates (Handling Fees for different countries) is possible on configuration scope: website","Importing Table Rates (Handling Fees for different countries) is possible on configuration scope: website"
+"hour","hour"

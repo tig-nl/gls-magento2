@@ -32,8 +32,7 @@
 
 namespace TIG\GLS\Model\ResourceModel\Carrier;
 
-use Magento\Framework\App\Config\Value;
-use Magento\Framework\DataObject;
+use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate;
 use Magento\Framework\App\Request\Http;
@@ -42,16 +41,22 @@ use TIG\GLS\Model\ResourceModel\Carrier\GLS\RateQuery;
 use TIG\GLS\Model\ResourceModel\Carrier\GLS\RateQueryFactory;
 
 /**
- * This is a stripped version of \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate
+ * This is a stripped version of
+ * \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate including a
+ * fix for a bug that causes Magento 2 to lose its quote while fetching the
+ * shipping rates.
  *
  * Class GLS
  * @package TIG\GLS\Model\ResourceModel\Carrier
- * @version Magento 2.3.3
- * @since   1.2.0
+ * @version Magento 2.3.4
+ * @since   1.3.0
  */
 // @codingStandardsIgnoreFile
 class GLS extends Tablerate
 {
+    /** @var CartRepositoryInterface $cartRepository */
+    private $cartRepository;
+
     /** @var Import $import */
     private $import;
 
@@ -76,6 +81,7 @@ class GLS extends Tablerate
      * @param Tablerate\RateQueryFactory                         $magentoRateQueryFactory
      * @param RateQueryFactory                                   $rateQueryFactory
      * @param Import                                             $import
+     * @param CartRepositoryInterface                            $cartRepository
      * @param null                                               $connectionName
      * @param Http                                               $request
      */
@@ -90,13 +96,12 @@ class GLS extends Tablerate
         \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\RateQueryFactory $magentoRateQueryFactory,
         RateQueryFactory $rateQueryFactory,
         Import $import,
-
-        $connectionName = null,
-        Http $request
+        CartRepositoryInterface $cartRepository,
+        $connectionName = null
     ) {
         $this->import           = $import;
         $this->rateQueryFactory = $rateQueryFactory;
-        $this->request          = $request;
+        $this->cartRepository   = $cartRepository;
 
         parent::__construct(
             $context,
@@ -124,9 +129,11 @@ class GLS extends Tablerate
     /**
      * Return table rate array or false by rate request
      *
-     * @param \Magento\Quote\Model\Quote\Address\RateRequest $request
+     * @param Quote\Address\RateRequest $request
      *
      * @return array|bool
+     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getRate(\Magento\Quote\Model\Quote\Address\RateRequest $request)
     {
@@ -139,6 +146,12 @@ class GLS extends Tablerate
         $rateQuery->prepareSelect($select);
         $bindings = $rateQuery->getBindings();
 
+        // If quote is lost these values are empty, causing table rates to return the wrong shipping rate.
+        if ($bindings[':condition_name'] == null && $bindings[':condition_value'] == 0.0) {
+            $bindings[':condition_name']  = 'package_value_with_discount';
+            $bindings[':condition_value'] = $this->getSubtotalFromQuote($request->getAllItems());
+        }
+
         $result = $connection->fetchRow($select, $bindings);
 
         // Normalize destination zip code
@@ -147,6 +160,46 @@ class GLS extends Tablerate
         }
 
         return $result;
+    }
+
+    /**
+     * Fetch the subtotal from a fresh quote to make sure the right shipping rate
+     * is loaded, when GLS Table Rates is used.
+     *
+     * @param $items
+     *
+     * @return float
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    private function getSubtotalFromQuote($items)
+    {
+        $quote = $this->reloadQuote($items);
+
+        return (float) $quote->getSubtotal();
+    }
+
+    /**
+     * Sometimes Magento Checkout loses its quote. That's why we load it again
+     * here.
+     *
+     * @param $items
+     *
+     * @return \Magento\Quote\Api\Data\CartInterface
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    private function reloadQuote($items)
+    {
+        $quoteId = 0;
+
+        foreach ($items as $item) {
+            if ($quoteId == 0) {
+                $quoteId = $item->getQuoteId();
+
+                break;
+            }
+        }
+
+        return $this->cartRepository->get($quoteId);
     }
 
     /**
@@ -182,20 +235,18 @@ class GLS extends Tablerate
     }
 
     /**
-     * @param DataObject|Value $object
+     * @param array $condition
      *
+     * @return $this|Tablerate
      * @throws LocalizedException
      */
-    private function deleteByCondition(DataObject $object)
+    private function deleteByCondition($condition)
     {
-        $website = $this->storeManager->getWebsite($object->getScopeId());
-        $websiteId = $website->getId();
-        $condition = ['website_id = ?' => $websiteId];
-
         $connection = $this->getConnection();
         $connection->beginTransaction();
         $connection->delete($this->getMainTable(), $condition);
         $connection->commit();
+        return $this;
     }
 
     /**
@@ -216,16 +267,21 @@ class GLS extends Tablerate
         if ($this->request->getFiles() && empty($this->request->getFiles()['groups']['tig_gls']['fields']['import']['value']['tmp_name'])) {
             return $this;
         }
-        $filePath  = $this->request->getFiles()['groups']['tig_gls']['fields']['import']['value']['tmp_name'];
-        $websiteId = $this->storeManager->getWebsite($object->getScopeId())->getId();
-        $file      = $this->getCsvFile($filePath);
+        $filePath  = $_FILES['groups']['tmp_name']['tig_gls']['fields']['import']['value'];
 
+        $websiteId     = $this->storeManager->getWebsite($object->getScopeId())->getId();
+        $conditionName = $this->getConditionName($object);
+
+        $file          = $this->getCsvFile($filePath);
         try {
-            $this->deleteByCondition($object);
+            $condition = [
+                'website_id = ?' => $websiteId
+            ];
+            $this->deleteByCondition($condition);
 
             $columns = $this->import->getColumns();
-
-            foreach ($this->import->_getData($file, $websiteId) as $bunch) {
+            $conditionFullName = $this->_getConditionFullName($conditionName);
+            foreach ($this->import->_getData($file, $websiteId, $conditionName, $conditionFullName) as $bunch) {
                 $this->importData($columns, $bunch);
             }
         } catch (\Exception $e) {

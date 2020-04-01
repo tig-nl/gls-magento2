@@ -33,6 +33,7 @@
 namespace TIG\GLS\Model\Carrier;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Quote\Model\Quote\Address\RateRequest;
 use Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory;
 use Magento\Quote\Model\Quote\Address\RateResult\MethodFactory;
@@ -154,6 +155,43 @@ class GLS extends AbstractCarrier implements CarrierInterface
         $glsFactory = $this->glsFactory->create();
 
         return $glsFactory->getRate($request);
+    }
+
+    /**
+     * @param        $type
+     * @param string $code
+     *
+     * @return mixed
+     * @throws LocalizedException
+     */
+    public function getCode($type, $code = 'package_value_with_discount')
+    {
+        $codes = [
+            'condition_name' => [
+                'package_value_with_discount' => __('Prices vs. Destination')
+            ],
+            'condition_name_short' => [
+                'package_value_with_discount' => __('Order Subtotal (and above)')
+            ]
+        ];
+
+        if (!isset($codes[$type])) {
+            throw new LocalizedException(
+                __('The "%1" code for GLS is incorrect. Verify the type and try again.', $type)
+            );
+        }
+
+        if ($code === '') {
+            return $codes[$type];
+        }
+
+        if (!isset($codes[$type][$code])) {
+            throw new LocalizedException(
+                __('The "%1: %2" code type for GLS is incorrect. Verify the type and try again.', $type, $code)
+            );
+        }
+
+        return $codes[$type][$code];
     }
 
     /**

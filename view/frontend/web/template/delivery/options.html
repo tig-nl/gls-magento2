@@ -98,8 +98,9 @@
                     <a class="close" data-bind="i18n: 'Close', click: $parent.closeBusinessHours.bind($element)"></a>
                     <div class="table" data-bind="foreach: businessHours">
                         <div class="row">
-                            <div class="cell" data-bind="i18n: dayOfWeek"></div>
-                            <div class="cell" data-bind="i18n: openTime + ' - ' + closedTime + ' hour'"></div>
+                            <div class="cell dayofweek" data-bind="i18n: dayOfWeek"></div>
+                            <div class="cell openclosetime" data-bind="i18n: openTime + ' - ' + closedTime"></div>
+                            <span class="hours" data-bind="i18n: 'hour'"></span>
                         </div>
                     </div>
                 </div>

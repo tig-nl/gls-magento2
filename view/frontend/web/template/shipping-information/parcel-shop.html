@@ -30,7 +30,7 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 -->
-<div class="shipping-information" data-bind="visible: isSelected() == true">
+<div class="shipping-information" data-bind="visible: isSelected() == true && selectedMethod() == 'tig_gls_tig_gls'">
     <!-- ko if: parcelShopAddress() -->
     <div class="parcel-shop-address">
         <div class="shipping-information-title">
