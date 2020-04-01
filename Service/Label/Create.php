@@ -167,6 +167,7 @@ class Create extends ShippingInformation
             'pickupAddress'   => $this->preparePickupAddress()
         ];
         $data['shippingDate']      = $this->shippingDate->calculate("Y-m-d", false);
+        $data['reference']         = $order->getIncrementId();
         $data['units']             = [
             $this->prepareShippingUnit($shipment)
         ];
