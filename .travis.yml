@@ -19,12 +19,12 @@ matrix:
   # PHP 7.2 is only supported in Magento 2.3.x
   include:
     - php: 7.1
-      env: MAGENTO_VERSION=2.3.1
+      env: MAGENTO_VERSION=2.2.11
     - php: 7.1
       env: MAGENTO_VERSION=2.3.2
     - php: 7.2
       env: MAGENTO_VERSION=2.3.3 # DI_COMPILE=true
-    - php: 7.2
+    - php: 7.3
       env: MAGENTO_VERSION=2.3.4 CODE_COVERAGE=true
 
   allow_failures:
