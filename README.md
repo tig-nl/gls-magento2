@@ -1,4 +1,4 @@
-# TIG GLS for Magento 2
+# TIG GLS Netherlands for Magento 2
 
 ![TIG GLS tested 2.2.x versions](https://img.shields.io/badge/Tested%20with-2.2.11-%23009f3e)
 ![TIG GLS tested 2.3.x versions](https://img.shields.io/badge/Tested%20with-2.3.4-%23009f3e)
@@ -7,10 +7,11 @@ We created this extension to **easily integrate GLS' Delivery Services into Mage
 
 ## What does it do?
 * Add GLS as a shipping method to Magento 2's checkout.
-  * Show available Delivery Options depending on zipcode and shipping date, such as:
+  * Show available Delivery Options in The Netherlands depending on zipcode and shipping date, such as:
     * Express Delivery (e.g. before 9.00 AM, 12.00 AM or 5.00 PM),
     * Saturday Delivery,
-    * Delivery to a ParcelShop (sorted by distance from zipcode).
+    * Delivery to a ParcelShop (sorted by distance from zipcode),
+  * Ship outside The Netherlands using Standard Delivery.
   * Use table rates to set different shipping rates per country and order subtotal.
 * Easily create, delete or print labels from within the Shipment-view:
   * Including ShopReturn-label (if enabled).
