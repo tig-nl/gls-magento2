@@ -35,6 +35,7 @@ namespace TIG\GLS\Model\ResourceModel\Carrier;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate;
+use Magento\Framework\App\Request\Http;
 use TIG\GLS\Model\ResourceModel\Carrier\GLS\Import;
 use TIG\GLS\Model\ResourceModel\Carrier\GLS\RateQuery;
 use TIG\GLS\Model\ResourceModel\Carrier\GLS\RateQueryFactory;
@@ -63,6 +64,11 @@ class GLS extends Tablerate
     private $rateQueryFactory;
 
     /**
+     * @var Http
+     */
+    private $request;
+
+    /**
      * GLS constructor.
      *
      * @param \Magento\Framework\Model\ResourceModel\Db\Context  $context
@@ -77,6 +83,7 @@ class GLS extends Tablerate
      * @param Import                                             $import
      * @param CartRepositoryInterface                            $cartRepository
      * @param null                                               $connectionName
+     * @param Http                                               $request
      */
     public function __construct(
         \Magento\Framework\Model\ResourceModel\Db\Context $context,
@@ -257,7 +264,7 @@ class GLS extends Tablerate
         /**
          * @var \Magento\Framework\App\Config\Value $object
          */
-        if (empty($_FILES['groups']['tmp_name']['tig_gls']['fields']['import']['value'])) {
+        if ($this->request->getFiles() && empty($this->request->getFiles()['groups']['tig_gls']['fields']['import']['value']['tmp_name'])) {
             return $this;
         }
         $filePath  = $_FILES['groups']['tmp_name']['tig_gls']['fields']['import']['value'];
