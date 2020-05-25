@@ -264,7 +264,7 @@ class GLS extends Tablerate
         /**
          * @var \Magento\Framework\App\Config\Value $object
          */
-        if ($this->request->getFiles() && empty($this->request->getFiles()['groups']['tig_gls']['fields']['import']['value']['tmp_name'])) {
+        if (empty($_FILES['groups']['tmp_name']['tig_gls']['fields']['import']['value'])) {
             return $this;
         }
         $filePath  = $_FILES['groups']['tmp_name']['tig_gls']['fields']['import']['value'];
