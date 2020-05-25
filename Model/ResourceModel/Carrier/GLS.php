@@ -263,6 +263,9 @@ class GLS extends Tablerate
     {
         /**
          * @var \Magento\Framework\App\Config\Value $object
+         *
+         * We're using the $_FILES super global here, because Magento uses it, too in:
+         * /vendor/magento/module-offline-shipping/Model/ResourceModel/Carrier/Tablerate.php
          */
         if (empty($_FILES['groups']['tmp_name']['tig_gls']['fields']['import']['value'])) {
             return $this;
