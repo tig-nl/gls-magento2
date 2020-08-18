@@ -109,12 +109,13 @@ class GLS extends AbstractCarrier implements CarrierInterface
     }
 
     /**
-     * Collect and get rates
+     * Collect and get rates.
      *
      * @param RateRequest $request
      *
-     * @return \Magento\Framework\DataObject|bool|null|Result
-     * @api
+     * @return bool|\Magento\Framework\DataObject|Result|null
+     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     // @codingStandardsIgnoreLine
     public function collectRates(RateRequest $request)
@@ -131,23 +132,9 @@ class GLS extends AbstractCarrier implements CarrierInterface
         $result = $this->rateResultFactory->create();
         $rate   = $this->getRate($request);
 
-        if (!empty($rate) && $rate['price'] >= 0) {
-            $shippingPrice = $this->getFinalPriceWithHandlingFee($rate['price']);
-            $method        = $this->createShippingMethod($shippingPrice, $rate['cost']);
-            $result->append($method);
-        } else {
-            /** @var \Magento\Quote\Model\Quote\Address\RateResult\Error $error */
-            $error = $this->_rateErrorFactory->create(
-                [
-                    'data' => [
-                        'carrier' => $this->_code,
-                        'carrier_title' => $this->getConfigData('title'),
-                        'error_message' => $this->getConfigData('specificerrmsg'),
-                    ],
-                ]
-            );
-            $result->append($error);
-        }
+        $shippingPrice = $this->getFinalPriceWithHandlingFee($rate['price']);
+        $method        = $this->createShippingMethod($shippingPrice, $rate['cost']);
+        $result->append($method);
 
         return $result;
     }
@@ -155,7 +142,7 @@ class GLS extends AbstractCarrier implements CarrierInterface
     /**
      * @param RateRequest $request
      *
-     * @return array|bool
+     * @return array
      * @throws LocalizedException
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
