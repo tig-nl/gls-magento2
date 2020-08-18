@@ -131,7 +131,7 @@ class GLS extends Tablerate
      *
      * @param Quote\Address\RateRequest $request
      *
-     * @return array|bool
+     * @return array
      * @throws LocalizedException
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
