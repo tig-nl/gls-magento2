@@ -56,7 +56,7 @@
 
             <field id="getting_started" type="note" translate="label" sortOrder="41" showInDefault="1" showInWebsite="0" showInStore="1">
                 <label>Import Rates</label>
-                <comment><![CDATA[Switch to Website configuration scope to start import table rates (different handling fees for separate countries and shopping cart values.]]></comment>
+                <comment><![CDATA[Switch to Website configuration scope to start importing table rates (different handling fees for separate countries and shopping cart value)]]></comment>
             </field>
 
             <field id="import" translate="label comment" type="TIG\GLS\Block\Adminhtml\Form\Field\Import" sortOrder="50" showInDefault="0" showInWebsite="1" showInStore="0">
