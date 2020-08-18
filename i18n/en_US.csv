@@ -96,5 +96,5 @@ ShopReturnService,ShopReturnService
 "Shipping Label","Shipping Label"
 "Track ID","Track ID"
 "Shipment labels successfully deleted","Shipment labels successfully deleted"
-"Importing Table Rates (Handling Fees for different countries) is possible on configuration scope: website","Importing Table Rates (Handling Fees for different countries) is possible on configuration scope: website"
+"Switch to Website configuration scope to start import table rates (different handling fees for separate countries and shopping cart values.","Switch to Website configuration scope to start import table rates (different handling fees for separate countries and shopping cart values."
 "hour","hour"
