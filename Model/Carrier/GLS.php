@@ -72,9 +72,6 @@ class GLS extends AbstractCarrier implements CarrierInterface
     /** @var MethodFactory $rateMethodFactory */
     private $rateMethodFactory;
 
-    /** @var ScopeConfigInterface */
-    private $scopeConfig;
-
     /** @var GLSCarrier $glsFactory */
     private $glsFactory;
 
@@ -99,18 +96,16 @@ class GLS extends AbstractCarrier implements CarrierInterface
         GLSFactory $glsFactory,
         array $data = []
     ) {
+        $this->accountConfigProvider = $accountConfigProvider;
+        $this->rateResultFactory     = $rateResultFactory;
+        $this->rateMethodFactory     = $rateMethodFactory;
+        $this->glsFactory            = $glsFactory;
         parent::__construct(
             $scopeConfig,
             $rateErrorFactory,
             $logger,
             $data
         );
-
-        $this->accountConfigProvider = $accountConfigProvider;
-        $this->rateResultFactory     = $rateResultFactory;
-        $this->rateMethodFactory     = $rateMethodFactory;
-        $this->glsFactory            = $glsFactory;
-        $this->scopeConfig           = $scopeConfig;
     }
 
     /**
@@ -136,19 +131,33 @@ class GLS extends AbstractCarrier implements CarrierInterface
         $result = $this->rateResultFactory->create();
         $rate   = $this->getRate($request);
 
-        $shippingPrice = $this->getFinalPriceWithHandlingFee($rate['price']);
-        $method        = $this->createShippingMethod($shippingPrice, $rate['cost']);
-        $result->append($method);
+        if (!empty($rate) && $rate['price'] >= 0) {
+            $shippingPrice = $this->getFinalPriceWithHandlingFee($rate['price']);
+            $method        = $this->createShippingMethod($shippingPrice, $rate['cost']);
+            $result->append($method);
+        } else {
+            /** @var \Magento\Quote\Model\Quote\Address\RateResult\Error $error */
+            $error = $this->_rateErrorFactory->create(
+                [
+                    'data' => [
+                        'carrier' => $this->_code,
+                        'carrier_title' => $this->getConfigData('title'),
+                        'error_message' => $this->getConfigData('specificerrmsg'),
+                    ],
+                ]
+            );
+            $result->append($error);
+        }
 
         return $result;
     }
 
     /**
-     * Get rate.
-     *
-     * @param \Magento\Quote\Model\Quote\Address\RateRequest $request
+     * @param RateRequest $request
      *
      * @return array|bool
+     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getRate(\Magento\Quote\Model\Quote\Address\RateRequest $request)
     {
