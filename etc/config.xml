@@ -52,6 +52,7 @@
                 <express_parcel_services>
                     <services_active></services_active>
                 </express_parcel_services>
+                <specificerrmsg>This shipping method is not available due to faulty or incomplete configuration.</specificerrmsg>
             </tig_gls>
         </carriers>
         <tig_gls>
