@@ -131,7 +131,7 @@ class GLS extends Tablerate
      *
      * @param Quote\Address\RateRequest $request
      *
-     * @return array|bool
+     * @return array
      * @throws LocalizedException
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
@@ -153,6 +153,21 @@ class GLS extends Tablerate
         }
 
         $result = $connection->fetchRow($select, $bindings);
+
+        /**
+         * If Table Rates are not configured, provide a fallback, so only the base handling fee is used for all
+         * destinations and shopping cart values.
+         */
+        if (!$result) {
+            $result = [
+                'dest_country_id' => '*',
+                'dest_region_id'  => '*',
+                'dest_zip'        => '*',
+                'condition_value' => '0.0000',
+                'price'           => '0.0000',
+                'cost'            => '0.0000'
+            ];
+        }
 
         // Normalize destination zip code
         if ($result && $result['dest_zip'] == '*') {

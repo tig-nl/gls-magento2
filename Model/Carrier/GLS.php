@@ -72,9 +72,6 @@ class GLS extends AbstractCarrier implements CarrierInterface
     /** @var MethodFactory $rateMethodFactory */
     private $rateMethodFactory;
 
-    /** @var ScopeConfigInterface */
-    private $scopeConfig;
-
     /** @var GLSCarrier $glsFactory */
     private $glsFactory;
 
@@ -99,27 +96,26 @@ class GLS extends AbstractCarrier implements CarrierInterface
         GLSFactory $glsFactory,
         array $data = []
     ) {
+        $this->accountConfigProvider = $accountConfigProvider;
+        $this->rateResultFactory     = $rateResultFactory;
+        $this->rateMethodFactory     = $rateMethodFactory;
+        $this->glsFactory            = $glsFactory;
         parent::__construct(
             $scopeConfig,
             $rateErrorFactory,
             $logger,
             $data
         );
-
-        $this->accountConfigProvider = $accountConfigProvider;
-        $this->rateResultFactory     = $rateResultFactory;
-        $this->rateMethodFactory     = $rateMethodFactory;
-        $this->glsFactory            = $glsFactory;
-        $this->scopeConfig           = $scopeConfig;
     }
 
     /**
-     * Collect and get rates
+     * Collect and get rates.
      *
      * @param RateRequest $request
      *
-     * @return \Magento\Framework\DataObject|bool|null|Result
-     * @api
+     * @return bool|\Magento\Framework\DataObject|Result|null
+     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     // @codingStandardsIgnoreLine
     public function collectRates(RateRequest $request)
@@ -144,11 +140,11 @@ class GLS extends AbstractCarrier implements CarrierInterface
     }
 
     /**
-     * Get rate.
+     * @param RateRequest $request
      *
-     * @param \Magento\Quote\Model\Quote\Address\RateRequest $request
-     *
-     * @return array|bool
+     * @return array
+     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getRate(\Magento\Quote\Model\Quote\Address\RateRequest $request)
     {
