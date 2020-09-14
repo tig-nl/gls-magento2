@@ -38,7 +38,7 @@ class Data
 {
     const MODULE_NAME       = 'TIG_GLS';
 
-    const EXTENSION_VERSION = '1.3.0';
+    const EXTENSION_VERSION = '1.3.2';
 
     /**
      * @var ProductMetadataInterface
@@ -47,8 +47,8 @@ class Data
 
     /** @var array */
     private $phpVersionSupport = [
-        '2.2' => ['7.1' => ['+']],
-        '2.3' => ['7.1' => ['+'], '7.2' => ['+'], '7.3' => ['+']]
+        '2.3' => ['7.1' => ['+'], '7.2' => ['+'], '7.3' => ['+']],
+        '2.4' => ['7.4' => ['+']]
     ];
 
     /**
