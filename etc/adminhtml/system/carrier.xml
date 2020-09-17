@@ -78,7 +78,7 @@
 
             <field id="processing_time" translate="label comment" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                 <label>Processing Time</label>
-                <validate>validate-number validate-zero-or-greater</validate>
+                <validate>validate-number validate-no-empty validate-zero-or-greater</validate>
                 <comment><![CDATA[The time (in days) it takes to process and package an order before it's shipped.]]></comment>
             </field>
 
