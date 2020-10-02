@@ -31,10 +31,10 @@
  */
 ?>
 
-<span id="message_span" data-mage-init='{"glsValidate": {"url": "<?php echo $this->getValidateUrl(); ?>"}}'>
+<span id="message_span" data-mage-init='{"glsValidate": {"url": "<?php echo $block->escapeUrl($block->getValidateUrl()); ?>"}}'>
     <div class="loader"></div>
-    <span class="validation-message unknown"><?php echo __('Validating API credentials'); ?></span>
-    <span class="validation-message error" style="display: none;"><?php echo __('API credentials are incorrect'); ?></span>
-    <span class="validation-message unable-to-retrieve" style="display: none;"><?php echo __('Unable to validate API credentials'); ?></span>
-    <span class="validation-message success" style="display: none;"><?php echo __('API credentials are correct'); ?></span>
+    <span class="validation-message unknown"><?php echo $block->escapeHtml(__('Validating API credentials')); ?></span>
+    <span class="validation-message error" style="display: none;"><?php echo $block->escapeHtml(__('API credentials are incorrect')); ?></span>
+    <span class="validation-message unable-to-retrieve" style="display: none;"><?php echo $block->escapeHtml(__('Unable to validate API credentials')); ?></span>
+    <span class="validation-message success" style="display: none;"><?php echo $block->escapeHtml(__('API credentials are correct')); ?></span>
 </span>
