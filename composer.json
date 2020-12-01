@@ -3,7 +3,7 @@
     "description": "TIG Magento 2 GLS extension",
     "require": {
         "php": "~7.1|~7.2|~7.3",
-        "magento/framework": "~101.0|~102.0",
+        "magento/framework": "~101.0|~102.0|~103.0",
         "ext-json": "*"
     },
     "type": "magento2-module",
