@@ -2,6 +2,7 @@
 
 ![TIG GLS tested 2.2.x versions](https://img.shields.io/badge/Tested%20with-2.2.11-%23009f3e)
 ![TIG GLS tested 2.3.x versions](https://img.shields.io/badge/Tested%20with-2.3.4-%23009f3e)
+![TIG GLS tested 2.4.x versions](https://img.shields.io/badge/Tested%20with-2.4.1-%23009f3e)
 
 We created this extension to **easily integrate GLS' Delivery Services into Magento 2**. 
 
@@ -57,6 +58,4 @@ Start by using the _Export CSV_ button, which results in an empty CSV-file with 
 * **Region/State**: Specify a region or state to make the shipping applicable only to this region. Keep in mind that this field is optional in the checkout for some countries. Wildcard = *
 * **Zip/Postal Code**: This should the the exact postal code. E.g. for The Netherlands and without postal code validation you should have 2 lines in your CSV-file per postal code, e.g. 1014BA and 1014 BA. Wildcard = *
 * **Order Subtotal (and above)**: apply this shipping rate if the total cart value exceeds this amount (e.g. 100.) Defaults to 0. 
-* **Shipping Price**: e.g. 9.95 (using a period as delimiter) is added to the amount specified as _Handling Fee_ in _Stores / Configuration / Sales / Shipping Methods / GLS_.  
-
-
+* **Shipping Price**: e.g. 9.95 (using a period as delimiter) is added to the amount specified as _Handling Fee_ in _Stores / Configuration / Sales / Shipping Methods / GLS_.
