@@ -1,7 +1,7 @@
 # TIG GLS Netherlands for Magento 2
 
 ![TIG GLS tested 2.3.x versions](https://img.shields.io/badge/Tested%20with-2.3.5&#8211;p2-%23009f3e)
-![TIG GLS tested 2.4.x versions](https://img.shields.io/badge/Tested%20with-2.4.0-%23009f3e)
+![TIG GLS tested 2.4.x versions](https://img.shields.io/badge/Tested%20with-2.4.1-%23009f3e)
 
 We created this extension to **easily integrate GLS' Delivery Services into Magento 2**. 
 
