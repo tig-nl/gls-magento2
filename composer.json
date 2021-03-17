@@ -1,6 +1,6 @@
 {
-    "name": "tig/gls-magento2",
-    "description": "TIG Magento 2 GLS extension",
+    "name": "b2bzanden/tig-gls-magento2",
+    "description": "Forked TIG Magento 2 GLS extension",
     "require": {
         "php": "7.*",
         "magento/framework": "~101.0|~102.0|~103.0",
@@ -8,7 +8,7 @@
     },
     "type": "magento2-module",
     "license": "CC-BY-NC-ND-3.0",
-    "version": "1.3.2",
+    "version": "1.3.2.1",
     "minimum-stability": "stable",
     "authors": [
         {
