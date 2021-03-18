@@ -35,6 +35,7 @@ namespace TIG\GLS\Plugin\Quote\Model;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use TIG\GLS\Model\Config\Provider\Carrier;
+use TIG\GLS\Service\DeliveryOptions\Services as ServicesService;
 
 class QuoteManagement
 {
@@ -43,6 +44,9 @@ class QuoteManagement
 
     /** @var OrderRepositoryInterface $orderRepository */
     private $orderRepository;
+
+    /** @var ServicesService $services */
+    private $services;
 
     /** @var Carrier $carrier */
     private $carrier;
@@ -55,10 +59,12 @@ class QuoteManagement
     public function __construct(
         CartRepositoryInterface $cartRepository,
         OrderRepositoryInterface $orderRepository,
+        ServicesService $services,
         Carrier $carrier
     ) {
         $this->cartRepository  = $cartRepository;
         $this->orderRepository = $orderRepository;
+        $this->services = $services;
         $this->carrier = $carrier;
     }
 
