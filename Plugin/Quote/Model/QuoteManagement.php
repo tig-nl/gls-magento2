@@ -44,6 +44,9 @@ class QuoteManagement
     /** @var OrderRepositoryInterface $orderRepository */
     private $orderRepository;
 
+    /** @var Carrier $carrier */
+    private $carrier;
+
     /**
      * QuoteManagement constructor.
      *
@@ -51,10 +54,12 @@ class QuoteManagement
      */
     public function __construct(
         CartRepositoryInterface $cartRepository,
-        OrderRepositoryInterface $orderRepository
+        OrderRepositoryInterface $orderRepository,
+        Carrier $carrier
     ) {
         $this->cartRepository  = $cartRepository;
         $this->orderRepository = $orderRepository;
+        $this->carrier = $carrier;
     }
 
     /**
@@ -72,7 +77,14 @@ class QuoteManagement
         $deliveryOption  = $shippingAddress->getGlsDeliveryOption();
 
         if (!$deliveryOption) {
-            return;
+            if($this->carrier->getAllowApiOrderService()) {
+                $deliveryOption = $this->getDeliveryOptionsForApiOrder($shippingAddress);
+                if (!$deliveryOption) {
+                    return;
+                }
+            } else {
+                return;
+            }
         }
 
         $deliveryOption = json_decode($deliveryOption);
@@ -86,6 +98,30 @@ class QuoteManagement
         if ($type == Carrier::GLS_DELIVERY_OPTION_PARCEL_SHOP_LABEL) {
             $this->changeShippingAddress($deliveryOption->details, $shippingAddress);
         }
+    }
+
+    /**
+     * If order is placed through Magento API and auto-select is enabled,
+     * order gets first available delivery time.
+     *
+     * @param $shippingAddress
+     * @return false|string
+     */
+    public function getDeliveryOptionsForApiOrder($shippingAddress)
+    {
+        $countryCode = $languageCode = $shippingAddress->getCountryId();
+        $postcode = $shippingAddress->getPostcode();
+        $services = $this->services->getDeliveryOptions($countryCode, $languageCode, $postcode);
+        $deliveryOptions = (isset($services['deliveryOptions'])) ? $services['deliveryOptions'] : null;
+        $autoSelectDelivery = $deliveryOptions[0];
+        $autoSelectDelivery['isService'] = false;
+        $autoSelectDelivery['hasSubOptions'] = false;
+        $autoSelectDelivery['fee'] = null;
+        $autoSelectDeliveryResultsArray = array(
+            'type' => 'deliveryService',
+            'details' => $autoSelectDelivery
+        );
+        return json_encode($autoSelectDeliveryResultsArray);
     }
 
     /**

@@ -87,6 +87,12 @@
                 <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
             </field>
 
+            <field id="allow_api_order_service" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <label>Allow API Order auto-select first delivery time</label>
+                <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                <comment><![CDATA[If enabled, orders through Magento API using GLS will auto-select first possible delivery time]]></comment>
+            </field>
+
             <include path="TIG_GLS::system/services/business_parcel.xml" />
 
             <include path="TIG_GLS::system/services/express_parcel.xml" />
