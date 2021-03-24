@@ -45,17 +45,19 @@ use Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\CSV\ColumnNotF
 // @codingStandardsIgnoreFile
 class ColumnResolver
 {
-    const COLUMN_COUNTRY = 'Country';
-    const COLUMN_REGION  = 'Region/State';
-    const COLUMN_ZIP     = 'Zip/Postal Code';
-    const COLUMN_PRICE   = 'Shipping Price';
+    const COLUMN_COUNTRY  = 'Country';
+    const COLUMN_REGION   = 'Region/State';
+    const COLUMN_ZIP      = 'Zip/Postal Code';
+    const COLUMN_SUBTOTAL = 'Order Subtotal (and above)';
+    const COLUMN_PRICE    = 'Shipping Price';
 
     /** @var array */
     private $nameToPositionIdMap = [
-        self::COLUMN_COUNTRY => 0,
-        self::COLUMN_REGION  => 1,
-        self::COLUMN_ZIP     => 2,
-        self::COLUMN_PRICE   => 4,
+        self::COLUMN_COUNTRY  => 0,
+        self::COLUMN_REGION   => 1,
+        self::COLUMN_ZIP      => 2,
+        self::COLUMN_SUBTOTAL => 3,
+        self::COLUMN_PRICE    => 4,
     ];
 
     /** @var array */
