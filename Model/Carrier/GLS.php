@@ -128,6 +128,14 @@ class GLS extends AbstractCarrier implements CarrierInterface
             return false;
         }
 
+        if ($request->getFreeShipping() === true) {
+            $result = $this->rateResultFactory->create();
+            $method        = $this->createShippingMethod(0, 0);
+            $result->append($method);
+
+            return $result;
+        }
+
         /** @var \Magento\Shipping\Model\Rate\Result $result */
         $result = $this->rateResultFactory->create();
         $rate   = $this->getRate($request);
