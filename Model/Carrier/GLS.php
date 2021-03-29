@@ -130,7 +130,7 @@ class GLS extends AbstractCarrier implements CarrierInterface
 
         if ($request->getFreeShipping() === true) {
             $result = $this->rateResultFactory->create();
-            $method        = $this->createShippingMethod(0, 0);
+            $method = $this->createShippingMethod(0, 0);
             $result->append($method);
 
             return $result;
