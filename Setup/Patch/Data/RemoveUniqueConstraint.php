@@ -73,13 +73,15 @@ class RemoveUniqueConstraint implements DataPatchInterface, NonTransactionableIn
         $connection = $this->moduleDataSetup->getConnection();
         $connection->startSetup();
 
-        $indexList  = $connection->getIndexList(self::TABLE_GLS_SHIPPING_TABLERATE);
+        $tableName = $this->moduleDataSetup->getTable(self::TABLE_GLS_SHIPPING_TABLERATE);
+
+        $indexList  = $connection->getIndexList($tableName);
 
         if (!isset($indexList[self::TABLE_GLS_SHIPPING_TABLERATE_CONSTRAINT_KEY])) {
             return;
         }
 
-        $connection->dropIndex(self::TABLE_GLS_SHIPPING_TABLERATE, self::TABLE_GLS_SHIPPING_TABLERATE_CONSTRAINT_KEY);
+        $connection->dropIndex($tableName, self::TABLE_GLS_SHIPPING_TABLERATE_CONSTRAINT_KEY);
 
         $connection->endSetup();
     }
