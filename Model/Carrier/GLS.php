@@ -173,11 +173,11 @@ class GLS extends AbstractCarrier implements CarrierInterface
         $codes = [
             'condition_name' => [
                 'package_value_with_discount' => __('Prices vs. Destination'),
-                'weight'                      => __('Weight (and above)')
+                'package_weight'              => __('Weight (and above)')
             ],
             'condition_name_short' => [
                 'package_value_with_discount' => __('Order Subtotal (and above)'),
-                'weight'                      => __('Weight (and above)')
+                'package_weight'              => __('Weight (and above)')
             ]
         ];
 
