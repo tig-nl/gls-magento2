@@ -34,9 +34,11 @@
 namespace TIG\GLS\Service\Label;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Store\Model\ScopeInterface;
 use Magento\Sales\Api\ShipmentRepositoryInterface;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Shipment;
 use TIG\GLS\Model\Config\Provider\Carrier;
+use TIG\GLS\Plugin\Quote\Model\QuoteManagement;
 use TIG\GLS\Service\ShippingDate;
 use TIG\GLS\Webservice\Endpoint\Label\Create as EndpointLabelCreate;
 
@@ -58,6 +60,7 @@ class Create extends ShippingInformation
     const XPATH_CONFIG_TIG_GLS_GENERAL_LABEL_TYPE         = 'tig_gls/general/label_type';
     const XPATH_CONFIG_TIG_GLS_GENERAL_LABEL_MARGIN_TOP   = 'tig_gls/general/label_margin_top_a4';
     const XPATH_CONFIG_TIG_GLS_GENERAL_LABEL_MARGIN_LEFT  = 'tig_gls/general/label_margin_left_a4';
+    const XPATH_NON_GLS_MASSACTIONS                       = 'tig_gls/general/non_gls_massactions';
     const GLS_PARCEL_MAX_WEIGHT                           = 31.9;
 
     /**
@@ -91,24 +94,32 @@ class Create extends ShippingInformation
     private $shippingDate;
 
     /**
+     * @var QuoteManagement
+     */
+    private $quoteManagement;
+
+    /**
      * @param EndpointLabelCreate         $createLabel
      * @param ShipmentRepositoryInterface $shipmentRepository
      * @param Carrier                     $carrierConfig
      * @param ScopeConfigInterface        $scopeConfig
      * @param ShippingDate                $shippingDate
+     * @param QuoteManagement             $quoteManagement
      */
     public function __construct(
         EndpointLabelCreate $createLabel,
         ShipmentRepositoryInterface $shipmentRepository,
         Carrier $carrierConfig,
         ScopeConfigInterface $scopeConfig,
-        ShippingDate $shippingDate
+        ShippingDate $shippingDate,
+        QuoteManagement $quoteManagement
     ) {
         $this->createLabel = $createLabel;
         $this->shipmentRepository = $shipmentRepository;
         $this->carrierConfig = $carrierConfig;
         $this->scopeConfig = $scopeConfig;
         $this->shippingDate = $shippingDate;
+        $this->quoteManagement = $quoteManagement;
     }
 
     /**
@@ -147,12 +158,20 @@ class Create extends ShippingInformation
      * @param $controllerModule
      * @param $version
      *
-     * @return array
+     * @return array|bool
      */
     private function mapLabelData($shipment, $controllerModule, $version)
     {
         $order           = $shipment->getOrder();
         $deliveryOption  = json_decode($order->getGlsDeliveryOption());
+        if (!$deliveryOption && $this->scopeConfig->getValue(self::XPATH_NON_GLS_MASSACTIONS)) {
+            $deliveryOption = $this->getDefaultGLSOptions($shipment);
+        }
+
+        if (!$deliveryOption) {
+            return false;
+        }
+
         $deliveryAddress = $deliveryOption->deliveryAddress;
         $labelType       = $this->getLabelType();
 
@@ -178,6 +197,24 @@ class Create extends ShippingInformation
         }
 
         return $data;
+    }
+
+    /**
+     * @param Order    $order
+     * @param Shipment $shipment
+     *
+     * @return object
+     */
+    private function getDefaultGLSOptions($shipment)
+    {
+        return (object) $deliveryOption = [
+            'type' => 'deliveryService',
+            'details' => null,
+            'deliveryAddress' => $this->quoteManagement->mapDeliveryAddress(
+                $shipment->getShippingAddress(),
+                $shipment->getBillingAddress()
+            )
+        ];
     }
 
     /**

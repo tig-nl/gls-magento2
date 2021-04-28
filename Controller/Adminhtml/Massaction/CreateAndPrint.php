@@ -35,6 +35,7 @@
 namespace TIG\GLS\Controller\Adminhtml\Massaction;
 
 use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultInterface;
@@ -50,6 +51,8 @@ use TIG\GLS\Service\Shipment\Create as ShipmentCreate;
 
 class CreateAndPrint extends AbstractLabel
 {
+    const XPATH_NON_GLS_MASSACTIONS = 'tig_gls/general/non_gls_massactions';
+
     /**
      * @var Filter
      */
@@ -91,6 +94,11 @@ class CreateAndPrint extends AbstractLabel
     private $labelRepository;
 
     /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
      * CreateAndPrint constructor.
      *
      * @param Context                  $context
@@ -101,6 +109,7 @@ class CreateAndPrint extends AbstractLabel
      * @param LabelPrint               $labelPrinter
      * @param LabelSave                $labelSaver
      * @param LabelRepositoryInterface $labelRepository
+     * @param ScopeConfigInterface     $scopeConfig
      */
     public function __construct(
         Context $context,
@@ -110,7 +119,8 @@ class CreateAndPrint extends AbstractLabel
         LabelCreate $labelGenerator,
         LabelPrint $labelPrinter,
         LabelSave $labelSaver,
-        LabelRepositoryInterface $labelRepository
+        LabelRepositoryInterface $labelRepository,
+        ScopeConfigInterface $scopeConfig
     ) {
         parent::__construct($context);
 
@@ -121,6 +131,7 @@ class CreateAndPrint extends AbstractLabel
         $this->labelPrinter = $labelPrinter;
         $this->labelSaver = $labelSaver;
         $this->labelRepository = $labelRepository;
+        $this->scopeConfig = $scopeConfig;
     }
 
     /**
@@ -133,7 +144,10 @@ class CreateAndPrint extends AbstractLabel
     {
         $collection = $this->collectionFactory->create();
         $collection = $this->filter->getCollection($collection);
-        $collection = $this->removeNonGLSMethods($collection);
+        // If enabled, we can print labels for non-GLS orders.
+        if (!$this->scopeConfig->getValue(self::XPATH_NON_GLS_MASSACTIONS)) {
+            $collection = $this->removeNonGLSMethods($collection);
+        }
 
         if (empty($collection->getItems())) {
             return $this->redirectToOrderGrid();
