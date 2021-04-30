@@ -44,20 +44,19 @@ use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 //@codingStandardsIgnoreFile
 class Context
 {
-    const GLS_ADMIN_LABEL_CREATE_BUTTON          = 'gls_label_create';
-    const GLS_ADMIN_LABEL_CREATE_LABEL           = 'GLS - Create Label';
-    const GLS_ADMIN_LABEL_CREATE_URI             = 'gls/label/create';
-    const GLS_ADMIN_LABEL_PRINT_BUTTON           = 'gls_label_print';
-    const GLS_ADMIN_LABEL_PRINT_LABEL            = 'GLS - Print Label';
-    const GLS_ADMIN_LABEL_PRINT_URI              = 'gls/label/printPdf';
-    const GLS_ADMIN_LABEL_DELETE_BUTTON          = 'gls_label_delete';
-    const GLS_ADMIN_LABEL_DELETE_LABEL           = 'GLS - Delete Label';
-    const GLS_ADMIN_LABEL_DELETE_URI             = 'gls/label/delete';
-    const GLS_ADMIN_LABEL_CANCEL_SHIPMENT_BUTTON = 'gls_label_delete_shipment';
-    const GLS_ADMIN_LABEL_CANCEL_SHIPMENT_LABEL  = 'GLS - Cancel Shipment';
-    const GLS_ADMIN_LABEL_CANCEL_SHIPMENT_URI    = 'gls/shipment/cancel';
-    const XPATH_NON_GLS_MASSACTIONS              = 'tig_gls/general/non_gls_massactions';
-
+    const GLS_ADMIN_LABEL_CREATE_BUTTON                    = 'gls_label_create';
+    const GLS_ADMIN_LABEL_CREATE_LABEL                     = 'GLS - Create Label';
+    const GLS_ADMIN_LABEL_CREATE_URI                       = 'gls/label/create';
+    const GLS_ADMIN_LABEL_PRINT_BUTTON                     = 'gls_label_print';
+    const GLS_ADMIN_LABEL_PRINT_LABEL                      = 'GLS - Print Label';
+    const GLS_ADMIN_LABEL_PRINT_URI                        = 'gls/label/printPdf';
+    const GLS_ADMIN_LABEL_DELETE_BUTTON                    = 'gls_label_delete';
+    const GLS_ADMIN_LABEL_DELETE_LABEL                     = 'GLS - Delete Label';
+    const GLS_ADMIN_LABEL_DELETE_URI                       = 'gls/label/delete';
+    const GLS_ADMIN_LABEL_CANCEL_SHIPMENT_BUTTON           = 'gls_label_delete_shipment';
+    const GLS_ADMIN_LABEL_CANCEL_SHIPMENT_LABEL            = 'GLS - Cancel Shipment';
+    const GLS_ADMIN_LABEL_CANCEL_SHIPMENT_URI              = 'gls/shipment/cancel';
+    const XPATH_CONFIG_TIG_GLS_GENERAL_NON_GLS_MASSACTIONS = 'tig_gls/general/non_gls_massactions';
 
     /** @var BackendTemplate $template */
     private $template;
@@ -120,7 +119,7 @@ class Context
 
         if (
             $order->getShippingMethod() === 'tig_gls_tig_gls' ||
-            $this->scopeConfig->getValue(self::XPATH_NON_GLS_MASSACTIONS)
+            $this->scopeConfig->getValue(self::XPATH_CONFIG_TIG_GLS_GENERAL_NON_GLS_MASSACTIONS)
         ) {
             return $this->getButtonList($shipmentId);
         }
