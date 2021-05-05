@@ -98,3 +98,6 @@ ShopReturnService,ShopReturnService
 "Shipment labels successfully deleted","Shipment labels successfully deleted"
 "Switch to Website configuration scope to start importing table rates (different handling fees for separate countries and shopping cart values)","Switch to Website configuration scope to start importing table rates (different handling fees for separate countries and shopping cart values)"
 "hour","hour"
+"Calculate Handling Fee","Calculate Handling Fee"
+"Fixed","Fixed"
+"Price vs. Destination","Price vs. Destination"

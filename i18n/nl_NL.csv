@@ -99,3 +99,6 @@ ShopReturnService,ShopReturnService
 "Shipment labels successfully deleted","Verzendlabels succesvol verwijderd"
 "Switch to Website configuration scope to start importing table rates (different handling fees for separate countries and shopping cart values)","Schakel naar het configuratie niveau Website om tarieven voor buitenlandse bestemmingen en/of winkelwagenwaardes te importeren."
 "hour","uur"
+"Calculate Handling Fee","Verzendkosten Type"
+"Fixed","Vast"
+"Price vs. Destination","Prijs vs. Bestemming"
