@@ -33,7 +33,6 @@
 
 namespace TIG\GLS\Model\Config\Source\Carrier;
 
-
 use Magento\Framework\Data\OptionSourceInterface;
 
 class CalculateHandlingFee implements OptionSourceInterface
