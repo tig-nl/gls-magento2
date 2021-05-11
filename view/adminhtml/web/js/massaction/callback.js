@@ -42,7 +42,8 @@ define([
     'Magento_Ui/js/form/element/abstract',
     'mageUtils',
     'TIG_GLS/js/grid/dataprovider'
-], function ($,
+], function (
+    $,
     Abstract,
     utils,
     DataProvider
@@ -61,7 +62,7 @@ define([
          * @param action
          * @param data
          */
-        submit: function(action, data) {
+        submit: function (action, data) {
             var itemsType = data.excludeMode ? 'excluded' : 'selected',
                 selections = {};
 
@@ -96,13 +97,13 @@ define([
         },
 
         handleResponse: function (data) {
+            // This array will be converted to a string with message dom elements
             var messages = [];
             $.each(data.messages, function (key, message) {
-                // This array will be converted to a string with message dom elements
                 messages.push('<div class="message message-' + message.type + ' ' + message.type + '">' +
                     message.text +
                     '<div data-ui-id="messages-message-' + message.type + '"></div></div>'
-                )
+                );
             }.bind(messages));
             var message = '<div id="messages"><div class="messages">' + messages.join('') + '</div></div>';
             if ($('#messages').length) {
@@ -116,20 +117,19 @@ define([
                 return;
             }
 
-            const linkSource = `data:application/pdf;base64,${data.labels}`;
-            var win = window.open();
-            if (win) {
-                win.document.write(
+            var linkSource = "data:application/pdf;base64," + data.labels;
+            var pdfiFrameWindow = window.open();
+            if (pdfiFrameWindow) {
+                pdfiFrameWindow.document.write(
                     '<iframe src="' +
                     linkSource +
                     '" frameborder="0" style="border:0; top:0; left:0; bottom:0; right:0; width:100%; height:100%; position: fixed;" allowfullscreen></iframe>');
             }
-            const downloadLink = document.createElement("a");
-            const fileName = "gls-labels.pdf";
+            var downloadLink = document.createElement("a");
 
             downloadLink.href = linkSource;
-            downloadLink.download = fileName;
+            downloadLink.download = "gls-labels.pdf";
             downloadLink.click();
         }
-    })
+    });
 });

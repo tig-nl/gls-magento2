@@ -34,7 +34,6 @@ namespace TIG\GLS\Block\Adminhtml\Grid;
 use Magento\Backend\Block\Template;
 use Magento\Framework\View\Element\BlockInterface;
 
-
 class DataProvider extends Template implements BlockInterface
 {
     const XPATH_LABELS_ON_SEPARATE_PAGE = 'tig_gls/general/label_on_separate_page';
