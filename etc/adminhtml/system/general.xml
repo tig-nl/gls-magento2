@@ -98,5 +98,11 @@
                 <field id="label_type" separator=",">pdf2A4,pdf4A4</field>
             </depends>
         </field>
+        <field id="label_on_separate_page" translate="label comment" type="select" sortOrder="140" showInDefault="1" showInWebsite="0" showInStore="0">
+            <label>Open labels on new page</label>
+            <comment>Enable this setting to open labels generated with the mass-actions on a new tab.</comment>
+            <config_path>tig_gls/general/label_on_separate_page</config_path>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        </field>
     </group>
 </include>

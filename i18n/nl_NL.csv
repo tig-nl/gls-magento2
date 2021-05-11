@@ -99,3 +99,5 @@ ShopReturnService,ShopReturnService
 "Shipment labels successfully deleted","Verzendlabels succesvol verwijderd"
 "Switch to Website configuration scope to start importing table rates (different handling fees for separate countries and shopping cart values)","Schakel naar het configuratie niveau Website om tarieven voor buitenlandse bestemmingen en/of winkelwagenwaardes te importeren."
 "hour","uur"
+"Open labels on new page","Open labels op een nieuwe pagina"
+"Enable this setting to open labels generated with the mass-actions on a new tab.","Activeer deze instelling aan wanneer je labels gegenereerd door de mass-actions op een nieuwe pagina wilt openen."
