@@ -83,10 +83,10 @@ define([
                     data: selections,
                     success: function (data) {
                         this.handleResponse(data);
-                    }.bind(this),
+                    },
                     fail: function (data) {
                         this.handleResponse(data);
-                    }.bind(this)
+                    }
                 });
             } else {
                 utils.submit({
