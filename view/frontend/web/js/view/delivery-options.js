@@ -57,7 +57,9 @@ define([
             parcelShops: ko.observableArray([]),
             deliveryFee: ko.observable(),
             pickupFee: ko.observable(),
-            deliveryOptionsActive: window.checkoutConfig.shipping.gls.delivery_options_active
+            deliveryOptionsActive: window.checkoutConfig.shipping.gls.delivery_options_active,
+            availableServicesRequest: undefined,
+            parcelShopsRequest: undefined
         },
 
         initObservable: function () {
@@ -103,7 +105,12 @@ define([
          * Retrieve Delivery Options from GLS.
          */
         getAvailableServices: function (postcode, country) {
-            $.ajax({
+            // Avoid making simultaneous calls
+            if (this.availableServicesRequest !== undefined) {
+                this.availableServicesRequest.abort('avoidMulticalls');
+            }
+
+            this.availableServicesRequest = $.ajax({
                 method    : 'GET',
                 url       : '/gls/deliveryoptions/services',
                 type      : 'jsonp',
@@ -149,7 +156,12 @@ define([
                 return this.parcelShops([]);
             }
 
-            $.ajax({
+            // Avoid making simultaneous calls
+            if (this.parcelShopsRequest !== undefined) {
+                this.parcelShopsRequest.abort('avoidMulticalls');
+            }
+
+            this.parcelShopsRequest = $.ajax({
                 method    : 'GET',
                 url       : '/gls/deliveryoptions/parcelshops',
                 type      : 'jsonp',

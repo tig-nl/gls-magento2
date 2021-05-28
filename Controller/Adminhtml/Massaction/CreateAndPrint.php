@@ -37,6 +37,7 @@ namespace TIG\GLS\Controller\Adminhtml\Massaction;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Sales\Model\ResourceModel\Order\Collection;
@@ -52,6 +53,7 @@ use TIG\GLS\Service\Shipment\Create as ShipmentCreate;
 class CreateAndPrint extends AbstractLabel
 {
     const XPATH_CONFIG_TIG_GLS_GENERAL_NON_GLS_MASSACTIONS = 'tig_gls/general/non_gls_massactions';
+    const XPATH_LABELS_ON_SEPARATE_PAGE = 'tig_gls/general/label_on_separate_page';
 
     /**
      * @var Filter
@@ -94,6 +96,11 @@ class CreateAndPrint extends AbstractLabel
     private $labelRepository;
 
     /**
+     * @var JsonFactory
+     */
+    private $jsonFactory;
+
+    /**
      * @var ScopeConfigInterface
      */
     private $scopeConfig;
@@ -109,6 +116,7 @@ class CreateAndPrint extends AbstractLabel
      * @param LabelPrint               $labelPrinter
      * @param LabelSave                $labelSaver
      * @param LabelRepositoryInterface $labelRepository
+     * @param JsonFactory              $jsonFactory
      * @param ScopeConfigInterface     $scopeConfig
      */
     public function __construct(
@@ -120,6 +128,7 @@ class CreateAndPrint extends AbstractLabel
         LabelPrint $labelPrinter,
         LabelSave $labelSaver,
         LabelRepositoryInterface $labelRepository,
+        JsonFactory $jsonFactory,
         ScopeConfigInterface $scopeConfig
     ) {
         parent::__construct($context);
@@ -131,6 +140,7 @@ class CreateAndPrint extends AbstractLabel
         $this->labelPrinter = $labelPrinter;
         $this->labelSaver = $labelSaver;
         $this->labelRepository = $labelRepository;
+        $this->jsonFactory = $jsonFactory;
         $this->scopeConfig = $scopeConfig;
     }
 
@@ -142,6 +152,7 @@ class CreateAndPrint extends AbstractLabel
      */
     public function execute()
     {
+        $messages = [];
         $collection = $this->collectionFactory->create();
         $collection = $this->filter->getCollection($collection);
         // If enabled, we can print labels for non-GLS orders.
@@ -150,20 +161,44 @@ class CreateAndPrint extends AbstractLabel
         }
 
         if (empty($collection->getItems())) {
-            return $this->redirectToOrderGrid();
-        }
+            if (!$this->scopeConfig->getValue(self::XPATH_LABELS_ON_SEPARATE_PAGE)) {
+                return $this->redirectToOrderGrid();
+            }
 
-        $this->setSuccessMessage('Label(s) succesfully created and printed.');
+            foreach ($this->messageManager->getMessages(true)->getItems() as $message) {
+                // defines what kind of message it is (notice, error, success)
+                $instance = (new \ReflectionClass($message))->getShortName();
+                $messages[] = ['type' => strtolower($instance), 'text' => $message->getText()];
+
+            }
+
+            $response = $this->jsonFactory->create();
+            return $response->setData(['messages' => $messages]);
+        }
 
         $this->massCreateShipment($collection->getItems());
         $this->massCreateLabels();
-        $massLabel = $this->massPrintLabel();
 
-        $resultPage = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_RAW);
-        $resultPage->setHeader('Content-Type', 'application/pdf');
-        $resultPage->setContents($massLabel);
+        if (!$this->scopeConfig->getValue(self::XPATH_LABELS_ON_SEPARATE_PAGE)) {
+            $this->setSuccessMessage('Label(s) succesfully created and printed.');
 
-        return $resultPage;
+            $resultPage = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_RAW);
+            $resultPage->setHeader('Content-Type', 'application/pdf');
+            $resultPage->setContents($this->massPrintLabel());
+
+            return $resultPage;
+        }
+        $this->messageManager->addSuccessMessage('Label(s) succesfully created and printed.');
+        foreach ($this->messageManager->getMessages(true)->getItems() as $message) {
+            // defines what kind of message it is (notice, error, success)
+            $instance = (new \ReflectionClass($message))->getShortName();
+            $messages[] = ['type' => strtolower($instance), 'text' => $message->getText()];
+
+        }
+
+        $response = $this->jsonFactory->create();
+
+        return $response->setData(['messages' => $messages, 'labels' => base64_encode($this->massPrintLabel())]);
     }
 
     /**
