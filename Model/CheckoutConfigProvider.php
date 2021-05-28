@@ -54,7 +54,6 @@ class CheckoutConfigProvider implements ConfigProviderInterface
         $this->scopeConfig = $scopeConfig;
     }
 
-
     /**
      * Retrieve assoc array of checkout configuration
      *
@@ -62,9 +61,11 @@ class CheckoutConfigProvider implements ConfigProviderInterface
      */
     public function getConfig()
     {
+        $deliveryOptionsActive = (bool) $this->scopeConfig->getValue(self::XPATH_DELIVERY_OPTIONS_ACTIVE);
+
         return [
             'shipping' => [
-                'gls' => ['delivery_options_active' => (bool) $this->scopeConfig->getValue(self::XPATH_DELIVERY_OPTIONS_ACTIVE)]
+                'gls' => ['delivery_options_active' => $deliveryOptionsActive]
             ]
         ];
     }

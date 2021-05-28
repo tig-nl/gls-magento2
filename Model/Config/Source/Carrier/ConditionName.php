@@ -31,7 +31,6 @@
  */
 namespace TIG\GLS\Model\Config\Source\Carrier;
 
-
 use TIG\GLS\Model\Carrier\GLS;
 
 class ConditionName implements \Magento\Framework\Option\ArrayInterface
@@ -39,14 +38,14 @@ class ConditionName implements \Magento\Framework\Option\ArrayInterface
     /**
      * @var GLS
      */
-    private $_carrierTablerate;
+    private $carrierTablerate;
 
     /**
      * @param GLS $carrierTablerate
      */
     public function __construct(GLS $carrierTablerate)
     {
-        $this->_carrierTablerate = $carrierTablerate;
+        $this->_arrierTablerate = $carrierTablerate;
     }
 
     /**
@@ -55,8 +54,8 @@ class ConditionName implements \Magento\Framework\Option\ArrayInterface
     public function toOptionArray()
     {
         $arr = [];
-        foreach ($this->_carrierTablerate->getCode('condition_name', '') as $k => $v) {
-            $arr[] = ['value' => $k, 'label' => $v];
+        foreach ($this->carrierTablerate->getCode('condition_name', '') as $key => $value) {
+            $arr[] = ['value' => $key, 'label' => $value];
         }
         return $arr;
     }
