@@ -35,6 +35,9 @@
     <group id="business_parcel_services" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
         <label>Delivery Services</label>
         <attribute type="expanded">1</attribute>
+        <depends>
+            <field id="delivery_options_active">1</field>
+        </depends>
         <field id="flex_delivery_active" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
             <label>FlexDeliveryService</label>
             <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>

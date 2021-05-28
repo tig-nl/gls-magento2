@@ -45,7 +45,7 @@ define([
             validateShippingInformation: function () {
                 var originalResult = this._super();
 
-                if (quote.shippingMethod().carrier_code !== 'tig_gls') {
+                if (quote.shippingMethod().carrier_code !== 'tig_gls' || !window.checkoutConfig.shipping.gls.delivery_options_active) {
                     return originalResult;
                 }
 

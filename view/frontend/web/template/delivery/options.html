@@ -30,6 +30,7 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 -->
+<!-- ko if: deliveryOptionsActive -->
 <div class="gls-delivery-options" data-bind="visible: selectedMethod() == 'tig_gls_tig_gls'">
     <div data-bind="css: tabClasses()">
 
@@ -108,3 +109,4 @@
         </div>
     </div>
 </div>
+<!-- /ko -->
