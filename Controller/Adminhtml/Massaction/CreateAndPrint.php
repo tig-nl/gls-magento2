@@ -52,6 +52,7 @@ use TIG\GLS\Service\Shipment\Create as ShipmentCreate;
 
 class CreateAndPrint extends AbstractLabel
 {
+    const XPATH_CONFIG_TIG_GLS_GENERAL_NON_GLS_MASSACTIONS = 'tig_gls/general/non_gls_massactions';
     const XPATH_LABELS_ON_SEPARATE_PAGE = 'tig_gls/general/label_on_separate_page';
 
     /**
@@ -154,7 +155,10 @@ class CreateAndPrint extends AbstractLabel
         $messages = [];
         $collection = $this->collectionFactory->create();
         $collection = $this->filter->getCollection($collection);
-        $collection = $this->removeNonGLSMethods($collection);
+        // If enabled, we can print labels for non-GLS orders.
+        if (!$this->scopeConfig->getValue(self::XPATH_CONFIG_TIG_GLS_GENERAL_NON_GLS_MASSACTIONS)) {
+            $collection = $this->removeNonGLSMethods($collection);
+        }
 
         if (empty($collection->getItems())) {
             if (!$this->scopeConfig->getValue(self::XPATH_LABELS_ON_SEPARATE_PAGE)) {

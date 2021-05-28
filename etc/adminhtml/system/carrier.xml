@@ -96,9 +96,18 @@
                 <comment><![CDATA[The time (in days) it takes to process and package an order before it's shipped.]]></comment>
             </field>
 
+            <field id="delivery_options_active" translate="label comment" type="select" sortOrder="85" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <label>Show Delivery Options</label>
+                <comment><![CDATA[Show delivery options in the frontend.]]></comment>
+                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            </field>
+
             <field id="express_parcel_active" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                 <label>Express Delivery Services</label>
                 <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                <depends>
+                    <field id="delivery_options_active">1</field>
+                </depends>
             </field>
 
             <include path="TIG_GLS::system/services/business_parcel.xml" />

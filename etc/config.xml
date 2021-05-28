@@ -41,6 +41,7 @@
                 <handling_fee>0.00</handling_fee>
                 <cut_off_time>18:00:00</cut_off_time>
                 <processing_time>0</processing_time>
+                <delivery_options_active>1</delivery_options_active>
                 <express_parcel_active>0</express_parcel_active>
                 <business_parcel_services>
                     <flex_delivery_active>1</flex_delivery_active>

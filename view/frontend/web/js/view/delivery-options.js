@@ -57,11 +57,16 @@ define([
             parcelShops: ko.observableArray([]),
             deliveryFee: ko.observable(),
             pickupFee: ko.observable(),
+            deliveryOptionsActive: window.checkoutConfig.shipping.gls.delivery_options_active,
             availableServicesRequest: undefined,
-            parcelShopsRequest: undefined,
+            parcelShopsRequest: undefined
         },
 
         initObservable: function () {
+            if (!this.deliveryOptionsActive) {
+                return this;
+            }
+
             this.selectedMethod = ko.computed(function () {
                 var method = quote.shippingMethod();
                 var selectedMethod = method != null ? method.carrier_code + '_' + method.method_code : null;

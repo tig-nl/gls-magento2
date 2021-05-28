@@ -98,6 +98,12 @@
                 <field id="label_type" separator=",">pdf2A4,pdf4A4</field>
             </depends>
         </field>
+        <field id="non_gls_massactions" translate="label" type="select" sortOrder="130" showInDefault="1" showInWebsite="0" showInStore="0">
+            <label>GLS mass-actions for non GLS orders</label>
+            <comment>Allow GLS mass-actions for non GLS orders.</comment>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>tig_gls/general/non_gls_massactions</config_path>
+        </field>
         <field id="label_on_separate_page" translate="label comment" type="select" sortOrder="140" showInDefault="1" showInWebsite="0" showInStore="0">
             <label>Open labels on new page</label>
             <comment>Enable this setting to open labels generated with the mass-actions on a new tab.</comment>

@@ -36,6 +36,7 @@ use Magento\Backend\Block\Template as BackendTemplate;
 use Magento\Backend\Block\Widget\Context as BackendContext;
 use Magento\Backend\Block\Widget\Button\ButtonList;
 use Magento\Backend\Block\Widget\Button\ButtonListFactory;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Request\Http as Request;
 use Magento\Sales\Api\ShipmentRepositoryInterface;
 use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
@@ -43,18 +44,19 @@ use TIG\GLS\Api\Shipment\LabelRepositoryInterface;
 //@codingStandardsIgnoreFile
 class Context
 {
-    const GLS_ADMIN_LABEL_CREATE_BUTTON          = 'gls_label_create';
-    const GLS_ADMIN_LABEL_CREATE_LABEL           = 'GLS - Create Label';
-    const GLS_ADMIN_LABEL_CREATE_URI             = 'gls/label/create';
-    const GLS_ADMIN_LABEL_PRINT_BUTTON           = 'gls_label_print';
-    const GLS_ADMIN_LABEL_PRINT_LABEL            = 'GLS - Print Label';
-    const GLS_ADMIN_LABEL_PRINT_URI              = 'gls/label/printPdf';
-    const GLS_ADMIN_LABEL_DELETE_BUTTON          = 'gls_label_delete';
-    const GLS_ADMIN_LABEL_DELETE_LABEL           = 'GLS - Delete Label';
-    const GLS_ADMIN_LABEL_DELETE_URI             = 'gls/label/delete';
-    const GLS_ADMIN_LABEL_CANCEL_SHIPMENT_BUTTON = 'gls_label_delete_shipment';
-    const GLS_ADMIN_LABEL_CANCEL_SHIPMENT_LABEL  = 'GLS - Cancel Shipment';
-    const GLS_ADMIN_LABEL_CANCEL_SHIPMENT_URI    = 'gls/shipment/cancel';
+    const GLS_ADMIN_LABEL_CREATE_BUTTON                    = 'gls_label_create';
+    const GLS_ADMIN_LABEL_CREATE_LABEL                     = 'GLS - Create Label';
+    const GLS_ADMIN_LABEL_CREATE_URI                       = 'gls/label/create';
+    const GLS_ADMIN_LABEL_PRINT_BUTTON                     = 'gls_label_print';
+    const GLS_ADMIN_LABEL_PRINT_LABEL                      = 'GLS - Print Label';
+    const GLS_ADMIN_LABEL_PRINT_URI                        = 'gls/label/printPdf';
+    const GLS_ADMIN_LABEL_DELETE_BUTTON                    = 'gls_label_delete';
+    const GLS_ADMIN_LABEL_DELETE_LABEL                     = 'GLS - Delete Label';
+    const GLS_ADMIN_LABEL_DELETE_URI                       = 'gls/label/delete';
+    const GLS_ADMIN_LABEL_CANCEL_SHIPMENT_BUTTON           = 'gls_label_delete_shipment';
+    const GLS_ADMIN_LABEL_CANCEL_SHIPMENT_LABEL            = 'GLS - Cancel Shipment';
+    const GLS_ADMIN_LABEL_CANCEL_SHIPMENT_URI              = 'gls/shipment/cancel';
+    const XPATH_CONFIG_TIG_GLS_GENERAL_NON_GLS_MASSACTIONS = 'tig_gls/general/non_gls_massactions';
 
     /** @var BackendTemplate $template */
     private $template;
@@ -69,20 +71,31 @@ class Context
     private $labelRepository;
 
     /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
      * Context constructor.
      *
-     * @param ButtonListFactory $buttonList
+     * @param BackendTemplate             $template
+     * @param ButtonListFactory           $buttonList
+     * @param ShipmentRepositoryInterface $shipments
+     * @param LabelRepositoryInterface    $labelRepository
+     * @param ScopeConfigInterface        $scopeConfig
      */
     public function __construct(
         BackendTemplate $template,
         ButtonListFactory $buttonList,
         ShipmentRepositoryInterface $shipments,
-        LabelRepositoryInterface $labelRepository
+        LabelRepositoryInterface $labelRepository,
+        ScopeConfigInterface $scopeConfig
     ) {
         $this->template        = $template;
         $this->buttonList      = $buttonList;
         $this->shipments       = $shipments;
         $this->labelRepository = $labelRepository;
+        $this->scopeConfig     = $scopeConfig;
     }
 
     /**
@@ -104,11 +117,14 @@ class Context
         $shipment   = $this->shipments->get($shipmentId);
         $order      = $shipment->getOrder();
 
-        if ($order->getShippingMethod() !== 'tig_gls_tig_gls') {
-            return $buttonList;
+        if (
+            $order->getShippingMethod() === 'tig_gls_tig_gls' ||
+            $this->scopeConfig->getValue(self::XPATH_CONFIG_TIG_GLS_GENERAL_NON_GLS_MASSACTIONS)
+        ) {
+            return $this->getButtonList($shipmentId);
         }
 
-        return $this->getButtonList($shipmentId);
+        return $buttonList;
     }
 
     /**
