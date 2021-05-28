@@ -67,6 +67,11 @@
                 </depends>
             </field>
 
+            <field id="condition_name" translate="label" type="select" sortOrder="45" showInDefault="1" showInWebsite="1" canRestore="1">
+                <label>Condition</label>
+                <source_model>TIG\GLS\Model\Config\Source\Carrier\ConditionName</source_model>
+            </field>
+
             <field id="import" translate="label comment" type="TIG\GLS\Block\Adminhtml\Form\Field\Import" sortOrder="50" showInDefault="0" showInWebsite="1" showInStore="0">
                 <label>Import Rates</label>
                 <backend_model>TIG\GLS\Model\Config\Backend\Tablerate</backend_model>

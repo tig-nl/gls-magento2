@@ -105,7 +105,7 @@ class RateQuery extends \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tab
         $orWhere = '(' . implode(') OR (', $wheres) . ')';
         $select->where($orWhere);
 
-        // condition_name is always package_value_with_discount, that's why we only need to filter by condition_value.
+        // condition_name is retrieved from the core_config_data, that's why we only need to filter by condition_value.
         $select->where('condition_value <= :condition_value');
 
         return $select;

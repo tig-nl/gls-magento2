@@ -50,6 +50,7 @@ class ColumnResolver
     const COLUMN_ZIP      = 'Zip/Postal Code';
     const COLUMN_SUBTOTAL = 'Order Subtotal (and above)';
     const COLUMN_PRICE    = 'Shipping Price';
+    const COLUMN_WEIGHT   = 'Weight (and above)';
 
     /** @var array */
     private $nameToPositionIdMap = [
@@ -57,6 +58,7 @@ class ColumnResolver
         self::COLUMN_REGION   => 1,
         self::COLUMN_ZIP      => 2,
         self::COLUMN_SUBTOTAL => 3,
+        self::COLUMN_WEIGHT   => 3,
         self::COLUMN_PRICE    => 4,
     ];
 
