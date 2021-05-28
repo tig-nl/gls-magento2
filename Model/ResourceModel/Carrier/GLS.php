@@ -56,6 +56,8 @@ use TIG\GLS\Model\ResourceModel\Carrier\GLS\RateQueryFactory;
 // @codingStandardsIgnoreFile
 class GLS extends Tablerate
 {
+    const XPATH_GLS_CONDITION_NAME = 'carriers/tig_gls/condition_name';
+
     /** @var CartRepositoryInterface $cartRepository */
     private $cartRepository;
 
@@ -150,7 +152,7 @@ class GLS extends Tablerate
 
         // If quote is lost these values are empty, causing table rates to return the wrong shipping rate.
         if ($bindings[':condition_name'] == null && $bindings[':condition_value'] == 0.0) {
-            $bindings[':condition_name']  = $this->coreConfig->getValue('carriers/tig_gls/condition_name', ScopeInterface::SCOPE_STORE);
+            $bindings[':condition_name']  = $this->coreConfig->getValue(self::XPATH_GLS_CONDITION_NAME, ScopeInterface::SCOPE_STORE);
             $bindings[':condition_value'] = $this->getConditionValue($request->getAllItems());
         }
 
@@ -187,7 +189,7 @@ class GLS extends Tablerate
      */
     public function getConditionValue($items)
     {
-        if ($this->coreConfig->getValue('carriers/tig_gls/condition_name', ScopeInterface::SCOPE_STORE) === 'package_weight') {
+        if ($this->coreConfig->getValue(self::XPATH_GLS_CONDITION_NAME, ScopeInterface::SCOPE_STORE) === 'package_weight') {
             return $this->getWeightFromQuote($items);
         }
 
