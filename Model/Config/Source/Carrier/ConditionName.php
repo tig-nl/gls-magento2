@@ -45,7 +45,7 @@ class ConditionName implements \Magento\Framework\Option\ArrayInterface
      */
     public function __construct(GLS $carrierTablerate)
     {
-        $this->_arrierTablerate = $carrierTablerate;
+        $this->carrierTablerate = $carrierTablerate;
     }
 
     /**
