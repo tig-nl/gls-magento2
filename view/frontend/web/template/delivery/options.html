@@ -86,7 +86,7 @@
         <div data-bind="foreach: parcelShops">
             <div class="container gls-parcel-shop">
                 <input type="radio" name="gls_delivery_option" class="radio" data-bind="value: parcelShopId, click: $parent.setParcelShopAddress.bind($parent), attr: { id: 'shop_' + parcelShopId }">
-                <label data-bind="text: name, attr: { for: 'shop_' + parcelShopId }"></label><br/>
+                <label data-bind="text: name, attr: { for: 'shop_' + parcelShopId }"></label> <span class="delivery-date" data-bind="text: deliveryOptions[0].title"></span><br/>
 
                 <div class="address-information">
                     <span class="street" data-bind="text: street + ' ' + houseNo"></span>
