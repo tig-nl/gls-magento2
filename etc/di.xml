@@ -35,8 +35,6 @@
     <preference for="TIG\GLS\Api\Shipment\LabelRepositoryInterface" type="TIG\GLS\Model\Shipment\LabelRepository" />
     <preference for="TIG\GLS\Api\Shipment\Data\LabelInterface" type="TIG\GLS\Model\Shipment\Label" />
     <preference for="TIG\GLS\Api\Shipment\Data\LabelSearchResultsInterface" type="TIG\GLS\Model\Shipment\LabelSearchResults" />
-    <preference for="TIG\GLS\Api\OrderRepositoryInterface" type="TIG\GLS\Model\OrderRepository" />
-    <preference for="TIG\GLS\Api\Data\OrderInterface" type="TIG\GLS\Model\Order" />
 
     <type name="TIG\GLS\Service\ServicesReflectionClass">
         <arguments>

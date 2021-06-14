@@ -31,28 +31,28 @@
 /* eslint-disable strict */
 define(['jquery', 'mage/url'], function ($, url) {
     var showGridToolbar = 1;
-    
+
     return {
-        
+
         setShowToolbar: function (showToolbar) {
             showGridToolbar = showToolbar;
         },
-        
+
         getShowToolbar: function () {
             return showGridToolbar;
         },
-        
+
         getInputWarningMessage: function (option) {
             if (option === 'change_parcel') {
                 return $.mage.__('Parcel count should be a number');
             }
         },
-        
+
         getSubmitUrl : function (option, grid) {
             var action = '' + 'gls/' + this.getCurrentGrid(grid) + '/' + this.getCurrentAction(option);
             return url.build(action);
         },
-        
+
         /**
          * Gets the controller based on the currently selected action.
          *
@@ -60,10 +60,10 @@ define(['jquery', 'mage/url'], function ($, url) {
          */
         getCurrentAction : function (option) {
             if (option === 'change_parcel') {
-                return 'MassChangeMulticolli';
+                return 'MassChangeMultiColli';
             }
         },
-        
+
         /**
          * Retuns the controller directory bases on the current grid.
          *
@@ -73,7 +73,7 @@ define(['jquery', 'mage/url'], function ($, url) {
             if (grid === 'sales_order_grid') {
                 return 'order';
             }
-            
+
             if (grid === 'sales_order_shipment_grid') {
                 return 'shipment';
             }

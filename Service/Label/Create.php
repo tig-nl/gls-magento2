@@ -31,6 +31,7 @@
  *
  * @codingStandardsIgnoreFile
  */
+
 namespace TIG\GLS\Service\Label;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -104,11 +105,11 @@ class Create extends ShippingInformation
         ScopeConfigInterface $scopeConfig,
         ShippingDate $shippingDate
     ) {
-        $this->createLabel = $createLabel;
+        $this->createLabel        = $createLabel;
         $this->shipmentRepository = $shipmentRepository;
-        $this->carrierConfig = $carrierConfig;
-        $this->scopeConfig = $scopeConfig;
-        $this->shippingDate = $shippingDate;
+        $this->carrierConfig      = $carrierConfig;
+        $this->scopeConfig        = $scopeConfig;
+        $this->shippingDate       = $shippingDate;
     }
 
     /**
@@ -133,7 +134,7 @@ class Create extends ShippingInformation
      */
     public function getRequestData($shipmentId, $controllerModule, $version)
     {
-        $shipment   = $this->shipmentRepository->get($shipmentId);
+        $shipment = $this->shipmentRepository->get($shipmentId);
 
         if (!$shipment) {
             return false;
@@ -168,11 +169,15 @@ class Create extends ShippingInformation
         ];
         $data['shippingDate']      = $this->shippingDate->calculate("Y-m-d", false);
         $data['reference']         = $order->getIncrementId();
-        $data['units']             = [
-            $this->prepareShippingUnit($shipment)
-        ];
+        $data['units']             = $this->prepareShippingUnit($shipment);
+        $data['parcelQuantity']    = $order->getGlsParcelQuantity();
 
-        if (in_array($labelType, ['pdf2A4','pdf4A4'])) {
+        if (in_array(
+            $labelType, [
+                'pdf2A4',
+                'pdf4A4'
+            ]
+        )) {
             $data['labelA4MoveYMm'] = $this->getLabelMarginTop();
             $data['labelA4MoveXMm'] = $this->getLabelMarginLeft();
         }
@@ -223,8 +228,8 @@ class Create extends ShippingInformation
         $missing = $this->isDataMissing($email);
         if ($missing) {
             $this->errors['missing'][] = [
-                'missingCode' => $missing,
-                'missingOption' => 'General Contact and a Customer Support Contact',
+                'missingCode'       => $missing,
+                'missingOption'     => 'General Contact and a Customer Support Contact',
                 'configurationPath' => 'Stores > Configuration > General > Store Email Addresses'
             ];
 
@@ -254,8 +259,8 @@ class Create extends ShippingInformation
         $missing = $this->isDataMissing($address);
         if ($missing) {
             $this->errors['missing'][] = [
-                'missingCode' => $missing,
-                'missingOption' => 'Pickup Address',
+                'missingCode'       => $missing,
+                'missingOption'     => 'Pickup Address',
                 'configurationPath' => 'Stores > Configuration > General > General > Store Information'
             ];
 
@@ -317,6 +322,9 @@ class Create extends ShippingInformation
      */
     private function prepareShippingUnit($shipment)
     {
+        $order          = $shipment->getOrder();
+        $parcelQuantity = $order->getGlsParcelQuantity();
+
         $totalWeight = $shipment->getTotalWeight();
 
         if ($totalWeight > self::GLS_PARCEL_MAX_WEIGHT) {
@@ -327,11 +335,17 @@ class Create extends ShippingInformation
 
         $weight = $totalWeight != 0 ? $totalWeight : 1;
 
-        return [
-            "unitId"   => $shipment->getIncrementId(),
-            "unitType" => "cO",
-            "weight"   => $weight
-        ];
+        $units = [];
+
+        for ($i = 0; $i < $parcelQuantity; $i++) {
+            $units[] = [
+                "unitId"   => $shipment->getIncrementId() . "-" . $i,
+                "unitType" => "cO",
+                "weight"   => $weight
+            ];
+        }
+
+        return $units;
     }
 
     /**

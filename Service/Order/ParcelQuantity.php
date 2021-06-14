@@ -18,7 +18,7 @@
  * It is available through the world-wide-web at this URL:
  * http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  * If you are unable to obtain it through the world-wide-web, please send an email
- * to servicedesk@tig.nl so we can send you a copy immediately.
+ * to servicedesk@totalinternetgroup.nl so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
@@ -29,16 +29,39 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\GLS\Model\ResourceModel\Order;
 
-use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+namespace TIG\GLS\Service\Order;
 
-class Collection extends AbstractCollection
+use Magento\Sales\Model\Order;
+use Magento\Sales\Model\OrderRepository;
+
+class ParcelQuantity
 {
-    // @codingStandardsIgnoreLine
-    protected function _construct()
+    private OrderRepository $orderRepository;
+
+    /**
+     * ParcelQuantity constructor.
+     *
+     * @param OrderRepository $orderRepository
+     */
+    public function __construct(
+        OrderRepository $orderRepository
+    ) {
+        $this->orderRepository = $orderRepository;
+    }
+
+    /**
+     * @param Order $order
+     * @param       $parcelCount
+     */
+    public function orderChangeParcelQuantity(Order $order, $parcelCount)
     {
-        // @codingStandardsIgnoreLine
-        $this->_init('TIG\GLS\Model\Order', 'TIG\GLS\Model\ResourceModel\Order');
+        $order->setGlsParcelQuantity($parcelCount);
+
+        try {
+            $this->orderRepository->save($order);
+        } catch (\Exception $e) {
+            die($e->getMessage());
+        }
     }
 }

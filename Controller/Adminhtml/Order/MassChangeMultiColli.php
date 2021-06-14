@@ -29,79 +29,98 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
+
 namespace TIG\GLS\Controller\Adminhtml\Order;
 
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\Data\Collection\AbstractDb;
+use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 use Magento\Ui\Component\MassAction\Filter;
-use TIG\GLS\Api\OrderRepositoryInterface;
-use TIG\GLS\Controller\Adminhtml\ToolbarAbstract;
+use TIG\GLS\Controller\Adminhtml\Massaction\CreateAndPrint;
+use Magento\Backend\App\Action;
+use TIG\GLS\Service\Order\ParcelQuantity;
 
-class MassChangeMulticolli extends ToolbarAbstract
+class MassChangeMultiColli extends Action
 {
+    const PARCEL_QUANTITY_PARAM_KEY = 'change_parcel';
+
     /**
      * @var OrderCollectionFactory
      */
     private $collectionFactory;
 
     /**
+     * @var CreateAndPrint
+     */
+    private CreateAndPrint $createAndPrint;
+
+    /**
+     * @var Filter
+     */
+    private Filter $uiFilter;
+
+    /**
+     * @var ParcelQuantity
+     */
+    private ParcelQuantity $parcelQuantity;
+
+    /**
      * MassChangeMulticolli constructor.
      *
-     * @param Context                  $context
-     * @param Filter                   $filter
-     * @param OrderRepositoryInterface $orderRepository
-     * @param OrderCollectionFactory   $collectionFactory
+     * @param Context                $context
+     * @param Filter                 $filter
+     * @param OrderCollectionFactory $collectionFactory
+     * @param CreateAndPrint         $createAndPrint
+     * @param ParcelQuantity         $parcelQuantity
      */
     public function __construct(
         Context $context,
         Filter $filter,
-        OrderRepositoryInterface $orderRepository,
-        OrderCollectionFactory $collectionFactory
+        OrderCollectionFactory $collectionFactory,
+        CreateAndPrint $createAndPrint,
+        ParcelQuantity $parcelQuantity
     ) {
-        parent::__construct(
-            $context,
-            $filter,
-            $orderRepository
-        );
-        $this->orderRepository = $orderRepository;
+        parent::__construct($context);
+
         $this->collectionFactory = $collectionFactory;
+        $this->createAndPrint    = $createAndPrint;
+        $this->uiFilter          = $filter;
+        $this->parcelQuantity    = $parcelQuantity;
     }
 
     /**
-     * @return \Magento\Framework\Controller\Result\Redirect
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @return Redirect
+     * @throws LocalizedException
      */
     public function execute()
     {
-        $collection     = $this->collectionFactory->create();
-        $collection     = $this->uiFilter->getCollection($collection);
-        $newParcelCount = $this->getRequest()->getParam(self::PARCELCOUNT_PARAM_KEY);
+        $collection = $this->collectionFactory->create();
+        $collection = $this->uiFilter->getCollection($collection);
+        $collection = $this->createAndPrint->removeNonGLSMethods($collection);
+
+        $newParcelCount = $this->getRequest()->getParam(self::PARCEL_QUANTITY_PARAM_KEY);
 
         $this->changeMultiColli($collection, $newParcelCount);
 
         $resultRedirect = $this->resultRedirectFactory->create();
         $resultRedirect->setPath('sales/*/');
+
         return $resultRedirect;
     }
 
     /**
-     * @param AbstractDb $collection
-     * @param $newParcelCount
+     * @param            $collection
+     * @param            $newParcelCount
      */
     private function changeMultiColli($collection, $newParcelCount)
     {
         foreach ($collection as $order) {
-            $this->orderChangeParcelCount($order, $newParcelCount);
+            $this->parcelQuantity->orderChangeParcelQuantity($order, $newParcelCount);
         }
 
-        $this->handelErrors();
-
-        $count = $this->getTotalCount($collection->getSize());
-        if ($count > 0) {
-            $this->messageManager->addSuccessMessage(
-                __('Parcel count changed for %1 order(s)', $count)
-            );
-        }
+        $this->messageManager->addSuccessMessage(
+            __('Parcel count changed for %1 order(s)', $collection->count())
+        );
     }
 }
