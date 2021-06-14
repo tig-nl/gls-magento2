@@ -115,12 +115,22 @@ class MassChangeMultiColli extends Action
      */
     private function changeMultiColli($collection, $newParcelCount)
     {
+        $result = '';
+
         foreach ($collection as $order) {
-            $this->parcelQuantity->orderChangeParcelQuantity($order, $newParcelCount);
+            $result = $this->parcelQuantity->orderChangeParcelQuantity($order, $newParcelCount);
         }
 
-        $this->messageManager->addSuccessMessage(
-            __('Parcel quantity changed for %1 order(s)', $collection->count())
-        );
+        if (is_array($result) && array_key_exists('error', $result)) {
+            $this->messageManager->addErrorMessage(
+                __('Error changing parcel quantity')
+            );
+        }
+
+        if ($result === true) {
+            $this->messageManager->addSuccessMessage(
+                __('Parcel quantity changed for %1 order(s)', $collection->count())
+            );
+        }
     }
 }

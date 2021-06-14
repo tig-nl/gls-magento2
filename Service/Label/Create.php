@@ -325,6 +325,11 @@ class Create extends ShippingInformation
         $order          = $shipment->getOrder();
         $parcelQuantity = $order->getGlsParcelQuantity();
 
+        // if no parcel quantity is set, use a default value.
+        if (!$parcelQuantity) {
+            $parcelQuantity = 1;
+        }
+
         $totalWeight = $shipment->getTotalWeight();
 
         if ($totalWeight > self::GLS_PARCEL_MAX_WEIGHT) {
@@ -338,8 +343,9 @@ class Create extends ShippingInformation
         $units = [];
 
         for ($i = 0; $i < $parcelQuantity; $i++) {
+            $unitId  = ($parcelQuantity > 1 ? $shipment->getIncrementId() . "-" . ($i + 1) : $shipment->getIncrementId());
             $units[] = [
-                "unitId"   => $shipment->getIncrementId() . "-" . $i,
+                "unitId"   => $unitId,
                 "unitType" => "cO",
                 "weight"   => $weight
             ];

@@ -60,8 +60,12 @@ class ParcelQuantity
 
         try {
             $this->orderRepository->save($order);
-        } catch (\Exception $e) {
-            die($e->getMessage());
+        } catch (\Exception $exception) {
+            return [
+                'error' => $exception->getMessage()
+            ];
         }
+
+        return true;
     }
 }
