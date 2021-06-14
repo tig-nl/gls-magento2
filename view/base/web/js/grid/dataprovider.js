@@ -44,7 +44,7 @@ define(['jquery', 'mage/url'], function ($, url) {
 
         getInputWarningMessage: function (option) {
             if (option === 'change_parcel') {
-                return $.mage.__('Parcel count should be a number');
+                return $.mage.__('Parcel quantity should be a number');
             }
         },
 

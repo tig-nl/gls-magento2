@@ -53,14 +53,14 @@ define([
                 selections: '${ $.selectProvider }'
             },
             actionList : ko.observableArray([
-                {text: $.mage.__('Change parcel count'), value: 'change_parcel'}
+                {text: $.mage.__('Change parcel quantity'), value: 'change_parcel'}
             ]),
             showToolbar : ko.observable(DataProvider.getShowToolbar()),
             jsLoaded : true,
             showTimeOptions : ko.observable(false),
             timeOptionSelected : ko.observable('1000')
         },
-        
+
         /**
          * Init.
          *
@@ -71,18 +71,18 @@ define([
                 'currentSelected',
                 'showTimeOptions'
             ]);
-            
+
             this.currentSelected.subscribe(function (value) {
                 if (value === 'change_parcel') {
                     self.showTimeOptions(false);
                 }
             });
-            
+
             var self = this;
-            
+
             return this;
         },
-        
+
         /**
          * The GLS toolbar should only be visable on the order and shipment grid.
          *
@@ -91,7 +91,7 @@ define([
         showGLSToolbarActions : function () {
             return this.showToolbar() == 1 && (this.ns === 'sales_order_grid' || this.ns === 'sales_order_shipment_grid');
         },
-        
+
         /**
          * Submit selected items and gls form data to controllers
          * - MassChangeMulticolli
@@ -102,31 +102,31 @@ define([
             if (isSticky) {
                 selector = $('.' + this.currentSelected() + '_sticky');
             }
-            
+
             var data = this.getSelectedItems();
             if (data.selected === false) {
                 alert($.mage.__('Please select item(s)'));
                 return;
             }
-            
+
             var value = selector[0].value;
             if (isNaN(parseInt(value))) {
                 alert(DataProvider.getInputWarningMessage(this.currentSelected()));
                 return;
             }
-            
+
             data[this.currentSelected()] = value;
-            
+
             utils.submit({
                 url: DataProvider.getSubmitUrl(this.currentSelected(), this.ns),
                 data: data
             });
         },
-        
+
         isNumeric : function (value) {
             return !isNaN(parseInt(value)) && isFinite(value);
         },
-        
+
         /**
          * Obtain and return the selected items from the grid
          *
@@ -136,17 +136,17 @@ define([
             var provider = this.selections();
             var selections = provider && provider.getSelections();
             var itemsType = selections.excludeMode ? 'excluded' : 'selected';
-            
+
             var selectedItems = {};
             selectedItems[itemsType] = selections[itemsType];
-            
+
             if (!selectedItems[itemsType].length) {
                 selectedItems[itemsType] = false;
             }
-            
+
             // Params includes extra data like filters
             _.extend(selectedItems, selections.params || {});
-            
+
             return selectedItems;
         }
     });

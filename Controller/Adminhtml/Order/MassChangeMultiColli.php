@@ -120,7 +120,7 @@ class MassChangeMultiColli extends Action
         }
 
         $this->messageManager->addSuccessMessage(
-            __('Parcel count changed for %1 order(s)', $collection->count())
+            __('Parcel quantity changed for %1 order(s)', $collection->count())
         );
     }
 }
