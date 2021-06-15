@@ -38,11 +38,9 @@ class Webshop extends AbstractConfigProvider
     const XPATH_SHOW_GRID_TOOLBAR = 'tig_gls/general/show_grid_toolbar';
 
     /**
-     * @param null|int $storeId
-     *
      * @return bool
      */
-    public function getShowToolbar($storeId = null)
+    public function getShowToolbar()
     {
         return $this->getConfigValue(self::XPATH_SHOW_GRID_TOOLBAR);
     }
