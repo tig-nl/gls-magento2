@@ -29,10 +29,24 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 /* eslint-disable strict */
-define(['jquery', 'mage/url'], function ($, url) {
+define([
+    'jquery',
+    'mage/url'
+], function (
+    $,
+    url
+) {
+    var pdfOnSeparatePage = 0;
     var showGridToolbar = 1;
 
     return {
+        getPdfOnSeperatePage: function () {
+            return pdfOnSeparatePage;
+        },
+
+        setPdfOnSeperatePage: function (separatePdf) {
+            pdfOnSeparatePage = separatePdf;
+        },
 
         setShowToolbar: function (showToolbar) {
             showGridToolbar = showToolbar;
@@ -77,6 +91,6 @@ define(['jquery', 'mage/url'], function ($, url) {
             if (grid === 'sales_order_shipment_grid') {
                 return 'shipment';
             }
-        },
+        }
     };
 });

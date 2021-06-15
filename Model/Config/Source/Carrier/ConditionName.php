@@ -29,25 +29,34 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-?>
-<?php /** @var \TIG\GLS\Block\Adminhtml\Grid\DataProvider $block */ ?>
-<script type="text/javascript">
-    require(
-        [
-            'TIG_GLS/js/grid/dataprovider',
-            'mage/url'
-        ],
-        function (
-            DataProvider,
-            url
-        ) {
-            DataProvider.setPdfOnSeperatePage(
-                '<?= /* @escapeNotVerified */ $block->getPdfOnSeperatePage();?>');
-            DataProvider.setShowToolbar(
-                '<?= /* @escapeNotVerified */ $block->getShowToolbar();?>');
+namespace TIG\GLS\Model\Config\Source\Carrier;
 
-            return url.setBaseUrl(
-                '<?= /* @escapeNotVerified */ $block->getAdminBaseUrl();?>');
+use TIG\GLS\Model\Carrier\GLS;
+
+class ConditionName implements \Magento\Framework\Option\ArrayInterface
+{
+    /**
+     * @var GLS
+     */
+    private $carrierTablerate;
+
+    /**
+     * @param GLS $carrierTablerate
+     */
+    public function __construct(GLS $carrierTablerate)
+    {
+        $this->carrierTablerate = $carrierTablerate;
+    }
+
+    /**
+     * @return array
+     */
+    public function toOptionArray()
+    {
+        $arr = [];
+        foreach ($this->carrierTablerate->getCode('condition_name', '') as $key => $value) {
+            $arr[] = ['value' => $key, 'label' => $value];
         }
-    );
-</script>
+        return $arr;
+    }
+}

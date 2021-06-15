@@ -40,7 +40,8 @@ define([
     return Component.extend({
         defaults: {
             template: 'TIG_GLS/shipping-information/parcel-shop',
-            parcelShopAddress: ko.observable()
+            parcelShopAddress: ko.observable(),
+            deliveryOptionsActive: window.checkoutConfig.shipping.gls.delivery_options_active
         },
 
         initObservable: function () {

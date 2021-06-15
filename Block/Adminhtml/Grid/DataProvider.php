@@ -29,6 +29,7 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
+
 namespace TIG\GLS\Block\Adminhtml\Grid;
 
 use Magento\Backend\Block\Template;
@@ -36,12 +37,9 @@ use Magento\Framework\View\Element\BlockInterface;
 use Magento\Framework\App\DeploymentConfig\Reader;
 use TIG\GLS\Config\Provider\Webshop as WebshopConfig;
 
-
-
 class DataProvider extends Template implements BlockInterface
 {
-    const XPATH_SHOW_GRID_TOOLBAR = 'tig_gls/general/show_grid_toolbar';
-
+    const XPATH_LABELS_ON_SEPARATE_PAGE = 'tig_gls/general/label_on_separate_page';
     /**
      * @var string
      */
@@ -51,20 +49,18 @@ class DataProvider extends Template implements BlockInterface
     /**
      * @var Reader
      */
-    private $configReader;
+    private Reader $reader;
 
     /**
      * @var WebshopConfig
      */
-    private $webshopConfig;
+    private WebshopConfig $webshopConfig;
 
     /**
      * DataProvider constructor.
      *
-     * @param Template\Context  $context
-     * @param Reader            $reader
-     * @param WebshopConfig     $webshopConfig
-     * @param array             $data
+     * @param Reader        $reader
+     * @param WebshopConfig $webshopConfig
      */
     public function __construct(
         Template\Context $context,
@@ -72,9 +68,18 @@ class DataProvider extends Template implements BlockInterface
         WebshopConfig $webshopConfig,
         array $data = []
     ) {
-        $this->configReader = $reader;
-        $this->webshopConfig = $webshopConfig;
         parent::__construct($context, $data);
+
+        $this->reader        = $reader;
+        $this->webshopConfig = $webshopConfig;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPdfOnSeperatePage()
+    {
+        return (int) $this->_scopeConfig->getValue(self::XPATH_LABELS_ON_SEPARATE_PAGE);
     }
 
     /**
@@ -82,8 +87,9 @@ class DataProvider extends Template implements BlockInterface
      */
     public function getAdminBaseUrl()
     {
-        $config = $this->configReader->load();
+        $config      = $this->reader->load();
         $adminSuffix = $config['backend']['frontName'];
+
         return $this->getBaseUrl() . $adminSuffix . '/';
     }
 

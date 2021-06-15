@@ -1,5 +1,6 @@
-<?php
-/**
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *
  *
  *          ..::..
  *     ..::::::::::::..
@@ -28,26 +29,14 @@
  *
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
- */
-?>
-<?php /** @var \TIG\GLS\Block\Adminhtml\Grid\DataProvider $block */ ?>
-<script type="text/javascript">
-    require(
-        [
-            'TIG_GLS/js/grid/dataprovider',
-            'mage/url'
-        ],
-        function (
-            DataProvider,
-            url
-        ) {
-            DataProvider.setPdfOnSeperatePage(
-                '<?= /* @escapeNotVerified */ $block->getPdfOnSeperatePage();?>');
-            DataProvider.setShowToolbar(
-                '<?= /* @escapeNotVerified */ $block->getShowToolbar();?>');
-
-            return url.setBaseUrl(
-                '<?= /* @escapeNotVerified */ $block->getAdminBaseUrl();?>');
-        }
-    );
-</script>
+ *
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Checkout\Model\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="tig_gls_checkout_config_provider" xsi:type="object">\TIG\GLS\Model\CheckoutConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

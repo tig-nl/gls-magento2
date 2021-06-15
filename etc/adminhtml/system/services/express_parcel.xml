@@ -37,6 +37,7 @@
         <attribute type="expanded">1</attribute>
         <depends>
             <field id="express_parcel_active">1</field>
+            <field id="delivery_options_active">1</field>
         </depends>
         <field id="services_active" translate="label" type="multiselect" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
             <label>Enable Services</label>

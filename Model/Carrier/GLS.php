@@ -43,6 +43,7 @@ use Magento\Shipping\Model\Rate\Result;
 use Magento\Shipping\Model\Rate\ResultFactory;
 use Psr\Log\LoggerInterface;
 use TIG\GLS\Model\Config\Provider\Account;
+use TIG\GLS\Model\Config\Source\Carrier\CalculateHandlingFee;
 use TIG\GLS\Model\ResourceModel\Carrier\GLS as GLSCarrier;
 use TIG\GLS\Model\ResourceModel\Carrier\GLSFactory;
 
@@ -156,6 +157,15 @@ class GLS extends AbstractCarrier implements CarrierInterface
      */
     public function getRate(\Magento\Quote\Model\Quote\Address\RateRequest $request)
     {
+        $calculateHandlingFee = $this->getConfigData('calculate_handling_fee');
+
+        if ($calculateHandlingFee !== CalculateHandlingFee::CARRIER_CALCULATE_PRICE_DESTINATION) {
+            return [
+                'price' => '0.0000',
+                'cost' => '0.0000'
+            ];
+        }
+
         $glsFactory = $this->glsFactory->create();
 
         return $glsFactory->getRate($request);
@@ -172,10 +182,12 @@ class GLS extends AbstractCarrier implements CarrierInterface
     {
         $codes = [
             'condition_name' => [
-                'package_value_with_discount' => __('Prices vs. Destination')
+                'package_value_with_discount' => __('Prices vs. Destination'),
+                'package_weight'              => __('Weight (and above)')
             ],
             'condition_name_short' => [
-                'package_value_with_discount' => __('Order Subtotal (and above)')
+                'package_value_with_discount' => __('Order Subtotal (and above)'),
+                'package_weight'              => __('Weight (and above)')
             ]
         ];
 
