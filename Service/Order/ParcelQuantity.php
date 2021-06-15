@@ -37,7 +37,10 @@ use Magento\Sales\Model\OrderRepository;
 
 class ParcelQuantity
 {
-    private OrderRepository $orderRepository;
+    /**
+     * @var OrderRepository
+     */
+    private $orderRepository;
 
     /**
      * ParcelQuantity constructor.

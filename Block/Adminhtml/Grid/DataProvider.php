@@ -35,7 +35,7 @@ namespace TIG\GLS\Block\Adminhtml\Grid;
 use Magento\Backend\Block\Template;
 use Magento\Framework\View\Element\BlockInterface;
 use Magento\Framework\App\DeploymentConfig\Reader;
-use TIG\GLS\Config\Provider\Webshop as WebshopConfig;
+use TIG\GLS\Config\Provider\Webshop as WebShopConfig;
 
 class DataProvider extends Template implements BlockInterface
 {
@@ -49,29 +49,31 @@ class DataProvider extends Template implements BlockInterface
     /**
      * @var Reader
      */
-    private Reader $reader;
+    private $reader;
 
     /**
-     * @var WebshopConfig
+     * @var WebShopConfig
      */
-    private WebshopConfig $webshopConfig;
+    private $webShopConfig;
 
     /**
      * DataProvider constructor.
      *
-     * @param Reader        $reader
-     * @param WebshopConfig $webshopConfig
+     * @param Template\Context $context
+     * @param Reader           $reader
+     * @param WebShopConfig    $webshopConfig
+     * @param array            $data
      */
     public function __construct(
         Template\Context $context,
         Reader $reader,
-        WebshopConfig $webshopConfig,
+        WebShopConfig $webShopConfig,
         array $data = []
     ) {
         parent::__construct($context, $data);
 
         $this->reader        = $reader;
-        $this->webshopConfig = $webshopConfig;
+        $this->webShopConfig = $webShopConfig;
     }
 
     /**
@@ -98,6 +100,6 @@ class DataProvider extends Template implements BlockInterface
      */
     public function getShowToolbar()
     {
-        return $this->webshopConfig->getShowToolbar();
+        return $this->webShopConfig->getShowToolbar();
     }
 }

@@ -396,7 +396,7 @@ class Create extends ShippingInformation
             $units[] = [
                 "unitId"   => $unitId,
                 "unitType" => "cO",
-                "weight"   => $weight
+                "weight"   => ($weight / $parcelQuantity > 0.2 || $weight / $parcelQuantity < 32 ? $weight / $totalWeight : 1)
             ];
         }
 

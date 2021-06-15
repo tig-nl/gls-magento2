@@ -53,17 +53,17 @@ class MassChangeMultiColli extends Action
     /**
      * @var CreateAndPrint
      */
-    private CreateAndPrint $createAndPrint;
+    private $createAndPrint;
 
     /**
      * @var Filter
      */
-    private Filter $uiFilter;
+    private $uiFilter;
 
     /**
      * @var ParcelQuantity
      */
-    private ParcelQuantity $parcelQuantity;
+    private $parcelQuantity;
 
     /**
      * MassChangeMulticolli constructor.
@@ -129,7 +129,7 @@ class MassChangeMultiColli extends Action
 
         if ($result === true) {
             $this->messageManager->addSuccessMessage(
-                __('Parcel quantity changed for %1 order(s)', $collection->count())
+                __('Parcel quantity changed for %1 order(s)', $collection->getSize())
             );
         }
     }
