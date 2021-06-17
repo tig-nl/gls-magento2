@@ -398,7 +398,7 @@ class Create extends ShippingInformation
             $units[] = [
                 "unitId"   => $unitId,
                 "unitType" => "cO",
-                "weight"   => ($weightPerLabel > 0.2 && $weightPerLabel < 32 ? $weightPerLabel : 1)
+                "weight"   => ($weightPerLabel > 0.2 && $weightPerLabel < self::GLS_PARCEL_MAX_WEIGHT ? $weightPerLabel : 1)
             ];
         }
 
