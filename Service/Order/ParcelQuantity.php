@@ -55,11 +55,11 @@ class ParcelQuantity
 
     /**
      * @param Order $order
-     * @param       $parcelCount
+     * @param       $parcelQuantity
      */
-    public function orderChangeParcelQuantity(Order $order, $parcelCount)
+    public function orderChangeParcelQuantity(Order $order, $parcelQuantity)
     {
-        $order->setGlsParcelQuantity($parcelCount);
+        $order->setGlsParcelQuantity($parcelQuantity);
 
         try {
             $this->orderRepository->save($order);

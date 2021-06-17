@@ -392,11 +392,13 @@ class Create extends ShippingInformation
         $units = [];
 
         for ($i = 0; $i < $parcelQuantity; $i++) {
+            $weightPerLabel = $weight / $parcelQuantity;
+
             $unitId  = ($parcelQuantity > 1 ? $shipment->getIncrementId() . "-" . ($i + 1) : $shipment->getIncrementId());
             $units[] = [
                 "unitId"   => $unitId,
                 "unitType" => "cO",
-                "weight"   => ($weight / $parcelQuantity > 0.2 && $weight / $parcelQuantity < 32 ? $weight / $parcelQuantity : 1)
+                "weight"   => ($weightPerLabel > 0.2 && $weightPerLabel < 32 ? $weightPerLabel : 1)
             ];
         }
 

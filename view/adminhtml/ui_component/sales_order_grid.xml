@@ -56,4 +56,8 @@
             </item>
         </argument>
     </container>
+    <columns name="sales_order_columns">
+        <column name="shipping_information" class="TIG\GLS\Ui\Component\Listing\Column\GlsShippingInformation">
+        </column>
+    </columns>
 </listing>
