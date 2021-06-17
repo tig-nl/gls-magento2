@@ -94,17 +94,29 @@ class GlsShippingInformation extends Column
             return $dataSource;
         }
 
-        foreach ($dataSource['data']['items'] as & $item) {
-            // if shipping information matches method name, add parcel quantity.
-            $strPos = strpos($item['shipping_information'], $this->scopeConfig->getValue('carriers/tig_gls/name'));
-
-            if ($strPos !== false) {
-                $order                        = $orderCollection->getItemById($item['entity_id']);
-                $quantity = $order->getGlsParcelQuantity() ?: 1;
-                $item['shipping_information'] .= sprintf(" | %s: %d", __("Parcel quantity"), $quantity);
-            }
+        foreach ($dataSource['data']['items'] as &$item) {
+            $item = $this->modifyData($item, $orderCollection);
         }
 
         return $dataSource;
+    }
+
+    /**
+     * @param $item
+     * @param $orderCollection
+     *
+     * @return mixed
+     */
+    private function modifyData($item, $orderCollection)
+    {
+        // if shipping information matches method name, add parcel quantity.
+        $strPos = strpos($item['shipping_information'], $this->scopeConfig->getValue('carriers/tig_gls/name'));
+        if ($strPos !== false) {
+            $order                        = $orderCollection->getItemById($item['entity_id']);
+            $quantity                     = $order->getGlsParcelQuantity() ?: 1;
+            $item['shipping_information'] .= sprintf(" | %s: %d", __("Parcel quantity"), $quantity);
+        }
+
+        return $item;
     }
 }
