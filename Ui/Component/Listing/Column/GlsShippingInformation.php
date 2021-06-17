@@ -46,11 +46,6 @@ use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollection
 class GlsShippingInformation extends Column
 {
     /**
-     * @var Escaper
-     */
-    protected $escaper;
-
-    /**
      * @var OrderCollectionFactory
      */
     private $orderCollectionFactory;
@@ -63,7 +58,6 @@ class GlsShippingInformation extends Column
     /**
      * @param ContextInterface       $context
      * @param UiComponentFactory     $uiComponentFactory
-     * @param Escaper                $escaper
      * @param OrderCollectionFactory $orderCollectionFactory
      * @param ScopeConfigInterface   $scopeConfig
      * @param array                  $components
@@ -72,7 +66,6 @@ class GlsShippingInformation extends Column
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
-        Escaper $escaper,
         OrderCollectionFactory $orderCollectionFactory,
         ScopeConfigInterface $scopeConfig,
         array $components = [],
@@ -80,7 +73,6 @@ class GlsShippingInformation extends Column
     ) {
         parent::__construct($context, $uiComponentFactory, $components, $data);
 
-        $this->escaper                = $escaper;
         $this->orderCollectionFactory = $orderCollectionFactory;
         $this->scopeConfig            = $scopeConfig;
     }
@@ -95,7 +87,6 @@ class GlsShippingInformation extends Column
     public function prepareDataSource(array $dataSource)
     {
         $orderIds = array_column($dataSource['data']['items'], 'entity_id');
-
         $orderCollection = $this->orderCollectionFactory->create();
         $orderCollection->addAttributeToFilter('entity_id', ['in' => $orderIds]);
 
@@ -104,14 +95,12 @@ class GlsShippingInformation extends Column
         }
 
         foreach ($dataSource['data']['items'] as & $item) {
-            // if the shipping information has a substring that matches the shipping method name, add parcel quantity string.
+            // if shipping information matches method name, add parcel quantity.
             $strPos = strpos($item['shipping_information'], $this->scopeConfig->getValue('carriers/tig_gls/name'));
 
             if ($strPos !== false) {
                 $order          = $orderCollection->getItemById($item['entity_id']);
-                $parcelQuantity = $order->getGlsParcelQuantity() ?: 1;
-
-                $item['shipping_information'] .= sprintf(" | %s: %d", __("Parcel quantity"), $parcelQuantity);
+                $item['shipping_information'] .= sprintf(" | %s: %d", __("Parcel quantity"), $order->getGlsParcelQuantity() ?: 1);
             }
         }
 
