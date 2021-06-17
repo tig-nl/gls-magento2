@@ -97,7 +97,7 @@ class GlsShippingInformation extends Column
             foreach ($dataSource['data']['items'] as & $item) {
                 $methodName = explode(' ',trim($item['shipping_information']));
 
-                // if the shipping information starts with GLS, add the parcel quantity
+                // if the shipping information has a substring that matches the shipping method name, add parcel quantity string.
                 if (strpos($item['shipping_information'], $this->scopeConfig->getValue('carriers/tig_gls/name')) !== false) {
                     $order = $orderCollection->getItemById($item['entity_id']);
                     $parcelQuantity = $order->getGlsParcelQuantity() ?: 1;
