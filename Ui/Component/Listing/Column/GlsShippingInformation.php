@@ -34,7 +34,6 @@ namespace TIG\GLS\Ui\Component\Listing\Column;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Escaper;
-use Magento\Sales\Model\OrderRepository;
 use Magento\Ui\Component\Listing\Columns\Column;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
@@ -49,11 +48,17 @@ class GlsShippingInformation extends Column
     /**
      * @var Escaper
      */
-    protected                      $escaper;
+    protected $escaper;
 
-    private OrderCollectionFactory $orderCollectionFactory;
+    /**
+     * @var OrderCollectionFactory
+     */
+    private $orderCollectionFactory;
 
-    private ScopeConfigInterface   $scopeConfig;
+    /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
 
     /**
      * @param ContextInterface       $context
@@ -75,15 +80,16 @@ class GlsShippingInformation extends Column
     ) {
         parent::__construct($context, $uiComponentFactory, $components, $data);
 
-        $this->escaper = $escaper;
+        $this->escaper                = $escaper;
         $this->orderCollectionFactory = $orderCollectionFactory;
-        $this->scopeConfig = $scopeConfig;
+        $this->scopeConfig            = $scopeConfig;
     }
 
     /**
      * Prepare Data Source
      *
      * @param array $dataSource
+     *
      * @return array
      */
     public function prepareDataSource(array $dataSource)
@@ -91,19 +97,21 @@ class GlsShippingInformation extends Column
         $orderIds = array_column($dataSource['data']['items'], 'entity_id');
 
         $orderCollection = $this->orderCollectionFactory->create();
-        $orderCollection->addAttributeToFilter('entity_id', ['in'=> $orderIds]);
+        $orderCollection->addAttributeToFilter('entity_id', ['in' => $orderIds]);
 
-        if (isset($dataSource['data']['items'])) {
-            foreach ($dataSource['data']['items'] as & $item) {
-                $methodName = explode(' ',trim($item['shipping_information']));
+        if (!isset($dataSource['data']['items'])) {
+            return $dataSource;
+        }
 
-                // if the shipping information has a substring that matches the shipping method name, add parcel quantity string.
-                if (strpos($item['shipping_information'], $this->scopeConfig->getValue('carriers/tig_gls/name')) !== false) {
-                    $order = $orderCollection->getItemById($item['entity_id']);
-                    $parcelQuantity = $order->getGlsParcelQuantity() ?: 1;
+        foreach ($dataSource['data']['items'] as & $item) {
+            // if the shipping information has a substring that matches the shipping method name, add parcel quantity string.
+            $strPos = strpos($item['shipping_information'], $this->scopeConfig->getValue('carriers/tig_gls/name'));
 
-                    $item['shipping_information'] .= sprintf(" | %s: %d",__("Parcel quantity") , $parcelQuantity);
-                }
+            if ($strPos !== false) {
+                $order          = $orderCollection->getItemById($item['entity_id']);
+                $parcelQuantity = $order->getGlsParcelQuantity() ?: 1;
+
+                $item['shipping_information'] .= sprintf(" | %s: %d", __("Parcel quantity"), $parcelQuantity);
             }
         }
 
