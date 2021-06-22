@@ -29,15 +29,17 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
+
 namespace TIG\GLS\Block\Adminhtml\Grid;
 
 use Magento\Backend\Block\Template;
 use Magento\Framework\View\Element\BlockInterface;
+use Magento\Framework\App\DeploymentConfig\Reader;
+use TIG\GLS\Config\Provider\Webshop as WebShopConfig;
 
 class DataProvider extends Template implements BlockInterface
 {
     const XPATH_LABELS_ON_SEPARATE_PAGE = 'tig_gls/general/label_on_separate_page';
-
     /**
      * @var string
      */
@@ -45,10 +47,59 @@ class DataProvider extends Template implements BlockInterface
     protected $_template = 'TIG_GLS::grid/DataProvider.phtml';
 
     /**
+     * @var Reader
+     */
+    private $reader;
+
+    /**
+     * @var WebShopConfig
+     */
+    private $webShopConfig;
+
+    /**
+     * DataProvider constructor.
+     *
+     * @param Template\Context $context
+     * @param Reader           $reader
+     * @param WebShopConfig    $webshopConfig
+     * @param array            $data
+     */
+    public function __construct(
+        Template\Context $context,
+        Reader $reader,
+        WebShopConfig $webShopConfig,
+        array $data = []
+    ) {
+        parent::__construct($context, $data);
+
+        $this->reader        = $reader;
+        $this->webShopConfig = $webShopConfig;
+    }
+
+    /**
      * @return int
      */
     public function getPdfOnSeperatePage()
     {
         return (int) $this->_scopeConfig->getValue(self::XPATH_LABELS_ON_SEPARATE_PAGE);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAdminBaseUrl()
+    {
+        $config      = $this->reader->load();
+        $adminSuffix = $config['backend']['frontName'];
+
+        return $this->getBaseUrl() . $adminSuffix . '/';
+    }
+
+    /**
+     * @return bool
+     */
+    public function getShowToolbar()
+    {
+        return $this->webShopConfig->getShowToolbar();
     }
 }

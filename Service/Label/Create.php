@@ -31,6 +31,7 @@
  *
  * @codingStandardsIgnoreFile
  */
+
 namespace TIG\GLS\Service\Label;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -63,7 +64,7 @@ class Create extends ShippingInformation
     const XPATH_CONFIG_TIG_GLS_GENERAL_LABEL_MARGIN_LEFT        = 'tig_gls/general/label_margin_left_a4';
     const XPATH_CONFIG_TIG_GLS_GENERAL_NON_GLS_MASSACTIONS      = 'tig_gls/general/non_gls_massactions';
     const XPATH_CONFIG_CARRIERS_TIG_GLS_DELIVERY_OPTIONS_ACTIVE = 'carriers/tig_gls/delivery_options_active';
-    const GLS_PARCEL_MAX_WEIGHT                           = 31.9;
+    const GLS_PARCEL_MAX_WEIGHT                                 = 31.9;
 
     /**
      * @var Create $createLabel
@@ -116,12 +117,12 @@ class Create extends ShippingInformation
         ShippingDate $shippingDate,
         QuoteManagement $quoteManagement
     ) {
-        $this->createLabel = $createLabel;
+        $this->createLabel        = $createLabel;
         $this->shipmentRepository = $shipmentRepository;
-        $this->carrierConfig = $carrierConfig;
-        $this->scopeConfig = $scopeConfig;
-        $this->shippingDate = $shippingDate;
-        $this->quoteManagement = $quoteManagement;
+        $this->carrierConfig      = $carrierConfig;
+        $this->scopeConfig        = $scopeConfig;
+        $this->shippingDate       = $shippingDate;
+        $this->quoteManagement    = $quoteManagement;
     }
 
     /**
@@ -146,7 +147,7 @@ class Create extends ShippingInformation
      */
     public function getRequestData($shipmentId, $controllerModule, $version)
     {
-        $shipment   = $this->shipmentRepository->get($shipmentId);
+        $shipment = $this->shipmentRepository->get($shipmentId);
 
         if (!$shipment) {
             return false;
@@ -164,8 +165,8 @@ class Create extends ShippingInformation
      */
     private function mapLabelData($shipment, $controllerModule, $version)
     {
-        $order           = $shipment->getOrder();
-        $deliveryOption  = json_decode($order->getGlsDeliveryOption());
+        $order          = $shipment->getOrder();
+        $deliveryOption = json_decode($order->getGlsDeliveryOption());
         // If no delivery options are available, check if non-GLS shipments are allowed,
         // or if delivery options are not enabled.
         if (!$deliveryOption && (
@@ -174,7 +175,7 @@ class Create extends ShippingInformation
                 ScopeInterface::SCOPE_STORE,
                 $order->getStoreId()
             )
-        ) ||
+            ) ||
             $this->scopeConfig->getValue(self::XPATH_CONFIG_TIG_GLS_GENERAL_NON_GLS_MASSACTIONS)
         ) {
             $deliveryOption = $this->getDefaultGLSOptions($shipment);
@@ -199,11 +200,15 @@ class Create extends ShippingInformation
         ];
         $data['shippingDate']      = $this->shippingDate->calculate("Y-m-d", false);
         $data['reference']         = $order->getIncrementId();
-        $data['units']             = [
-            $this->prepareShippingUnit($shipment)
-        ];
+        $data['units']             = $this->prepareShippingUnit($shipment);
+        $data['parcelQuantity']    = $order->getGlsParcelQuantity();
 
-        if (in_array($labelType, ['pdf2A4','pdf4A4'])) {
+        if (in_array(
+            $labelType, [
+                'pdf2A4',
+                'pdf4A4'
+            ]
+        )) {
             $data['labelA4MoveYMm'] = $this->getLabelMarginTop();
             $data['labelA4MoveXMm'] = $this->getLabelMarginLeft();
         }
@@ -220,8 +225,8 @@ class Create extends ShippingInformation
     private function getDefaultGLSOptions($shipment)
     {
         return (object) $deliveryOption = [
-            'type' => 'deliveryService',
-            'details' => null,
+            'type'            => 'deliveryService',
+            'details'         => null,
             'deliveryAddress' => $this->quoteManagement->mapDeliveryAddress(
                 $shipment->getShippingAddress(),
                 $shipment->getBillingAddress()
@@ -272,8 +277,8 @@ class Create extends ShippingInformation
         $missing = $this->isDataMissing($email);
         if ($missing) {
             $this->errors['missing'][] = [
-                'missingCode' => $missing,
-                'missingOption' => 'General Contact and a Customer Support Contact',
+                'missingCode'       => $missing,
+                'missingOption'     => 'General Contact and a Customer Support Contact',
                 'configurationPath' => 'Stores > Configuration > General > Store Email Addresses'
             ];
 
@@ -303,8 +308,8 @@ class Create extends ShippingInformation
         $missing = $this->isDataMissing($address);
         if ($missing) {
             $this->errors['missing'][] = [
-                'missingCode' => $missing,
-                'missingOption' => 'Pickup Address',
+                'missingCode'       => $missing,
+                'missingOption'     => 'Pickup Address',
                 'configurationPath' => 'Stores > Configuration > General > General > Store Information'
             ];
 
@@ -366,6 +371,14 @@ class Create extends ShippingInformation
      */
     private function prepareShippingUnit($shipment)
     {
+        $order          = $shipment->getOrder();
+        $parcelQuantity = $order->getGlsParcelQuantity();
+
+        // if no parcel quantity is set, use a default value.
+        if (!$parcelQuantity) {
+            $parcelQuantity = 1;
+        }
+
         $totalWeight = $shipment->getTotalWeight();
 
         if ($totalWeight > self::GLS_PARCEL_MAX_WEIGHT) {
@@ -376,11 +389,20 @@ class Create extends ShippingInformation
 
         $weight = $totalWeight != 0 ? $totalWeight : 1;
 
-        return [
-            "unitId"   => $shipment->getIncrementId(),
-            "unitType" => "cO",
-            "weight"   => $weight
-        ];
+        $units = [];
+
+        for ($i = 0; $i < $parcelQuantity; $i++) {
+            $weightPerLabel = $weight / $parcelQuantity;
+
+            $unitId  = ($parcelQuantity > 1 ? $shipment->getIncrementId() . "-" . ($i + 1) : $shipment->getIncrementId());
+            $units[] = [
+                "unitId"   => $unitId,
+                "unitType" => "cO",
+                "weight"   => ($weightPerLabel > 0.2 && $weightPerLabel < self::GLS_PARCEL_MAX_WEIGHT ? $weightPerLabel : 1)
+            ];
+        }
+
+        return $units;
     }
 
     /**

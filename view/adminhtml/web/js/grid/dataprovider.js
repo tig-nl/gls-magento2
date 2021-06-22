@@ -29,8 +29,15 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 /* eslint-disable strict */
-define([], function () {
+define([
+    'jquery',
+    'mage/url'
+], function (
+    $,
+    url
+) {
     var pdfOnSeparatePage = 0;
+    var showGridToolbar = 1;
 
     return {
         getPdfOnSeperatePage: function () {
@@ -39,6 +46,51 @@ define([], function () {
 
         setPdfOnSeperatePage: function (separatePdf) {
             pdfOnSeparatePage = separatePdf;
+        },
+
+        setShowToolbar: function (showToolbar) {
+            showGridToolbar = showToolbar;
+        },
+
+        getShowToolbar: function () {
+            return showGridToolbar;
+        },
+
+        getInputWarningMessage: function (option) {
+            if (option === 'change_parcel') {
+                return $.mage.__('Parcel quantity should be a number');
+            }
+        },
+
+        getSubmitUrl : function (option, grid) {
+            var action = '' + 'gls/' + this.getCurrentGrid(grid) + '/' + this.getCurrentAction(option);
+            return url.build(action);
+        },
+
+        /**
+         * Gets the controller based on the currently selected action.
+         *
+         * @returns {*}
+         */
+        getCurrentAction : function (option) {
+            if (option === 'change_parcel') {
+                return 'MassChangeMultiColli';
+            }
+        },
+
+        /**
+         * Retuns the controller directory bases on the current grid.
+         *
+         * @returns {*}
+         */
+        getCurrentGrid : function (grid) {
+            if (grid === 'sales_order_grid') {
+                return 'order';
+            }
+
+            if (grid === 'sales_order_shipment_grid') {
+                return 'shipment';
+            }
         }
     };
 });

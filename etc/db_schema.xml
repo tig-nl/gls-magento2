@@ -35,4 +35,8 @@
             <column name="condition_value"/>
         </constraint>
     </table>
+
+    <table name="sales_order" resource="default">
+        <column xsi:type="int" name="gls_parcel_quantity" nullable="true" comment="GLS Parcel Quantity" />
+    </table>
 </schema>

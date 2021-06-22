@@ -1,0 +1,58 @@
+.gls-grid-toolbar {
+    margin: 10px 0 0 15px;
+    padding: 10px;
+    background: #f2f2f2;
+    border: 0.1rem solid #adadad;
+    min-width: 480px;
+}
+
+.gls-grid-toolbar:before {
+    content: '';
+    background-image : url(../images/gls_logo.png);
+    position: absolute;
+    background-repeat: no-repeat;
+    background-size: auto 20px;
+    padding: 20px 42px 20px;
+    left: 16px;
+    top: 16px;
+    z-index: 10;
+}
+
+.gls-grid-toolbar button {
+    height: 32px;
+    background-color: #eb5202;
+    border-color: #eb5202;
+    line-height: 0;
+    margin-top: 1px;
+}
+
+.gls-grid-toolbar button:hover, .gls-grid-toolbar button:focus {
+    background-color: #ba4000;
+    border-color: #b84002;
+}
+
+.gls-grid-toolbar .col-xs-3, .gls-grid-toolbar .col-xs-3, .gls-grid-toolbar .col-xs-5 {
+    padding: 1px 10px 0 0;
+}
+
+.gls-grid-toolbar .col-xs-7:first-child {
+    padding: 1px 10px 0 86px;
+}
+
+.gls-grid-toolbar input {
+    height: 33px;
+    width: 100%;
+}
+
+.gls-grid-toolbar .sub-select-holder {
+    margin-top: 5px;
+}
+
+/* Sticky Header ==================================================================================================== */
+
+.sticky-header .gls-grid-toolbar {
+    clear: both;
+    margin-top: 20px;
+    margin-left: 0;
+}
+

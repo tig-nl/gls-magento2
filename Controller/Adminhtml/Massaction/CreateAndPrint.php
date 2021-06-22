@@ -206,7 +206,7 @@ class CreateAndPrint extends AbstractLabel
      *
      * @return Collection
      */
-    private function removeNonGLSMethods($collection)
+    public function removeNonGLSMethods($collection)
     {
         $nonGLS = clone $collection;
         $nonGLS->addFieldToFilter('shipping_method', ['neq' => 'tig_gls_tig_gls']);

@@ -32,9 +32,22 @@
 ?>
 <?php /** @var \TIG\GLS\Block\Adminhtml\Grid\DataProvider $block */ ?>
 <script type="text/javascript">
-    require([
-        'TIG_GLS/js/grid/dataprovider'
-    ], function(DataProvider) {
-        DataProvider.setPdfOnSeperatePage('<?= /* @escapeNotVerified */ $block->getPdfOnSeperatePage();?>');
-    })
+    require(
+        [
+            'TIG_GLS/js/grid/dataprovider',
+            'mage/url'
+        ],
+        function (
+            DataProvider,
+            url
+        ) {
+            DataProvider.setPdfOnSeperatePage(
+                '<?= /* @escapeNotVerified */ $block->getPdfOnSeperatePage();?>');
+            DataProvider.setShowToolbar(
+                '<?= /* @escapeNotVerified */ $block->getShowToolbar();?>');
+
+            return url.setBaseUrl(
+                '<?= /* @escapeNotVerified */ $block->getAdminBaseUrl();?>');
+        }
+    );
 </script>

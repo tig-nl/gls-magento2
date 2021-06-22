@@ -67,6 +67,9 @@
             <delivery_options>
                 <parcelshops_amount>6</parcelshops_amount>
             </delivery_options>
+            <general>
+                <show_grid_toolbar>1</show_grid_toolbar>
+            </general>
         </tig_gls>
     </default>
 </config>
