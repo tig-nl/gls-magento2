@@ -32,6 +32,8 @@
 
 namespace TIG\GLS\Block\Adminhtml\Carrier\GLS;
 
+use Magento\Store\Model\ScopeInterface;
+
 /**
  * This is a stripped version of \Magento\OfflineShipping\Block\Adminhtml\Carrier\Tablerate\Grid.
  *
@@ -42,17 +44,23 @@ namespace TIG\GLS\Block\Adminhtml\Carrier\GLS;
  */
 class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
 {
+    const XPATH_CONDITION_NAME = 'carriers/tig_gls/condition_name';
+
     /** @var \TIG\GLS\Model\Carrier\GLS $glsCarrier */
     private $glsCarrier;
 
     /** @var \TIG\GLS\Model\ResourceModel\Carrier\GLS\CollectionFactory */
     private $collectionFactory;
 
+    /** @var ScopeConfigInterface */
+    private \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig;
+
     /**
      * Grid constructor.
      *
      * @param \Magento\Backend\Block\Template\Context                    $context
      * @param \Magento\Backend\Helper\Data                               $backendHelper
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface         $scopeConfig
      * @param \TIG\GLS\Model\ResourceModel\Carrier\GLS\CollectionFactory $collectionFactory
      * @param \TIG\GLS\Model\Carrier\GLS                                 $glsCarrier
      * @param array                                                      $data
@@ -60,12 +68,14 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Backend\Helper\Data $backendHelper,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \TIG\GLS\Model\ResourceModel\Carrier\GLS\CollectionFactory $collectionFactory,
         \TIG\GLS\Model\Carrier\GLS $glsCarrier,
         array $data = []
     ) {
         $this->collectionFactory = $collectionFactory;
         $this->glsCarrier        = $glsCarrier;
+        $this->scopeConfig       = $scopeConfig;
         parent::__construct($context, $backendHelper, $data);
     }
 
@@ -131,7 +141,15 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
             ]
         );
 
-        $label = $this->glsCarrier->getCode('condition_name_short');
+        $buttonBlock = $this->getLayout()->createBlock(\Magento\Backend\Block\Widget\Button::class);
+        $buttonBlockRequest = $buttonBlock->getRequest();
+
+        $code = $this->scopeConfig->getValue(
+            self::XPATH_CONDITION_NAME,
+            ScopeInterface::SCOPE_WEBSITE,
+            $buttonBlockRequest->getParam('website')
+        );
+        $label = $this->glsCarrier->getCode('condition_name_short', $code);
         $this->addColumn('condition_value', ['header' => $label, 'index' => 'condition_value']);
 
         $this->addColumn(
