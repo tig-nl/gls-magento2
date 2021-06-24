@@ -53,7 +53,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     private $collectionFactory;
 
     /** @var ScopeConfigInterface */
-    private \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig;
+    private $scopeConfig;
 
     /**
      * Grid constructor.
