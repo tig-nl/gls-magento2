@@ -53,14 +53,7 @@ class ColumnResolver
     const COLUMN_WEIGHT   = 'Weight (and above)';
 
     /** @var array */
-    private $nameToPositionIdMap = [
-        self::COLUMN_COUNTRY  => 0,
-        self::COLUMN_REGION   => 1,
-        self::COLUMN_ZIP      => 2,
-        self::COLUMN_SUBTOTAL => 3,
-        self::COLUMN_WEIGHT   => 3,
-        self::COLUMN_PRICE    => 4,
-    ];
+    private $nameToPositionIdMap = [];
 
     /** @var array */
     private $headers;
@@ -73,6 +66,15 @@ class ColumnResolver
      */
     public function __construct(array $headers, array $columns = [])
     {
+        $this->nameToPositionIdMap = [
+            (string) __(self::COLUMN_COUNTRY)  => 0,
+            (string) __(self::COLUMN_REGION)   => 1,
+            (string) __(self::COLUMN_ZIP)      => 2,
+            (string) __(self::COLUMN_SUBTOTAL) => 3,
+            (string) __(self::COLUMN_WEIGHT)   => 3,
+            (string) __(self::COLUMN_PRICE)    => 4,
+        ];
+
         $this->nameToPositionIdMap = array_merge($this->nameToPositionIdMap, $columns);
         $this->headers             = array_map('trim', $headers);
     }
