@@ -35,14 +35,16 @@ define([
     'underscore',
     'Magento_Ui/js/grid/toolbar',
     'mageUtils',
-    'TIG_GLS/js/grid/dataprovider'
+    'TIG_GLS/js/grid/dataprovider',
+    'mage/translate'
 ], function (
     $,
     ko,
     _,
     Toolbar,
     utils,
-    DataProvider
+    DataProvider,
+    $t
 ) {
     'use strict';
     return Toolbar.extend({
@@ -53,7 +55,7 @@ define([
                 selections: '${ $.selectProvider }'
             },
             actionList : ko.observableArray([
-                {text: $.mage.__('Change parcel quantity'), value: 'change_parcel'}
+                {text: $t('Change parcel quantity'), value: 'change_parcel'}
             ]),
             showToolbar : ko.observable(DataProvider.getShowToolbar()),
             jsLoaded : true,

@@ -104,3 +104,4 @@ ShopReturnService,ShopReturnService
 "Open labels on new page","Open labels on new page"
 "Enable this setting to open labels generated with the mass-actions on a new tab.","Enable this setting to open labels generated with the mass-actions on a new tab."
 "Parcel quantity","Parcel quantity"
+"Change parcel quantity","Change parcel quantity"
