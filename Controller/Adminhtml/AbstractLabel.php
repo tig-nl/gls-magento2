@@ -95,6 +95,8 @@ abstract class AbstractLabel extends Action
                 __($this->errorMessage) . " $message [Status: $status]"
             );
 
+            $this->parseResponseErrors($response);
+
             return false;
         }
 
@@ -106,6 +108,36 @@ abstract class AbstractLabel extends Action
         }
 
         return true;
+    }
+
+    /**
+     * @param array $response
+     */
+    private function parseResponseErrors($response)
+    {
+        if (!isset($response['errors']) || empty($response['errors'])) {
+            return;
+        }
+
+        foreach ($response['errors'] as $error) {
+            $this->addResponseError($error);
+        }
+    }
+
+    /**
+     * @param array $error
+     */
+    private function addResponseError($error)
+    {
+        if (!is_array($error)) {
+            return;
+        }
+
+        foreach ($error as $message) {
+            // @codingStandardsIgnoreLine
+            $errorMessage = sprintf(__("The following shipping field contains errors: %s"), $message);
+            $this->messageManager->addErrorMessage($errorMessage);
+        }
     }
 
     /**
