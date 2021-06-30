@@ -149,6 +149,7 @@ class GLS extends Tablerate
 
         $rateQuery->prepareSelect($select);
         $bindings = $rateQuery->getBindings();
+        $bindings[':condition_value'] = $request->getPackageWeight();
 
         // If quote is lost these values are empty, causing table rates to return the wrong shipping rate.
         if ($bindings[':condition_name'] == null && $bindings[':condition_value'] == 0.0) {
