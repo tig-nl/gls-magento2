@@ -379,14 +379,7 @@ class Create extends ShippingInformation
             $parcelQuantity = 1;
         }
 
-        $totalWeight = 0;
-
-        foreach ($items as $item) {
-            // Check if item has weight and add it to the total weight
-            $itemWeight = ($item->getWeight() ? $item->getWeight() : 0);
-
-            $totalWeight = $totalWeight + $itemWeight;
-        }
+        $totalWeight = array_reduce($items, function($acc, $item){ return $acc + ($item->getWeight() * $item->getQty()) ?? 0; }, 0);
 
         if ($totalWeight > self::GLS_PARCEL_MAX_WEIGHT) {
             $this->errors['errors'][] = "Label could not be created, because the shipment is too heavy.";
