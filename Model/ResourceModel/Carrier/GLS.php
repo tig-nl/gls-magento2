@@ -318,11 +318,10 @@ class GLS extends Tablerate
         if (empty($_FILES['groups']['tmp_name']['tig_gls']['fields']['import']['value'])) {
             return $this;
         }
-        $filePath  = $_FILES['groups']['tmp_name']['tig_gls']['fields']['import']['value'];
-
-        $websiteId     = $this->storeManager->getWebsite($object->getScopeId())->getId();
-        $conditionName = $this->getConditionName($object);
-
+        $filePath      = $_FILES['groups']['tmp_name']['tig_gls']['fields']['import']['value'];
+        $website       = $this->storeManager->getWebsite($object->getScopeId());
+        $websiteId     = $website->getId();
+        $conditionName = $website->getConfig(self::XPATH_GLS_CONDITION_NAME);
         $file          = $this->getCsvFile($filePath);
         try {
             $condition = [
