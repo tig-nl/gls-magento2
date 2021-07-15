@@ -64,6 +64,7 @@ class Create extends ShippingInformation
     const XPATH_CONFIG_TIG_GLS_GENERAL_LABEL_MARGIN_LEFT        = 'tig_gls/general/label_margin_left_a4';
     const XPATH_CONFIG_TIG_GLS_GENERAL_NON_GLS_MASSACTIONS      = 'tig_gls/general/non_gls_massactions';
     const XPATH_CONFIG_CARRIERS_TIG_GLS_DELIVERY_OPTIONS_ACTIVE = 'carriers/tig_gls/delivery_options_active';
+    const GLS_PARCEL_MIN_WEIGHT                                 = 0.2;
     const GLS_PARCEL_MAX_WEIGHT                                 = 31.9;
 
     /**
@@ -363,9 +364,7 @@ class Create extends ShippingInformation
     }
 
     /**
-     * TODO: getTotalWeight() returns null too often. How to trigger calculation?
-     *
-     * @param $shipment
+    * @param $shipment
      *
      * @return array
      */
@@ -373,13 +372,14 @@ class Create extends ShippingInformation
     {
         $order          = $shipment->getOrder();
         $parcelQuantity = $order->getGlsParcelQuantity();
+        $items          = $shipment->getItems();
 
         // if no parcel quantity is set, use a default value.
         if (!$parcelQuantity) {
             $parcelQuantity = 1;
         }
 
-        $totalWeight = $shipment->getTotalWeight();
+        $totalWeight = array_reduce($items, function($acc, $item){ return $acc + ($item->getWeight() * $item->getQty()) ?? 0; }, 0);
 
         if ($totalWeight > self::GLS_PARCEL_MAX_WEIGHT) {
             $this->errors['errors'][] = "Label could not be created, because the shipment is too heavy.";
@@ -387,18 +387,16 @@ class Create extends ShippingInformation
             return [];
         }
 
-        $weight = $totalWeight != 0 ? $totalWeight : 1;
-
         $units = [];
 
         for ($i = 0; $i < $parcelQuantity; $i++) {
-            $weightPerLabel = $weight / $parcelQuantity;
+            $weightPerLabel = ($totalWeight > 0 ? $totalWeight / $parcelQuantity : 1);
 
             $unitId  = ($parcelQuantity > 1 ? $shipment->getIncrementId() . "-" . ($i + 1) : $shipment->getIncrementId());
             $units[] = [
                 "unitId"   => $unitId,
                 "unitType" => "cO",
-                "weight"   => ($weightPerLabel > 0.2 && $weightPerLabel < self::GLS_PARCEL_MAX_WEIGHT ? $weightPerLabel : 1)
+                "weight"   => ($weightPerLabel > self::GLS_PARCEL_MIN_WEIGHT && $weightPerLabel < self::GLS_PARCEL_MAX_WEIGHT ? $weightPerLabel : 1)
             ];
         }
 

@@ -106,3 +106,4 @@ ShopReturnService,ShopReturnService
 "Enable this setting to open labels generated with the mass-actions on a new tab.","Activeer deze instelling wanneer je labels gegenereerd door de mass-actions op een nieuwe pagina wilt openen."
 "Parcel quantity","Aantal pakketten"
 "The following shipping field contains errors: %s","Het volgende verzendveld bevat een fout: %s"
+"Change parcel quantity","Verander aantal pakketten"

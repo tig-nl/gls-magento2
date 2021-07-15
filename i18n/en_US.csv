@@ -105,3 +105,4 @@ ShopReturnService,ShopReturnService
 "Enable this setting to open labels generated with the mass-actions on a new tab.","Enable this setting to open labels generated with the mass-actions on a new tab."
 "Parcel quantity","Parcel quantity"
 "The following shipping field contains errors: %s","The following shipping field contains errors: %s"
+"Change parcel quantity","Change parcel quantity"

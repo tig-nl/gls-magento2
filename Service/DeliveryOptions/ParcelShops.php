@@ -34,6 +34,7 @@
 namespace TIG\GLS\Service\DeliveryOptions;
 
 use TIG\GLS\Model\Config\Provider\Carrier;
+use TIG\GLS\Service\ShippingDate;
 use TIG\GLS\Webservice\Endpoint\ParcelShop\GetParcelShops as ParcelShopsEndpoint;
 
 class ParcelShops
@@ -44,18 +45,24 @@ class ParcelShops
     /** @var Carrier $carrierConfig */
     private $carrierConfig;
 
+    /** @var ShippingDate $shippingDate */
+    private $shippingDate;
+
     /**
      * GetParcelShops constructor.
      *
      * @param ParcelShopsEndpoint $parcelShopsEndpoint
      * @param Carrier             $carrierConfig
+     * @param ShippingDate        $shippingDate
      */
     public function __construct(
         ParcelShopsEndpoint $parcelShopsEndpoint,
-        Carrier $carrierConfig
+        Carrier $carrierConfig,
+        ShippingDate $shippingDate
     ) {
         $this->parcelShopsEndpoint = $parcelShopsEndpoint;
         $this->carrierConfig       = $carrierConfig;
+        $this->shippingDate        = $shippingDate;
     }
 
     /**
@@ -67,10 +74,12 @@ class ParcelShops
     public function getParcelShops($postcode)
     {
         $parcelShopsAmount = $this->carrierConfig->getShopDeliveryShopAmount();
+        $shippingDate      = $this->shippingDate->calculate('Y-m-d');
         $this->parcelShopsEndpoint->setRequestData(
             [
                 'zipcode'       => $postcode,
-                'amountOfShops' => $parcelShopsAmount
+                'amountOfShops' => $parcelShopsAmount,
+                'shippingDate'  => $shippingDate
             ]
         );
 

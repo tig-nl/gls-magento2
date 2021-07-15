@@ -149,6 +149,7 @@ class GLS extends Tablerate
 
         $rateQuery->prepareSelect($select);
         $bindings = $rateQuery->getBindings();
+        $bindings[':condition_value'] = $request->getPackageWeight();
 
         // If quote is lost these values are empty, causing table rates to return the wrong shipping rate.
         if ($bindings[':condition_name'] == null && $bindings[':condition_value'] == 0.0) {
@@ -317,11 +318,10 @@ class GLS extends Tablerate
         if (empty($_FILES['groups']['tmp_name']['tig_gls']['fields']['import']['value'])) {
             return $this;
         }
-        $filePath  = $_FILES['groups']['tmp_name']['tig_gls']['fields']['import']['value'];
-
-        $websiteId     = $this->storeManager->getWebsite($object->getScopeId())->getId();
-        $conditionName = $this->getConditionName($object);
-
+        $filePath      = $_FILES['groups']['tmp_name']['tig_gls']['fields']['import']['value'];
+        $website       = $this->storeManager->getWebsite($object->getScopeId());
+        $websiteId     = $website->getId();
+        $conditionName = $website->getConfig(self::XPATH_GLS_CONDITION_NAME);
         $file          = $this->getCsvFile($filePath);
         try {
             $condition = [

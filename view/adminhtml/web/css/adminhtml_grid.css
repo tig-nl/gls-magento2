@@ -31,11 +31,11 @@
     border-color: #b84002;
 }
 
-.gls-grid-toolbar .col-xs-3, .gls-grid-toolbar .col-xs-3, .gls-grid-toolbar .col-xs-5 {
+.gls-grid-toolbar .col-xs-2, .gls-grid-toolbar .col-xs-3, .col-xs-1, .gls-grid-toolbar .col-xs-4 {
     padding: 1px 10px 0 0;
 }
 
-.gls-grid-toolbar .col-xs-7:first-child {
+.gls-grid-toolbar .col-xs-8:first-child {
     padding: 1px 10px 0 86px;
 }
 
