@@ -107,3 +107,4 @@ ShopReturnService,ShopReturnService
 "Parcel quantity","Aantal pakketten"
 "The following shipping field contains errors: %s","Het volgende verzendveld bevat een fout: %s"
 "Change parcel quantity","Verander aantal pakketten"
+"Show Delivery Options", "Toon verzendopties"

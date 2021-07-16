@@ -106,3 +106,4 @@ ShopReturnService,ShopReturnService
 "Parcel quantity","Parcel quantity"
 "The following shipping field contains errors: %s","The following shipping field contains errors: %s"
 "Change parcel quantity","Change parcel quantity"
+"Show Delivery Options", "Show Delivery Options"
