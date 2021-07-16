@@ -54,7 +54,7 @@ class CalculateHandlingFee implements OptionSourceInterface
             ],
             [
                 'value' => self::CARRIER_CALCULATE_PRICE_DESTINATION,
-                'label' => __('Price vs. Destination'),
+                'label' => __('Table Rates'),
             ],
         ];
         // @codingStandardsIgnoreEnd
