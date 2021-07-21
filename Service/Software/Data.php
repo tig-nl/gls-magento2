@@ -38,7 +38,7 @@ class Data
 {
     const MODULE_NAME       = 'TIG_GLS';
 
-    const EXTENSION_VERSION = '1.4.0';
+    const EXTENSION_VERSION = '1.4.0.1';
 
     /**
      * @var ProductMetadataInterface
