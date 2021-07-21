@@ -36,6 +36,8 @@ use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate;
 use Magento\Framework\App\Request\Http;
+use Magento\Quote\Model\Quote;
+use Magento\Store\Model\ScopeInterface;
 use TIG\GLS\Model\ResourceModel\Carrier\GLS\Import;
 use TIG\GLS\Model\ResourceModel\Carrier\GLS\RateQuery;
 use TIG\GLS\Model\ResourceModel\Carrier\GLS\RateQueryFactory;
@@ -54,6 +56,8 @@ use TIG\GLS\Model\ResourceModel\Carrier\GLS\RateQueryFactory;
 // @codingStandardsIgnoreFile
 class GLS extends Tablerate
 {
+    const XPATH_GLS_CONDITION_NAME = 'carriers/tig_gls/condition_name';
+
     /** @var CartRepositoryInterface $cartRepository */
     private $cartRepository;
 
@@ -145,11 +149,12 @@ class GLS extends Tablerate
 
         $rateQuery->prepareSelect($select);
         $bindings = $rateQuery->getBindings();
+        $bindings[':condition_value'] = $request->getPackageWeight();
 
         // If quote is lost these values are empty, causing table rates to return the wrong shipping rate.
         if ($bindings[':condition_name'] == null && $bindings[':condition_value'] == 0.0) {
-            $bindings[':condition_name']  = 'package_value_with_discount';
-            $bindings[':condition_value'] = $this->getSubtotalFromQuote($request->getAllItems());
+            $bindings[':condition_name']  = $this->coreConfig->getValue(self::XPATH_GLS_CONDITION_NAME, ScopeInterface::SCOPE_STORE);
+            $bindings[':condition_value'] = $this->getConditionValue($request->getAllItems());
         }
 
         $result = $connection->fetchRow($select, $bindings);
@@ -175,6 +180,34 @@ class GLS extends Tablerate
         }
 
         return $result;
+    }
+
+    /**
+     * @param $items
+     *
+     * @return float|void
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    public function getConditionValue($items)
+    {
+        if ($this->coreConfig->getValue(self::XPATH_GLS_CONDITION_NAME, ScopeInterface::SCOPE_STORE) === 'package_weight') {
+            return $this->getWeightFromQuote($items);
+        }
+
+        return $this->getSubtotalFromQuote($items);
+    }
+
+    /**
+     * @param $items
+     */
+    private function getWeightFromQuote($items)
+    {
+        $weight = 0;
+        foreach ($items as $item) {
+            $weight += ($item->getWeight() * $item->getQty());
+        }
+
+        return $weight;
     }
 
     /**
@@ -285,11 +318,10 @@ class GLS extends Tablerate
         if (empty($_FILES['groups']['tmp_name']['tig_gls']['fields']['import']['value'])) {
             return $this;
         }
-        $filePath  = $_FILES['groups']['tmp_name']['tig_gls']['fields']['import']['value'];
-
-        $websiteId     = $this->storeManager->getWebsite($object->getScopeId())->getId();
-        $conditionName = $this->getConditionName($object);
-
+        $filePath      = $_FILES['groups']['tmp_name']['tig_gls']['fields']['import']['value'];
+        $website       = $this->storeManager->getWebsite($object->getScopeId());
+        $websiteId     = $website->getId();
+        $conditionName = $website->getConfig(self::XPATH_GLS_CONDITION_NAME);
         $file          = $this->getCsvFile($filePath);
         try {
             $condition = [

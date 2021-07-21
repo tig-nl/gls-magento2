@@ -31,12 +31,16 @@
  *
  * @codingStandardsIgnoreFile
  */
+
 namespace TIG\GLS\Service\Label;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Store\Model\ScopeInterface;
 use Magento\Sales\Api\ShipmentRepositoryInterface;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Shipment;
+use Magento\Store\Model\ScopeInterface;
 use TIG\GLS\Model\Config\Provider\Carrier;
+use TIG\GLS\Plugin\Quote\Model\QuoteManagement;
 use TIG\GLS\Service\ShippingDate;
 use TIG\GLS\Webservice\Endpoint\Label\Create as EndpointLabelCreate;
 
@@ -46,19 +50,22 @@ use TIG\GLS\Webservice\Endpoint\Label\Create as EndpointLabelCreate;
  */
 class Create extends ShippingInformation
 {
-    const XPATH_CONFIG_TRANS_IDENT_SUPPORT_NAME           = 'trans_email/ident_support/name';
-    const XPATH_CONFIG_TRANS_IDENT_SUPPORT_EMAIL          = 'trans_email/ident_support/email';
-    const XPATH_CONFIG_TRANS_IDENT_GENERAL_NAME           = 'trans_email/ident_support/name';
-    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_NAME     = 'general/store_information/name';
-    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_STREET   = 'general/store_information/street_line1';
-    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_HOUSE_NO = 'general/store_information/street_line2';
-    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_POSTCODE = 'general/store_information/postcode';
-    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_CITY     = 'general/store_information/city';
-    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_COUNTRY  = 'general/store_information/country_id';
-    const XPATH_CONFIG_TIG_GLS_GENERAL_LABEL_TYPE         = 'tig_gls/general/label_type';
-    const XPATH_CONFIG_TIG_GLS_GENERAL_LABEL_MARGIN_TOP   = 'tig_gls/general/label_margin_top_a4';
-    const XPATH_CONFIG_TIG_GLS_GENERAL_LABEL_MARGIN_LEFT  = 'tig_gls/general/label_margin_left_a4';
-    const GLS_PARCEL_MAX_WEIGHT                           = 31.9;
+    const XPATH_CONFIG_TRANS_IDENT_SUPPORT_NAME                 = 'trans_email/ident_support/name';
+    const XPATH_CONFIG_TRANS_IDENT_SUPPORT_EMAIL                = 'trans_email/ident_support/email';
+    const XPATH_CONFIG_TRANS_IDENT_GENERAL_NAME                 = 'trans_email/ident_support/name';
+    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_NAME           = 'general/store_information/name';
+    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_STREET         = 'general/store_information/street_line1';
+    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_HOUSE_NO       = 'general/store_information/street_line2';
+    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_POSTCODE       = 'general/store_information/postcode';
+    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_CITY           = 'general/store_information/city';
+    const XPATH_CONFIG_GENERAL_STORE_INFORMATION_COUNTRY        = 'general/store_information/country_id';
+    const XPATH_CONFIG_TIG_GLS_GENERAL_LABEL_TYPE               = 'tig_gls/general/label_type';
+    const XPATH_CONFIG_TIG_GLS_GENERAL_LABEL_MARGIN_TOP         = 'tig_gls/general/label_margin_top_a4';
+    const XPATH_CONFIG_TIG_GLS_GENERAL_LABEL_MARGIN_LEFT        = 'tig_gls/general/label_margin_left_a4';
+    const XPATH_CONFIG_TIG_GLS_GENERAL_NON_GLS_MASSACTIONS      = 'tig_gls/general/non_gls_massactions';
+    const XPATH_CONFIG_CARRIERS_TIG_GLS_DELIVERY_OPTIONS_ACTIVE = 'carriers/tig_gls/delivery_options_active';
+    const GLS_PARCEL_MIN_WEIGHT                                 = 0.2;
+    const GLS_PARCEL_MAX_WEIGHT                                 = 31.9;
 
     /**
      * @var Create $createLabel
@@ -91,24 +98,32 @@ class Create extends ShippingInformation
     private $shippingDate;
 
     /**
+     * @var QuoteManagement
+     */
+    private $quoteManagement;
+
+    /**
      * @param EndpointLabelCreate         $createLabel
      * @param ShipmentRepositoryInterface $shipmentRepository
      * @param Carrier                     $carrierConfig
      * @param ScopeConfigInterface        $scopeConfig
      * @param ShippingDate                $shippingDate
+     * @param QuoteManagement             $quoteManagement
      */
     public function __construct(
         EndpointLabelCreate $createLabel,
         ShipmentRepositoryInterface $shipmentRepository,
         Carrier $carrierConfig,
         ScopeConfigInterface $scopeConfig,
-        ShippingDate $shippingDate
+        ShippingDate $shippingDate,
+        QuoteManagement $quoteManagement
     ) {
-        $this->createLabel = $createLabel;
+        $this->createLabel        = $createLabel;
         $this->shipmentRepository = $shipmentRepository;
-        $this->carrierConfig = $carrierConfig;
-        $this->scopeConfig = $scopeConfig;
-        $this->shippingDate = $shippingDate;
+        $this->carrierConfig      = $carrierConfig;
+        $this->scopeConfig        = $scopeConfig;
+        $this->shippingDate       = $shippingDate;
+        $this->quoteManagement    = $quoteManagement;
     }
 
     /**
@@ -133,7 +148,7 @@ class Create extends ShippingInformation
      */
     public function getRequestData($shipmentId, $controllerModule, $version)
     {
-        $shipment   = $this->shipmentRepository->get($shipmentId);
+        $shipment = $this->shipmentRepository->get($shipmentId);
 
         if (!$shipment) {
             return false;
@@ -147,12 +162,30 @@ class Create extends ShippingInformation
      * @param $controllerModule
      * @param $version
      *
-     * @return array
+     * @return array|bool
      */
     private function mapLabelData($shipment, $controllerModule, $version)
     {
-        $order           = $shipment->getOrder();
-        $deliveryOption  = json_decode($order->getGlsDeliveryOption());
+        $order          = $shipment->getOrder();
+        $deliveryOption = json_decode($order->getGlsDeliveryOption());
+        // If no delivery options are available, check if non-GLS shipments are allowed,
+        // or if delivery options are not enabled.
+        if (!$deliveryOption && (
+            !$this->scopeConfig->getValue(
+                self::XPATH_CONFIG_CARRIERS_TIG_GLS_DELIVERY_OPTIONS_ACTIVE,
+                ScopeInterface::SCOPE_STORE,
+                $order->getStoreId()
+            )
+            ) ||
+            $this->scopeConfig->getValue(self::XPATH_CONFIG_TIG_GLS_GENERAL_NON_GLS_MASSACTIONS)
+        ) {
+            $deliveryOption = $this->getDefaultGLSOptions($shipment);
+        }
+
+        if (!$deliveryOption) {
+            return false;
+        }
+
         $deliveryAddress = $deliveryOption->deliveryAddress;
         $labelType       = $this->getLabelType();
 
@@ -168,16 +201,38 @@ class Create extends ShippingInformation
         ];
         $data['shippingDate']      = $this->shippingDate->calculate("Y-m-d", false);
         $data['reference']         = $order->getIncrementId();
-        $data['units']             = [
-            $this->prepareShippingUnit($shipment)
-        ];
+        $data['units']             = $this->prepareShippingUnit($shipment);
+        $data['parcelQuantity']    = $order->getGlsParcelQuantity();
 
-        if (in_array($labelType, ['pdf2A4','pdf4A4'])) {
+        if (in_array(
+            $labelType, [
+                'pdf2A4',
+                'pdf4A4'
+            ]
+        )) {
             $data['labelA4MoveYMm'] = $this->getLabelMarginTop();
             $data['labelA4MoveXMm'] = $this->getLabelMarginLeft();
         }
 
         return $data;
+    }
+
+    /**
+     * @param Order    $order
+     * @param Shipment $shipment
+     *
+     * @return object
+     */
+    private function getDefaultGLSOptions($shipment)
+    {
+        return (object) $deliveryOption = [
+            'type'            => 'deliveryService',
+            'details'         => null,
+            'deliveryAddress' => $this->quoteManagement->mapDeliveryAddress(
+                $shipment->getShippingAddress(),
+                $shipment->getBillingAddress()
+            )
+        ];
     }
 
     /**
@@ -223,8 +278,8 @@ class Create extends ShippingInformation
         $missing = $this->isDataMissing($email);
         if ($missing) {
             $this->errors['missing'][] = [
-                'missingCode' => $missing,
-                'missingOption' => 'General Contact and a Customer Support Contact',
+                'missingCode'       => $missing,
+                'missingOption'     => 'General Contact and a Customer Support Contact',
                 'configurationPath' => 'Stores > Configuration > General > Store Email Addresses'
             ];
 
@@ -254,8 +309,8 @@ class Create extends ShippingInformation
         $missing = $this->isDataMissing($address);
         if ($missing) {
             $this->errors['missing'][] = [
-                'missingCode' => $missing,
-                'missingOption' => 'Pickup Address',
+                'missingCode'       => $missing,
+                'missingOption'     => 'Pickup Address',
                 'configurationPath' => 'Stores > Configuration > General > General > Store Information'
             ];
 
@@ -309,15 +364,22 @@ class Create extends ShippingInformation
     }
 
     /**
-     * TODO: getTotalWeight() returns null too often. How to trigger calculation?
-     *
-     * @param $shipment
+    * @param $shipment
      *
      * @return array
      */
     private function prepareShippingUnit($shipment)
     {
-        $totalWeight = $shipment->getTotalWeight();
+        $order          = $shipment->getOrder();
+        $parcelQuantity = $order->getGlsParcelQuantity();
+        $items          = $shipment->getItems();
+
+        // if no parcel quantity is set, use a default value.
+        if (!$parcelQuantity) {
+            $parcelQuantity = 1;
+        }
+
+        $totalWeight = array_reduce($items, function($acc, $item){ return $acc + ($item->getWeight() * $item->getQty()) ?? 0; }, 0);
 
         if ($totalWeight > self::GLS_PARCEL_MAX_WEIGHT) {
             $this->errors['errors'][] = "Label could not be created, because the shipment is too heavy.";
@@ -325,13 +387,20 @@ class Create extends ShippingInformation
             return [];
         }
 
-        $weight = $totalWeight != 0 ? $totalWeight : 1;
+        $units = [];
 
-        return [
-            "unitId"   => $shipment->getIncrementId(),
-            "unitType" => "cO",
-            "weight"   => $weight
-        ];
+        for ($i = 0; $i < $parcelQuantity; $i++) {
+            $weightPerLabel = ($totalWeight > 0 ? $totalWeight / $parcelQuantity : 1);
+
+            $unitId  = ($parcelQuantity > 1 ? $shipment->getIncrementId() . "-" . ($i + 1) : $shipment->getIncrementId());
+            $units[] = [
+                "unitId"   => $unitId,
+                "unitType" => "cO",
+                "weight"   => ($weightPerLabel > self::GLS_PARCEL_MIN_WEIGHT && $weightPerLabel < self::GLS_PARCEL_MAX_WEIGHT ? $weightPerLabel : 1)
+            ];
+        }
+
+        return $units;
     }
 
     /**

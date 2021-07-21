@@ -40,9 +40,24 @@
                         <item name="type" xsi:type="string">gls_create_and_print_labels</item>
                         <item name="label" xsi:type="string" translate="true">GLS - Create Shipments and Print Labels</item>
                         <item name="url" xsi:type="url" path="gls/massaction/CreateAndPrint"/>
+                        <item name="callback" xsi:type="array">
+                            <item name="provider" xsi:type="string">sales_order_grid.sales_order_grid.gls_massaction</item>
+                            <item name="target" xsi:type="string">submit</item>
+                        </item>
                     </item>
                 </argument>
             </action>
         </massaction>
     </listingToolbar>
+    <container name="gls_massaction">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="component" xsi:type="string">TIG_GLS/js/massaction/callback</item>
+            </item>
+        </argument>
+    </container>
+    <columns name="sales_order_columns">
+        <column name="shipping_information" class="TIG\GLS\Ui\Component\Listing\Column\GlsShippingInformation">
+        </column>
+    </columns>
 </listing>

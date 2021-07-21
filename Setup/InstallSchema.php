@@ -34,7 +34,6 @@ namespace TIG\GLS\Setup;
 
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Ddl\Table;
-use Magento\Framework\Setup\Declaration\Schema\Dto\Factories\MediumBlob;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
@@ -108,10 +107,11 @@ class InstallSchema implements InstallSchemaInterface
     private function createTable(AdapterInterface $connection, SchemaSetupInterface $installer)
     {
         $table = $connection->newTable(self::GLS_TABLE_SHIPMENT_LABEL);
+        $salesShipmentTable = $installer->getTable('sales_shipment');
 
         $this->addInteger($table, 'entity_id', 10, true, true, 'GLS Entity ID');
         $this->addInteger($table, Label::GLS_SHIPMENT_LABEL_SHIPMENT_ID, 10, false, false, 'Magento Shipment ID');
-        $this->addForeignKey($installer, $table, self::GLS_TABLE_SHIPMENT_LABEL, Label::GLS_SHIPMENT_LABEL_SHIPMENT_ID, 'sales_shipment', 'entity_id', Table::ACTION_CASCADE);
+        $this->addForeignKey($installer, $table, self::GLS_TABLE_SHIPMENT_LABEL, Label::GLS_SHIPMENT_LABEL_SHIPMENT_ID, $salesShipmentTable, 'entity_id', Table::ACTION_CASCADE);
         $this->addText($table, Label::GLS_SHIPMENT_LABEL_UNIT_ID, 50, 'Unit ID');
         $this->addText($table, Label::GLS_SHIPMENT_LABEL_UNIT_NO, 50, 'Unit Number');
         $this->addText($table, Label::GLS_SHIPMENT_LABEL_UNIT_NO_SHOP_RETURN, 50, 'Shop Return Unit Number');

@@ -138,7 +138,7 @@ class QuoteManagement
      *
      * @return object
      */
-    private function mapDeliveryAddress($shipping, $billing)
+    public function mapDeliveryAddress($shipping, $billing)
     {
         return (object) [
             'name1'         => $shipping->getName(),
