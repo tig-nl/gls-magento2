@@ -38,12 +38,13 @@ class Carrier extends AbstractConfigProvider
     const GLS_DELIVERY_OPTION_EXPRESS_LABEL                        = 'ExpressService';
     const GLS_DELIVERY_OPTION_SATURDAY_LABEL                       = 'SaturdayService';
     const GLS_DELIVERY_OPTION_PARCEL_SHOP_LABEL                    = 'ParcelShop';
-    const XPATH_CARRIER_ACTIVE                                     = 'carriers/tig_gls/active';
-    const XPATH_CARRIER_HANDLING_FEE                               = 'carriers/tig_gls/handling_fee';
-    const XPATH_CARRIER_CUT_OFF_TIME                               = 'carriers/tig_gls/cut_off_time';
-    const XPATH_CARRIER_PROCESSING_TIME                            = 'carriers/tig_gls/processing_time';
-    const XPATH_CARRIER_EXPRESS_PARCEL_ACTIVE                      = 'carriers/tig_gls/express_parcel_active';
-    const XPATH_CARRIER_BUSINESS_PARCEL_FLEX_DELIVERY              = 'carriers/tig_gls/business_parcel_services/flex_delivery_active';
+	const XPATH_CARRIER_ACTIVE                                     = 'carriers/tig_gls/active';
+	const XPATH_CARRIER_ALLOW_API_ORDER_SERVICE                    = 'carriers/tig_gls/allow_api_order_service';
+	const XPATH_CARRIER_HANDLING_FEE                               = 'carriers/tig_gls/handling_fee';
+	const XPATH_CARRIER_CUT_OFF_TIME                               = 'carriers/tig_gls/cut_off_time';
+	const XPATH_CARRIER_PROCESSING_TIME                            = 'carriers/tig_gls/processing_time';
+	const XPATH_CARRIER_EXPRESS_PARCEL_ACTIVE                      = 'carriers/tig_gls/express_parcel_active';
+	const XPATH_CARRIER_BUSINESS_PARCEL_FLEX_DELIVERY              = 'carriers/tig_gls/business_parcel_services/flex_delivery_active';
     const XPATH_CARRIER_BUSINESS_PARCEL_SATURDAY_SERVICE           = 'carriers/tig_gls/business_parcel_services/saturday_active';
     const XPATH_CARRIER_BUSINESS_PARCEL_SATURDAY_HANDLING_FEE      = 'carriers/tig_gls/business_parcel_services/saturday_handling_fee';
     const XPATH_CARRIER_BUSINESS_PARCEL_SHOP_DELIVERY              = 'carriers/tig_gls/business_parcel_services/shop_delivery_active';
@@ -84,6 +85,14 @@ class Carrier extends AbstractConfigProvider
     {
         return $this->getConfigValue(self::XPATH_CARRIER_PROCESSING_TIME);
     }
+
+	/**
+	 * @return string
+	 */
+	public function getAllowApiOrderService()
+	{
+		return $this->getConfigValue(self::XPATH_CARRIER_ALLOW_API_ORDER_SERVICE);
+	}
 
     /**
      * @return bool

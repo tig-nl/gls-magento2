@@ -35,6 +35,7 @@ namespace TIG\GLS\Plugin\Quote\Model;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use TIG\GLS\Model\Config\Provider\Carrier;
+use TIG\GLS\Service\DeliveryOptions\Services as ServicesService;
 
 class QuoteManagement
 {
@@ -44,17 +45,27 @@ class QuoteManagement
     /** @var OrderRepositoryInterface $orderRepository */
     private $orderRepository;
 
-    /**
+	/** @var ServicesService $services */
+	private $services;
+
+	/** @var Carrier $carrier */
+	private $carrier;
+
+	/**
      * QuoteManagement constructor.
      *
      * @param CartRepositoryInterface $cartRepository
      */
     public function __construct(
         CartRepositoryInterface $cartRepository,
-        OrderRepositoryInterface $orderRepository
+        OrderRepositoryInterface $orderRepository,
+        ServicesService $services,
+        Carrier $carrier
     ) {
         $this->cartRepository  = $cartRepository;
         $this->orderRepository = $orderRepository;
+	    $this->services = $services;
+	    $this->carrier = $carrier;
     }
 
     /**
@@ -72,7 +83,14 @@ class QuoteManagement
         $deliveryOption  = $shippingAddress->getGlsDeliveryOption();
 
         if (!$deliveryOption) {
-            return;
+	        if($this->carrier->getAllowApiOrderService()) {
+		        $deliveryOption = $this->getDeliveryOptionsForApiOrder($shippingAddress);
+		        if (!$deliveryOption) {
+			        return;
+		        }
+	        } else {
+		        return;
+	        }
         }
 
         $deliveryOption = json_decode($deliveryOption);
@@ -87,6 +105,30 @@ class QuoteManagement
             $this->changeShippingAddress($deliveryOption->details, $shippingAddress);
         }
     }
+
+	/**
+	 * If order is placed through Magento API and auto-select is enabled,
+	 * order gets first available delivery time.
+	 *
+	 * @param $shippingAddress
+	 * @return false|string
+	 */
+	public function getDeliveryOptionsForApiOrder($shippingAddress)
+	{
+		$countryCode = $languageCode = $shippingAddress->getCountryId();
+		$postcode = $shippingAddress->getPostcode();
+		$services = $this->services->getDeliveryOptions($countryCode, $languageCode, $postcode);
+		$deliveryOptions = (isset($services['deliveryOptions'])) ? $services['deliveryOptions'] : null;
+		$autoSelectDelivery = $deliveryOptions[0];
+		$autoSelectDelivery['isService'] = false;
+		$autoSelectDelivery['hasSubOptions'] = false;
+		$autoSelectDelivery['fee'] = null;
+		$autoSelectDeliveryResultsArray = array(
+			'type' => 'deliveryService',
+			'details' => $autoSelectDelivery
+		);
+		return json_encode($autoSelectDeliveryResultsArray);
+	}
 
     /**
      * We're saving the DeliveryAddress in the format required by GLS API, so we
