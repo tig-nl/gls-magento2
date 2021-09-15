@@ -8,7 +8,7 @@
     },
     "type": "magento2-module",
     "license": "CC-BY-NC-ND-3.0",
-    "version": "1.4.0.2",
+    "version": "1.4.0.3",
     "minimum-stability": "stable",
     "authors": [
         {
