@@ -82,7 +82,7 @@ class QuoteManagement
         $billingAddress  = $quote->getBillingAddress();
         $deliveryOption  = $shippingAddress->getGlsDeliveryOption();
 
-        if (!$deliveryOption) { // old way, but now (august 2021) $deliveryOption CAN be set (so not false) but can be empty
+        if (!$deliveryOption) {
             if($this->carrier->getAllowApiOrderService()) {
                 $deliveryOption = $this->getDeliveryOptionsForApiOrder($shippingAddress);
                 if (!$deliveryOption) {
@@ -90,19 +90,6 @@ class QuoteManagement
                 }
             } else {
                 return;
-            }
-        } else {
-            // since you can't measure length (the length of this empty object is 35)
-            // make it an array and see it that contains something
-            $new = json_decode($deliveryOption, true);
-            if(is_array($new) && count($new) > 0) {
-                // fine
-            } else {
-                if($this->carrier->getAllowApiOrderService()) {
-                    $deliveryOption = $this->getDeliveryOptionsForApiOrder($shippingAddress);
-                } else {
-                    return;
-                }
             }
         }
 
@@ -132,19 +119,15 @@ class QuoteManagement
         $postcode = $shippingAddress->getPostcode();
         $services = $this->services->getDeliveryOptions($countryCode, $languageCode, $postcode);
         $deliveryOptions = (isset($services['deliveryOptions'])) ? $services['deliveryOptions'] : null;
-        if(isset($services['deliveryOptions'])) {
-            $autoSelectDelivery = $deliveryOptions[0];
-            $autoSelectDelivery['isService'] = false;
-            $autoSelectDelivery['hasSubOptions'] = false;
-            $autoSelectDelivery['fee'] = null;
-            $autoSelectDeliveryResultsArray = array(
-                'type' => 'deliveryService',
-                'details' => $autoSelectDelivery
-            );
-            return json_encode($autoSelectDeliveryResultsArray);
-        } else {
-            return null;
-        }
+        $autoSelectDelivery = $deliveryOptions[0];
+        $autoSelectDelivery['isService'] = false;
+        $autoSelectDelivery['hasSubOptions'] = false;
+        $autoSelectDelivery['fee'] = null;
+        $autoSelectDeliveryResultsArray = array(
+            'type' => 'deliveryService',
+            'details' => $autoSelectDelivery
+        );
+        return json_encode($autoSelectDeliveryResultsArray);
     }
 
     /**
