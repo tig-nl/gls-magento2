@@ -82,48 +82,16 @@ class QuoteManagement
         $billingAddress  = $quote->getBillingAddress();
         $deliveryOption  = $shippingAddress->getGlsDeliveryOption();
 
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/checkout_gls.log');
-        $logger = new \Zend\Log\Logger();
-        $logger->addWriter($writer);
-
-
-        if (!$deliveryOption) {
-            $logger->info(print_r('deliveryOption was NOT set (false)', true));
-            if($this->carrier->getAllowApiOrderService()) {
-                $deliveryOption = $this->getDeliveryOptionsForApiOrder($shippingAddress);
-                if (!isset($deliveryOption) || !$deliveryOption) {
-                    return;
-                }
-                $deliveryOption->deliveryAddress = $this->mapDeliveryAddress($shippingAddress, $billingAddress);
-            } else {
+        if (!$deliveryOption && $this->carrier->getAllowApiOrderService()) {
+            $deliveryOption = $this->getDeliveryOptionsForApiOrder($shippingAddress, $billingAddress);
+            if (!isset($deliveryOption) || !$deliveryOption) {
                 return;
             }
-        } else {
-            $logger->info(print_r('deliveryOption was set', true));
-            // since you can't measure length (the length of this empty object is 35)
-            // make it an array and see it that contains something
-            $new = json_decode($deliveryOption, true);
-            if(is_array($new) && count($new) > 0) {
-                // fine
-            } else {
-                $logger->info(print_r('deliveryOption seems empty', true));
-                if($this->carrier->getAllowApiOrderService()) {
-                    $deliveryOption = $this->getDeliveryOptionsForApiOrder($shippingAddress);
-                    if (!isset($deliveryOption) || !$deliveryOption) {
-                        return;
-                    }
-                    $deliveryOption->deliveryAddress = $this->mapDeliveryAddress($shippingAddress, $billingAddress);
-                } else {
-                    return;
-                }
-            }
+            $shippingAddress->setGlsDeliveryOption(json_encode($deliveryOption));
         }
 
         $deliveryOption = json_decode($deliveryOption);
         $type           = $deliveryOption->type;
-
-        $logger->info(print_r('deliveryOption is now : ', true));
-        $logger->info(print_r($deliveryOption, true));
 
         if (!isset($deliveryOption->deliveryAddress)) {
             $deliveryOption->deliveryAddress = $this->mapDeliveryAddress($shippingAddress, $billingAddress);
@@ -142,20 +110,22 @@ class QuoteManagement
      * @param $shippingAddress
      * @return false|string
      */
-    public function getDeliveryOptionsForApiOrder($shippingAddress)
+    public function getDeliveryOptionsForApiOrder($shippingAddress, $billingAddress)
     {
         $countryCode = $languageCode = $shippingAddress->getCountryId();
         $postcode = $shippingAddress->getPostcode();
-        $services = $this->services->getDeliveryOptions($countryCode, $languageCode, $postcode);
+        $services = $this->services->getDeliveryOptions($countryCode, 'NL', $postcode);
         $deliveryOptions = (isset($services['deliveryOptions'])) ? $services['deliveryOptions'] : null;
         if(isset($services['deliveryOptions'])) {
+            $deliveryAddress = $this->mapDeliveryAddress($shippingAddress, $billingAddress);
             $autoSelectDelivery = $deliveryOptions[0];
             $autoSelectDelivery['isService'] = false;
             $autoSelectDelivery['hasSubOptions'] = false;
             $autoSelectDelivery['fee'] = null;
             $autoSelectDeliveryResultsArray = array(
                 'type' => 'deliveryService',
-                'details' => $autoSelectDelivery
+                'details' => $autoSelectDelivery,
+                'deliveryAddress' => $deliveryAddress
             );
             return json_encode($autoSelectDeliveryResultsArray);
         } else {
