@@ -81,13 +81,18 @@ class QuoteManagement
         $shippingAddress = $quote->getShippingAddress();
         $billingAddress  = $quote->getBillingAddress();
         $deliveryOption  = $shippingAddress->getGlsDeliveryOption();
+        $apiOrder = false;
 
-        if (!$deliveryOption && $this->carrier->getAllowApiOrderService()) {
-            $deliveryOption = $this->getDeliveryOptionsForApiOrder($shippingAddress, $billingAddress);
-            if (!isset($deliveryOption) || !$deliveryOption) {
+        if (!$deliveryOption) {
+            if($this->carrier->getAllowApiOrderService()) {
+                $deliveryOption = $this->getDeliveryOptionsForApiOrder($shippingAddress, $billingAddress);
+                if (!isset($deliveryOption) || !$deliveryOption) {
+                    return;
+                }
+                $apiOrder = true;
+            } else {
                 return;
             }
-            $shippingAddress->setGlsDeliveryOption(json_encode($deliveryOption));
         }
 
         $deliveryOption = json_decode($deliveryOption);
@@ -95,6 +100,9 @@ class QuoteManagement
 
         if (!isset($deliveryOption->deliveryAddress)) {
             $deliveryOption->deliveryAddress = $this->mapDeliveryAddress($shippingAddress, $billingAddress);
+            $shippingAddress->setGlsDeliveryOption(json_encode($deliveryOption));
+        }
+        if($apiOrder) {
             $shippingAddress->setGlsDeliveryOption(json_encode($deliveryOption));
         }
 
