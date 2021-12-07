@@ -67,6 +67,15 @@ class Create extends ShippingInformation
     const GLS_PARCEL_MIN_WEIGHT                                 = 0.2;
     const GLS_PARCEL_MAX_WEIGHT                                 = 31.9;
 
+    //custom Sender Address
+    const GLS_SENDER_ADDRESS_ENABLED = 'tig_gls/sender_address/sender_address_enabled';
+    const GLS_SENDER_ADDRESS_COMPANY = 'tig_gls/sender_address/company';
+    const GLS_SENDER_ADDRESS_STREET_NAME = 'tig_gls/sender_address/street_name';
+    const GLS_SENDER_ADDRESS_HOUSE_NUMBER = 'tig_gls/sender_address/house_number';
+    const GLS_SENDER_ADDRESS_HOUSE_NUMBER_ADDITION = 'tig_gls/sender_address/house_number_addition';
+    const GLS_SENDER_ADDRESS_POSTCODE = 'tig_gls/sender_address/postcode';
+    const GLS_SENDER_ADDRESS_CITY = 'tig_gls/sender_address/city';
+
     /**
      * @var Create $createLabel
      */
@@ -167,6 +176,7 @@ class Create extends ShippingInformation
     private function mapLabelData($shipment, $controllerModule, $version)
     {
         $order          = $shipment->getOrder();
+        $storeId        = $order->getStoreId();
         $deliveryOption = json_decode($order->getGlsDeliveryOption());
         // If no delivery options are available, check if non-GLS shipments are allowed,
         // or if delivery options are not enabled.
@@ -197,7 +207,7 @@ class Create extends ShippingInformation
         $data['returnRoutingData'] = false;
         $data['addresses']         = [
             'deliveryAddress' => $deliveryAddress,
-            'pickupAddress'   => $this->preparePickupAddress()
+            'pickupAddress'   => $this->preparePickupAddress($storeId)
         ];
         $data['shippingDate']      = $this->shippingDate->calculate("Y-m-d", false);
         $data['reference']         = $order->getIncrementId();
@@ -295,16 +305,32 @@ class Create extends ShippingInformation
      *
      * @return array
      */
-    private function preparePickupAddress()
+    private function preparePickupAddress($storeId = null)
     {
-        $address = [
-            "name1"       => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_NAME),
-            "street"      => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_STREET),
-            "houseNo"     => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_HOUSE_NO),
-            "zipCode"     => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_POSTCODE),
-            "city"        => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_CITY),
-            "countryCode" => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_COUNTRY)
-        ];
+        $customSenderAddressEnabled = $this->scopeConfig->getValue(self::GLS_SENDER_ADDRESS_ENABLED, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+
+        if($customSenderAddressEnabled) {
+            $houseNumber = $this->scopeConfig->getValue(self::GLS_SENDER_ADDRESS_HOUSE_NUMBER, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+            $houseNumberAddition = $this->scopeConfig->getValue(self::GLS_SENDER_ADDRESS_HOUSE_NUMBER_ADDITION, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+            $houseNo = $houseNumber.$houseNumberAddition;
+            $address = [
+                "name1" => $this->scopeConfig->getValue(self::GLS_SENDER_ADDRESS_COMPANY, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId),
+                "street" => $this->scopeConfig->getValue(self::GLS_SENDER_ADDRESS_STREET_NAME, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId),
+                "houseNo" => trim($houseNo),
+                "zipCode" => $this->scopeConfig->getValue(self::GLS_SENDER_ADDRESS_POSTCODE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId),
+                "city" => $this->scopeConfig->getValue(self::GLS_SENDER_ADDRESS_CITY, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId),
+                "countryCode" => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_COUNTRY, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId)
+            ];
+        } else {
+            $address = [
+                "name1" => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_NAME),
+                "street" => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_STREET),
+                "houseNo" => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_HOUSE_NO),
+                "zipCode" => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_POSTCODE),
+                "city" => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_CITY),
+                "countryCode" => $this->scopeConfig->getValue(self::XPATH_CONFIG_GENERAL_STORE_INFORMATION_COUNTRY)
+            ];
+        }
 
         $missing = $this->isDataMissing($address);
         if ($missing) {
@@ -364,7 +390,7 @@ class Create extends ShippingInformation
     }
 
     /**
-    * @param $shipment
+     * @param $shipment
      *
      * @return array
      */

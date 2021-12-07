@@ -118,4 +118,40 @@
             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
         </field>
     </group>
+    <group id="sender_address" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>Use custom senders (return) address</label>
+        <field id="sender_address_enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Enabled</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <comment><![CDATA[Please note: when enabled, you have to fill in all required fields (company, street name, house number, postcode and city).]]></comment>
+        </field>
+        <field id="company" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Company</label>
+            <config_path>tig_gls/sender_address/company</config_path>
+        </field>
+        <field id="street_name" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Street name</label>
+            <validate>required-entry</validate>
+            <config_path>tig_gls/sender_address/street_name</config_path>
+        </field>
+        <field id="house_number" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Housenumber</label>
+            <validate>required-entry</validate>
+            <config_path>tig_gls/sender_address/house_number</config_path>
+        </field>
+        <field id="house_number_addition" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>House number addition</label>
+            <config_path>tig_gls/sender_address/house_number_addition</config_path>
+        </field>
+        <field id="postcode" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Postcode</label>
+            <validate>required-entry</validate>
+            <config_path>tig_gls/sender_address/postcode</config_path>
+        </field>
+        <field id="city" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>City</label>
+            <validate>required-entry</validate>
+            <config_path>tig_gls/sender_address/city</config_path>
+        </field>
+    </group>
 </include>
